@@ -1,0 +1,952 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    var userDict = [];
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/PatientManage/PatVisit/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                    if (!!data.F_PGwzsz) {
+                        $("input[name='F_PGwzsz'][value=" + data.F_PGwzsz + "]").attr("checked", true);
+                    }
+                    if (!!data.F_PGxftz1) {
+                        $("input[name='F_PGxftz1'][value=" + data.F_PGxftz1 + "]").attr("checked", true);
+                    }
+                    if (!!data.F_PGxftz3) {
+                        $("input[name='F_PGxftz3'][value=" + data.F_PGxftz3 + "]").attr("checked", true);
+                    }
+                    if (!!data.F_PGwzcx1) {
+                        $("input[name='F_PGwzcx1'][value=" + data.F_PGwzcx1 + "]").attr("checked", true);
+                    }
+                    if (!!data.F_DJMH) {
+                        $("input[name='F_DJMH'][value=" + data.F_DJMH + "]").attr("checked", true);
+                    }
+                    if (!!data.F_DialyzerStatus) {
+                        $("input[name='F_DialyzerStatus'][value=" + data.F_DialyzerStatus + "]").attr("checked", true);
+                    }
+                    if (!!data.F_FistulaStatus) {
+                        
+                        if (data.F_FistulaStatus == "正常" || data.F_FistulaStatus == "渗血" || data.F_FistulaStatus == "肿胀") {  //正常/  渗血/ 肿胀
+                            $("input[name='F_FistulaStatus'][value=" + data.F_FistulaStatus + "]").attr("checked", true);
+                        }
+                        else {
+                            $("input[name='F_DuctOpeningStatus'][value=" + "其他" + "]").attr("checked", true);
+                            $("#F_FistulaStatus").show();
+                        }
+                    }
+                    if (!!data.F_DuctOpeningStatus) {
+                        
+                        if (data.F_DuctOpeningStatus == "渗血" || data.F_DuctOpeningStatus == "红肿" || data.F_DuctOpeningStatus == "化脓") { //渗血/  红肿/   化脓
+                            $("input[name='F_DuctOpeningStatus'][value=" + data.F_DuctOpeningStatus + "]").attr("checked", true);
+                        }
+                        else {
+                            $("input[name='F_DuctOpeningStatus'][value=" + "其他" + "]").attr("checked", true);
+                            $("#F_DuctOpeningStatus").show();
+
+                        }
+
+                    }
+                    //预脱体重
+                    $("#Custom_WeightYT").val(data.F_WeightYT);
+                    $("#Custom_WeightYT").on('change', function (e) {
+                        var ideaWeight = parseFloat($("#Custom_WeightYT").val());
+                        if (ideaWeight < 0 || ideaWeight > 5) {
+                            $("#Custom_WeightYT").focus();
+                            $.modalAlert('预脱量范围【0-5】，请核对！', 'warning');
+                            return false;
+                        }
+                        $.post("/PatientManage/PatVisit/ModifyYTWeight", { keyValue: keyValue, value: ideaWeight }, function (data, status) {
+                            if (status === 'success') {
+                                var result = JSON.parse(data);
+                                if (result.state !== 'success') {
+                                    $("#Custom_WeightYT").focus();
+                                    $.modalAlert(result.message, 'warning');
+                                }
+                            } else {
+                                $.modalAlert(data, 'warning');
+                            }
+                        });
+                    });
+                }
+            });
+        } else {
+            //新建 设置默认值
+            $("#F_EstimateHours").val('4');
+            $("#F_DialysateTemperature").val('36.5');
+            $("#F_Na").val('138');
+            $("#F_K").val('2.0');
+            $("#F_Ca").val('1.5');
+            //$("#F_Hco3").val(4);  
+        }
+        
+    });
+    function initControl() {
+        $.ajax({
+            url: "/PatientManage/Patient/GetSelectJson",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                var tags = [];
+                var first = {};
+                first.id = "";
+                first.text = "";
+                tags.push(first);
+                $.each(data, function (index, item) {
+                    var obj = {};
+                    obj.id = item.id;
+                    obj.text = item.name + "(No." + item.recordNo + ")" + item.py;
+                    tags.push(obj);
+                }
+                );
+                $("#F_Pid").bindSelect({
+                    search: true,
+                    data: tags,
+                    change: function (e) {
+                        if (!!e.id) {
+                            $.ajax({
+                                url: "/PatientManage/Patient/GetFormJson",
+                                data: { keyValue: e.id },
+                                dataType: "json",
+                                async: true,
+                                success: function (data) {           
+                                    $("#F_DialysisNo").val(data.F_DialysisNo);
+                                    $("#F_RecordNo").val(data.F_RecordNo);
+                                    $("#F_Name").val(data.F_Name);
+                                    $("#F_Gender").val(data.F_Gender);
+                                    $("#F_BirthDay").val(data.F_BirthDay);
+                                    $("#F_InpNo").val(data.F_InpNo);
+                                    $("#F_BedNo").val(data.F_BedNo);
+                                    $("#F_DialysisNo ,#F_Name,#F_Gender").attr('readonly', 'readonly');
+                                }
+                            });
+                        }           
+                    }
+                });
+            }
+        });
+        $("#F_GroupName").bindSelect({
+            url: "/SystemManage/ItemsData/GetSelectJson?enCode=BedGroup",
+            id: "id",
+            text: "text",
+            async: true,
+            change: function (e) {
+                $.ajax({
+                    url: "/PatientManage/DialysisMachine/GetSelectJson",
+                    data: { enCode: e.id },
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        $("#F_DialysisBedNo").html("");
+                        $("#F_DialysisBedNo").bindSelect({
+                            data: data
+                        }); 
+                    }
+                });
+            }
+        });
+    
+        $("#F_VisitNo").bindSelect();
+        $("#F_PatientSourse").bindSelect();
+        $("#F_DialysisType").bindSelect({
+            url: "/SystemManage/ItemsData/GetSelectJson?enCode=DialysisType",
+            id: "id",
+            text: "text",
+            async: true,
+            change: function (e) {
+                if (e.id == 'HDF') {
+                    $("#hdhp").show();
+                }
+                else {
+                    $("#hdhp").hide();
+                }
+            }
+        }); 
+        $.ajax({
+            url: "/PatientManage/Material/GetSelectJson",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                var tags = [];
+                var first = {};
+                first.id = "";
+                first.text = "";
+                tags.push(first);
+                $.each(data, function (index, item) {
+                    var obj = {};
+                    obj.id = item.id;
+                    obj.text = item.text;
+                    tags.push(obj);
+                }
+                );
+
+                $("#F_DialyzerType1").bindSelect({
+                    data: tags
+                });
+                //$("#F_DialyzerType2").bindSelect({
+                //    data: tags
+                //});
+            }
+        });
+
+        $.ajax({
+            url: "/PatientManage/Material/GetSelectByTypeJson",
+            data: { keyword: '灌流器' },
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                var tags = [];
+                var first = {};
+                first.id = "";
+                first.text = "";
+                tags.push(first);
+                $.each(data, function (index, item) {
+                    var obj = {};
+                    obj.id = item.id;
+                    obj.text = item.text;
+                    tags.push(obj);
+                }
+                );
+                $("#F_DialyzerType2").bindSelect({
+                    data: tags
+                });
+            }
+        });
+
+        $("#F_VascularAccess").bindSelect();
+        $.ajax({
+            url: "/PatientManage/Drugs/GetSelectJson",
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                var tags = [];
+                var first = {};
+                first.id = "";
+                first.text = "无肝素";
+                tags.push(first);
+                $.each(data, function (index, item) {
+                    var obj = {};
+                    obj.id = item.id;
+                    obj.text = item.text;
+                    tags.push(obj);
+                }
+                );
+                $("#F_HeparinType").bindSelect({
+                    id: 'id', 
+                    text: 'text',
+                    data: tags,
+                    change: function (e) {
+                        var drugid = e.id;
+                        if (!!drugid) {
+                            $.ajax({
+                                url: "/PatientManage/Drugs/GetFormJson",
+                                dataType: "json",
+                                data: { keyValue: drugid },
+                                async: true,
+                                success: function (data) {
+                                    $("#HeparinUnit").html(data.F_DrugMiniSpec);
+                                    $("#HeparinAddSpeedUnit").html(data.F_DrugMiniSpec + "/h");
+                                    $("#F_HeparinUnit").val(data.F_DrugMiniSpec);
+                                    $("#F_HeparinAddSpeedUnit").val(data.F_DrugMiniSpec + "/h");
+
+                                }
+                            });
+                        }
+                        else {
+                            $("#HeparinUnit").html("");
+                            $("#HeparinAddSpeedUnit").html("");
+                            $("#F_HeparinUnit").val("");
+                            $("#F_HeparinAddSpeedUnit").val("");
+                            $("#F_HeparinUnit").val("");
+                            $("#F_HeparinAddSpeedUnit").val("");
+                            $("#F_HeparinAmount").val("");
+                            $("#F_HeparinAddAmount").val("");
+                        }
+                    }
+
+                });
+              
+            }
+        });
+        $("#F_AccessName").bindSelect();
+        $("#F_DilutionType").bindSelect();
+        $("#F_Gender").bindSelect();
+        $.ajax({
+            url: "/SystemManage/User/GetUserSelectJson",
+            data: { keyValue: null },
+            dataType: "json",
+            async: true,
+            success: function (data) {
+                var tags = [];
+                var first = {};
+                first.id = "";
+                first.text = "     ";
+                tags.push(first);
+                $.each(data, function (index, item) {
+                    var obj = {};
+                    obj.id = item.id;
+                    obj.text = item.text;
+                    tags.push(obj);
+                }
+                );
+                $("#F_RecordDoctor").bindSelect({
+                    id: "id",
+                    text: "text",
+                    data: tags,
+                    search: true
+                });
+                
+                $("#F_PuncturePerson").bindSelect({
+                    id: "id",
+                    text: "text",
+                    data: tags,
+                    search: true
+                });
+                $("#F_StartPerson").bindSelect({
+                    id: "id",
+                    text: "text",
+                    data: tags,
+                    search: true
+                });
+
+                $("#F_CheckPerson").bindSelect({
+                    id: "id",
+                    text: "text",
+                    data: tags,
+                    search: true
+                });
+
+                $("#F_EndPerson").bindSelect({
+                    id: "id",
+                    text: "text",
+                    data: tags,
+                    search: true
+                });
+            }
+        });
+        $("#F_GroupName").trigger('change');
+        $("#F_DialysisType").trigger('change');
+        $("input[name='F_PGwzsz']").on('change', function (e) {
+            $("#F_PGwzsz").val($("input[name='F_PGwzsz']:checked").val());
+        });
+        $("input[name='F_PGxftz1']").on('change', function (e) {
+            $("#F_PGxftz1").val($("input[name='F_PGxftz1']:checked").val());
+        });
+        $("input[name='F_PGxftz3']").on('change', function (e) {
+            $("#F_PGxftz3").val($("input[name='F_PGxftz3']:checked").val());
+        });
+        $("input[name='F_PGwzcx1']").on('change', function (e) {
+            $("#F_PGwzcx1").val($("input[name='F_PGwzcx1']:checked").val());
+        });
+
+        $("input[name='F_DJMH']").on('change', function (e) {
+            $("#F_DJMH").val($("input[name='F_DJMH']:checked").val());
+        });
+        $("input[name='F_DialyzerStatus']").on('change', function (e) {
+            $("#F_DialyzerStatus").val($("input[name='F_DialyzerStatus']:checked").val());
+        });
+        $("input[name='F_FistulaStatus']").on('change', function (e) {
+            var text = $("input[name='F_FistulaStatus']:checked").val();
+            if (text == "其他") {
+                $("#F_FistulaStatus").show();
+            }
+            else {
+                $("#F_FistulaStatus").hide();
+            }
+            $("#F_FistulaStatus").val(text);
+        });
+        $("input[name='F_DuctOpeningStatus']").on('change', function (e) {
+            var text = $("input[name='F_DuctOpeningStatus']:checked").val();
+            if (text == "其他") {
+                $("#F_DuctOpeningStatus").show();
+            }
+            else {
+                $("#F_DuctOpeningStatus").hide();
+            }
+            $("#F_DuctOpeningStatus").val(text);
+        });
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        $.submitForm({
+            url: "/PatientManage/PatVisit/SubmitForm",
+            param: {
+                entity: $("#form1").formSerialize(),
+                keyValue: keyValue
+            },
+            success: function() {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        });
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+            <li role="presentation"><a href="#extend1" role="tab" data-toggle="tab">透前评估</a></li>
+            <li role="presentation"><a href="#extend2" role="tab" data-toggle="tab">透析模式</a></li>
+            <li role="presentation"><a href="#extend3" role="tab" data-toggle="tab">过程监测</a></li>
+            <li role="presentation"><a href="#extend4" role="tab" data-toggle="tab">疗效评价</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">选择患者</th>
+                        <td class="formValue">
+                            <select id="F_Pid" name="F_Pid" type="text" class="form-control required"></select>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">组别</th>
+                        <td class="formValue">
+                            <select id="F_GroupName" name="F_GroupName" type="text" class="form-control required"></select>
+                        </td>
+                        <th class="formTitle">床号</th>
+                        <td class="formValue">
+                            <select id="F_DialysisBedNo" name="F_DialysisBedNo" type="text" class="form-control required"></select>
+                        </td>
+                        <th class="formTitle">日期</th>
+                        <td class="formValue">
+                            <input id="F_VisitDate" name="F_VisitDate" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({minDate: '%y-%M-%d'})" autocomplete="off"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">班次</th>
+                        <td class="formValue">
+                            <select id="F_VisitNo" name="F_VisitNo" type="text" class="form-control required" placeholder="请选择班次">
+                                <option value=1>第一班</option>
+                                <option value=2>第二班</option>
+                                <option value=3>第三班</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">透析号</th>
+                        <td class="formValue">
+                            <input id="F_DialysisNo" name="F_DialysisNo" type="text"  class="form-control required" placeholder="" />
+                        </td>
+                        <th class="formTitle">病历号</th>
+                        <td class="formValue">
+                            <input id="F_RecordNo" name="F_RecordNo" class="form-control required" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">姓名</th>
+                        <td class="formValue">
+                            <input id="F_Name" name="F_Name" type="text" class="form-control" />
+                        </td>
+                        <th class="formTitle">性别</th>
+                        <td class="formValue">
+                            <select id="F_Gender" name="F_Gender" class="form-control required">
+                                <option value="男">男</option>
+                                <option value="女">女</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">出生日期</th>
+                        <td class="formValue">
+                            <input id="F_BirthDay" name="F_BirthDay"   type="text"  class="form-control input-wdatepicker" onfocus="WdatePicker({maxDate: '%y-%M-%d'})" autocomplete="off"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">病人来源</th>
+                        <td class="formValue">
+                            <select id="F_PatientSourse" name="F_PatientSourse" type="text" class="form-control required">
+                                <option value="门诊">门诊</option>
+                                <option value="住院">住院</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">住院号</th>
+                        <td class="formValue">
+                            <input id="F_InpNo" name="F_InpNo" class="form-control" />
+                        </td>
+                        <th class="formTitle">住院床号</th>
+                        <td class="formValue">
+                            <input id="F_BedNo" name="F_BedNo" class="form-control" />
+                        </td>
+                    </tr>
+                 
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend1">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">生命体征</th>
+                        <td class="formValue input-group">
+                            <input id="F_SystolicPressure" name="F_SystolicPressure" type="text" class="form-control" placeholder="收缩压" />
+                            <span class="input-group-addon">/</span>
+                            <input id="F_DiastolicPressure" name="F_DiastolicPressure" type="text" class="form-control" placeholder="舒张压" />
+                            <span class="input-group-addon">mmHg</span>
+                            <input id="F_Pulse" name="F_Pulse" type="text" class="form-control" placeholder="脉搏" />
+                            <span class="input-group-addon">次/分</span>
+                            <input id="F_Temperature" name="F_Temperature" type="text" class="form-control " placeholder="体温" />
+                            <span class="input-group-addon">℃</span>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">透前体重</th>
+                        <td class="formValue input-group">
+                            <input id="F_WeightTQ" name="F_WeightTQ" type="number" class="form-control " />
+                            <span class="input-group-addon">Kg</span>
+                        </td>
+                        <th class="formTitle">预脱体重</th>
+                        <td class="formValue input-group">
+                            <input id="Custom_WeightYT" name="Custom_WeightYT" type="number" class="form-control " />
+                            <span class="input-group-addon">Kg</span>
+                        </td>
+                        <th class="formTitle">上次透后</th>
+                        <td class="formValue input-group">
+                            <input id="F_WeightSXTH" name="F_WeightSXTH" type="number" class="form-control" />
+                            <span class="input-group-addon">Kg</span>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">外周水肿</th>
+                        <td class="formValue">
+                            <div>
+                                <label class="radio-inline">
+                                    <input type="radio" value="无" name="F_PGwzsz">无
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="轻度"  name="F_PGwzsz">轻度
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="中度"  name="F_PGwzsz">中度
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="重度" name="F_PGwzsz">重度
+                                </label>
+                            </div>
+                        </td>
+                        <td class="formValue"><input id="F_PGwzsz" class="form-control" style="visibility:hidden"/></td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">心肺听诊</th>
+                        <td class="formValue">
+                            <div>
+                                <label>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;呼吸音：
+                                    <label class="radio-inline">
+                                        <input type="radio" value="清" name="F_PGxftz1">清
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="粗" name="F_PGxftz1">粗
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="可闻及啰音" name="F_PGxftz1">可闻及啰音
+                                    </label>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;HR：
+                                    <input id="F_PGxftz2" name="F_PGxftz2" type="text" style="width:70px;" />
+                                    &nbsp;次/分&nbsp;&nbsp;
+                                    心律：
+                                    <label class="radio-inline">
+                                        <input type="radio" value="律齐" name="F_PGxftz3">律齐
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="不齐" name="F_PGxftz3">不齐
+                                    </label>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">出血情况</th>
+                        <td class="formValue">
+                            <div>
+                                <label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="无" name="F_PGwzcx1">无
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="有" name="F_PGwzcx1">有
+                                    </label>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;部位：
+                                    <input id="F_PGwzcx2" name="F_PGwzcx2" type="text" style="width:170px;" />
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            其他
+                        </th>
+                        <td class="formValue">
+                            <textarea id="F_PGother" name="F_PGother" class="form-control" style="height: 60px;"></textarea>
+                        </td>
+                    </tr>
+                    <tr style="display:none">
+                        <td class="formValue">
+                            <input id="F_PGxftz1" class="form-control" />
+                        </td>
+                        <td class="formValue">
+                            <input id="F_PGxftz3" class="form-control" />
+                        </td>
+                    </tr>
+                    <tr style="display:none">
+                        <td class="formValue">
+                            <input id="F_PGwzcx1" class="form-control" />
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">记录者</th>
+                        <td class="formValue">
+                            <select id="F_RecordDoctor" name="F_RecordDoctor" class="form-control"></select>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend2">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">透析方式</th>
+                        <td class="formValue">
+                            <select id="F_DialysisType" name="F_DialysisType" type="text" class="form-control"></select>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr id="hdhp">
+                        <th class="formTitle">稀释模式</th>
+                        <td class="formValue">
+                            <select id="F_DilutionType" name="F_DilutionType" type="text" class="form-control">
+                                <option value="前稀释">前稀释</option>
+                                <option value="后稀释">后稀释</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">置换液量</th>
+                        <td class="formValue input-group">
+                            <input id="F_ExchangeAmount" name="F_ExchangeAmount" type="text" class="form-control" />
+                            <span class="input-group-addon">L</span>
+                            <input id="F_ExchangeSpeed" name="F_ExchangeSpeed" type="text" class="form-control" />
+                            <span class="input-group-addon">ml/min</span>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">滤器</th>
+                        <td class="formValue">
+                            <select id="F_DialyzerType1" name="F_DialyzerType1" type="text" class="form-control ">
+                                
+                            </select>
+                        </td>
+                        <th class="formTitle">灌流器</th>
+                        <td class="formValue">
+                            <select id="F_DialyzerType2" name="F_DialyzerType2" type="text" class="form-control">
+                                
+                            </select>
+                        </td>
+                        <th class="formTitle">预估时间</th>
+                        <td class="formValue input-group">
+                            <input id="F_EstimateHours" name="F_EstimateHours" type="text" class="form-control" />
+                            <span class="input-group-addon">h</span>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">
+                            血流速
+                        </th>
+                        <td class="formValue input-group">
+                            <input id="F_BloodSpeed" name="F_BloodSpeed" type="text" class="form-control" />
+                            <span class="input-group-addon">ml/min</span>
+                        </td>
+                        <th class="formTitle">
+                            透析液温度
+                        </th>
+                        <td class="formValue input-group">
+                            <input id="F_DialysateTemperature" name="F_DialysateTemperature" type="text" class="form-control" />
+                            <span class="input-group-addon">℃</span>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">血管通路</th>
+                        <td class="formValue">
+                            <select id="F_VascularAccess" name="F_VascularAccess" type="text" class="form-control">
+                                <option value="自体内瘘">自体内瘘</option>
+                                <option value="移植内瘘">移植内瘘</option>
+                                <option value="深静脉置管">深静脉置管</option>
+                                <option value="带隧道带涤纶套导管">带隧道带涤纶套导管</option>
+                                <option value="无隧道无涤纶套导管">无隧道无涤纶套导管</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">部位(名称)</th>
+                        <td class="formValue">
+                            <select id="F_AccessName" name="F_AccessName" type="text" class="form-control ">
+                                <option value="左上肢(A/V)">左上肢(A/V)</option>
+                                <option value="右上肢(A/V)">右上肢(A/V)</option>
+                                <option value="颈内静脉">颈内静脉</option>
+                                <option value="股静脉">股静脉</option>
+                                <option value="锁骨下静脉">锁骨下静脉</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">抗凝剂</th>
+                        <td class="formValue">
+                            <select id="F_HeparinType" name="F_HeparinType" class="form-control">
+                                @*<option value="无肝素">无肝素</option>
+                                <option value="肝素钠(mg)">肝素钠(mg)</option>
+                                <option value="低分子肝素钙(u)">低分子肝素钙(u)</option>
+                                <option value="法安明(u)">法安明(u)</option>
+                                <option value="那曲肝素(u)">那曲肝素(u)</option>*@
+                            </select>
+                        </td>
+                        <th class="formTitle">首次</th>
+                        <td class="formValue input-group">
+                            <input id="F_HeparinAmount" name="F_HeparinAmount" class="form-control" />  
+                            <span id="HeparinUnit" class="input-group-addon"></span>
+                        </td>
+                        <th class="formTitle">追加</th>
+                        <td class="formValue input-group">
+                            <input id="F_HeparinAddAmount" name="F_HeparinAddAmount" class="form-control" />
+                            <span id="HeparinAddSpeedUnit" class="input-group-addon"></span>
+                        </td>
+                        <td class="formValue input-group" style="display:none">
+                            <input id="F_HeparinUnit" />
+                            <input id="F_HeparinAddSpeedUnit" />
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">透析液</th>
+                        <td class="formValue input-group">
+                            <span class="input-group-addon">Ca&nbsp;&nbsp;&nbsp;</span>
+                            <input id="F_Ca" name="F_Ca" class="form-control" />
+                            <span class="input-group-addon">mmol/L</span>
+                           
+                        </td>
+                        <th class="formTitle"></th>
+                        <td class="formValue input-group">
+                            <span class="input-group-addon">K&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <input id="F_K" name="F_K" class="form-control" />
+                            <span class="input-group-addon">mmol/L</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle"></th>
+                        <td class="formValue input-group">
+                            <span class="input-group-addon">Na&nbsp;&nbsp;&nbsp;</span>
+                            <input id="F_Na" name="F_Na" class="form-control" />
+                            <span class="input-group-addon">mmol/L</span>
+                        </td>
+                        <th class="formTitle"></th>
+                        <td class="formValue  input-group">
+                            <span class="input-group-addon">HCO<sub>3</sub><sup>-</sup></span>
+                            <input id="F_Hco3" name="F_Hco3" class="form-control" />
+                            <span class="input-group-addon">mmol/L</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle"></th>
+                        <td class="formValue">
+                            <div class="ckbox"><input id="F_LowCa" name="F_LowCa" type="checkbox"><label for="F_LowCa">低钙</label></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend3">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">开始时间</th>
+                        <td class="formValue">
+                            <input id="F_DialysisStartTime" name="F_DialysisStartTime" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" autocomplete="off"/>
+                        </td>
+                        <th class="formTitle">穿刺者</th>
+                        <td class="formValue">
+                            <select id="F_PuncturePerson" name="F_PuncturePerson" class="form-control" />
+                        </td>
+                        <th class="formTitle">上机者</th>
+                        <td class="formValue">
+                            <select id="F_StartPerson" name="F_StartPerson" class="form-control" />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th class="formTitle">结束时间</th>
+                        <td class="formValue">
+                            <input id="F_DialysisEndTime" name="F_DialysisEndTime" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" autocomplete="off"/>
+                        </td>
+                        <th class="formTitle">核对者</th>
+                        <td class="formValue">
+                            <select id="F_CheckPerson" name="F_CheckPerson" class="form-control" />
+                        </td>
+                        <th class="formTitle">下机者</th>
+                        <td class="formValue">
+                            <select id="F_EndPerson" name="F_EndPerson" class="form-control" />
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">透后体重</th>
+                        <td class="formValue input-group">
+                            <input id="F_WeightTH" name="F_WeightTH" class="form-control" />
+                            <span class="input-group-addon">Kg</span>
+                        </td>
+                        <th class="formTitle">实脱体重</th>
+                        <td class="formValue  input-group">
+                            <input id="F_WeightST" name="F_WeightST" class="form-control" />
+                            <span class="input-group-addon">Kg</span>
+                        </td>
+                        <th class="formTitle">机显脱水</th>
+                        <td class="formValue  input-group">
+                            <input id="F_MachineShowAmount" name="F_MachineShowAmount" class="form-control" />
+                            <span class="input-group-addon">ml</span>
+                        </td>
+                        <th class="formTitle">实际置换量</th>
+                        <td class="formValue  input-group">
+                            <input id="F_RealExchangeAmount" name="F_RealExchangeAmount" class="form-control" />
+                            <span class="input-group-addon">L</span>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">透后体外循环凝血</th>
+                        <td class="formValue">
+                            <div>
+                                <label>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;动静脉壶&nbsp;
+                                    <label class="radio-inline">
+                                        <input type="radio" value="0级" name="F_DJMH">0级
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="1级" name="F_DJMH">1级
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="2级" name="F_DJMH">2级
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="3级" name="F_DJMH">3级
+                                    </label>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;透析器&nbsp;
+                                    <label class="radio-inline">
+                                        <input type="radio" value="0级" name="F_DialyzerStatus">0级
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="1级" name="F_DialyzerStatus">1级
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="2级" name="F_DialyzerStatus">2级
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="3级" name="F_DialyzerStatus">3级
+                                    </label>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="display:none">
+                        <td class="formValue">
+                            <input id="F_DJMH"  class="form-control" />
+                        </td>
+                        <td class="formValue">
+                            <input id="F_DialyzerStatus" class="form-control" />
+                        </td>      
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">透后内瘘情况</th>
+                        <td class="formValue">
+                            <div>
+                                <label class="radio-inline">
+                                    <input type="radio" value="正常" name="F_FistulaStatus">正常
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="渗血" name="F_FistulaStatus">渗血
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="肿胀" name="F_FistulaStatus">肿胀
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="其他" name="F_FistulaStatus">其他
+                                </label>
+                                <input type="text" id="F_FistulaStatus" style="display:none"/>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="formTitle">导管口情况</th>
+                        <td class="formValue">
+                            <div>
+                                <label class="radio-inline">
+                                    <input type="radio" value="渗血" name="F_DuctOpeningStatus">渗血
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="红肿" name="F_DuctOpeningStatus">红肿
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="化脓" name="F_DuctOpeningStatus">化脓
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="其他" name="F_DuctOpeningStatus">其他
+                                </label>
+                                <input type="text" id="F_DuctOpeningStatus" style="display:none"/>
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            不适症状及原因
+                        </th>
+                        <td class="formValue">
+                            <textarea id="F_Reason" name="F_Reason" class="form-control" style="height: 100px;"></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend4">
+                <div class="mail-box">
+                    <div class="mail-header">处理与建议</div>
+                    <div class="mail-body" style="padding: 0px;">
+                        <textarea id="F_Memo" name="F_Memo" class="form-control" rows="15"></textarea>
+                    </div>
+                    <div class="mail-body" style="text-align: right;">
+                        <a href="javascript:void()" onclick="submitForm()" class="btn btn-primary" style="margin-right: 5px;"><i class="fa fa-window-restore"></i>读取模板文件</a>
+                        <a href="javascript:void()" class="btn btn-warning"><i class="fa fa-pencil"></i>存为模板</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

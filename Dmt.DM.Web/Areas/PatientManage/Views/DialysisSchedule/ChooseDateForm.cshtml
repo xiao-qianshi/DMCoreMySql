@@ -1,0 +1,57 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    var json = JSON.parse(keyValue);
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/PatientManage/Patient/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data); 
+                }
+            });
+        }
+    });
+    function initControl() {
+        $('div.alert-danger').html(
+            '<i class="fa fa-warning alert-dismissible" style="position: relative; top: 1px; font-size: 16px; padding-right: 5px;"></i>'
+            + '复制' + json.datestart + '至' + json.dateend + '的排班信息，请选择目标周次【任意选择一天】！');
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        $.submitForm({
+            url: "/PatientManage/DialysisSchedule/CustomCopy",
+            param: {
+                sourceDate: json.datestart,
+                targetDate: $("#targetDate").val()
+            },
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <div class="alert alert-danger" style="text-align: left; margin-bottom: 5px;">
+            
+        </div>
+        <table class="form">
+            <tr>
+                <th class="formTitle">目标日期</th>
+                <td class="formValue">
+                    <input id="targetDate" name="targetDate" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd',minDate: '%y-%M-%d'})" autocomplete="off" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>

@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $("#patient").val(keyValue);
+        }
+    });
+    function initControl() {
+        $.ajax({
+            url: "/LabLis/LabInstrument/GetListJson",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                refreshTable(data) 
+            }
+        });
+    }
+
+    function refreshTable(data) {
+        if (data instanceof Array) {
+            if (data.length === 0) {
+                return false;
+            }
+            var $table = $("#selectTable");
+            $table.html();
+            var htmlstr = "";
+            $.each(data, function (index, item) {
+                if (index % 3 == 0) {
+                    if (index == 0) {
+                        htmlstr = htmlstr + "<tr>";
+                    }
+                    else {
+                        htmlstr = htmlstr + "</tr><tr>";
+                    }
+                }
+                htmlstr = htmlstr + "<td class=\"formValue\" style=\"padding-top: 1px;\"><div class=\"ckbox\"><input id=\"check" + item.F_Id + "\" name=\"check" + item.F_Id + "\" type=\"checkbox\"  value=\"" + item.F_Id + "\"><label for=\"check" + item.F_Id + "\">" + item.F_Code + "：" + item.F_Name + "</label></div></td>";                
+            });
+            htmlstr = htmlstr + "</tr>";
+            $table.html(htmlstr);
+            $table.find("input[type=checkbox]").on('click', function (e) {
+                $table.find("input[type=checkbox]:checked").prop('checked', false);
+                $(this).prop('checked', true);
+            })
+        }
+    }
+
+    function submitForm() {
+        var selectedBox = $("#selectTable").find("input[type=checkbox]:checked");
+        var selectedId = selectedBox.val();
+        $.currentWindow().resetTitle(selectedId);
+        $.modalClose();
+    }
+</script>
+<form id="form1">
+    <div style="margin: 20px;">
+        <h4><strong>仪器列表</strong></h4>
+        <table id="selectTable" class="form">
+        </table>
+    </div>
+</form>

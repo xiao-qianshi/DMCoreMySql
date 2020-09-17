@@ -1,0 +1,196 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script src="~/Content/js/datepicker/WdatePicker.js"></script>
+<environment include="Development">
+    <script src="~/view-js/lablis/LabTest/Index.js" asp-append-version="true"></script>
+</environment>
+<environment exclude="Development">
+    <script src="~/view-js/lablis/LabTest/Index.min.js" asp-append-version="true"></script>
+</environment>
+
+<style type="text/css">
+    [class*="col-"] {
+        padding: 0px;
+    }
+
+    #gridList_cb {
+        text-align: left;
+        width: 30px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    .ui-jqgrid .ui-jqgrid-view input[type="text"] {
+        width: 96%;
+        border-top-width: 0px;
+        border-bottom-width: 0px;
+        padding-bottom: 0px;
+        padding-top: 0px;
+        height: 30px;
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+
+    .ui-jqgrid .ui-jqgrid-view input[type="checkbox"] {
+        margin-top: 6px;
+        width: 18px;
+        height: 18px;
+        margin-bottom: 6px;
+    }
+
+
+    .selected-a {
+    }
+
+        .selected-a span {
+            background-color: forestgreen;
+        }
+
+    .operate1 {
+        line-height: 30px;
+        height: 30px;
+        width: 73%;
+        background: #fff;
+        position: absolute;
+        /*top: 0px;
+        left: -100.1%;*/
+        z-index: 999;
+    }
+
+        .operate1 ul {
+            margin: 3px 0 0 -2px;
+        }
+
+            .operate1 ul li {
+                float: left;
+                height: 12px;
+                line-height: 12px;
+            }
+
+                .operate1 ul li.split {
+                    position: relative;
+                    display: block;
+                    border-right: 1px solid #c9c9c9;
+                    height: 16px;
+                    margin-left: 5px;
+                    margin-right: 5px;
+                    margin-top: 8px;
+                }
+
+                .operate1 ul li a {
+                    cursor: pointer;
+                    padding: 10px 10px;
+                }
+
+                .operate1 ul li i {
+                    margin-right: 4px;
+                    font-size: 13px;
+                    color: #666666;
+                    vertical-align: middle;
+                    margin-top: -1px;
+                }
+
+            .operate1 ul .first {
+                position: relative;
+                display: block;
+                padding: 2px 15px;
+                padding-right: 10px;
+                margin-top: 8px;
+                margin-right: 0px;
+                border-right: 1px solid #c9c9c9;
+            }
+
+            .operate1 ul li.first > span {
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+</style>
+
+<div style="position: absolute; top: 1px; right: 10px;">
+    <a class="btn btn-default" id="btn-choose" style="font-size: 12px;margin-right: 15px;"><i class="fa fa-exchange fa-lg"></i>切换仪器</a>
+</div>
+<div style="margin-top:-1px;width:90%;margin-left:5px;margin-bottom: 5px;padding-bottom: 2px;" class="page-header">
+    <h4>
+        已选仪器：
+        &nbsp;&nbsp;
+        <i id="h-instrumentCode" class="fa fa-television" style="font-size: 15px;"></i>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <strong id="h-instrumentName" style="font-size: 15px;"></strong>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span id="h-isExternal" class="badge" style="background: red;font-size:12px">外</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <i id="h-isDuplex" class="fa fa-arrows-h" style="font-size: 15px;color: blue;"></i>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <strong id="h-workStationIp" style="font-size:15px"></strong>
+        <small style="margin-left: 45px;">
+            <strong style="margin-left: 5px;">已编号&nbsp;&nbsp;&nbsp;<span class="badge" style="background-color: aquamarine;" id="span-count1">0</span></strong>
+            <strong style="margin-left: 30px;">正在检验&nbsp;&nbsp;&nbsp;<span class="badge" style="background-color: greenyellow;" id="span-count2">0</span></strong>
+            <strong style="margin-left: 30px;">待审核&nbsp;&nbsp;&nbsp;<span class="badge" style="background-color: blueviolet;" id="span-count3">0</span></strong>
+        </small>
+    </h4>
+</div>
+
+<div class="wrapper" style="margin-top:1px;">
+    <div style="width: 99%;margin-top: 5px;margin-left: 5px;" class="row">
+        <div class="col-xm-12 col-sm-7 col-md-7 col-lg-6">
+            <div class="input-group" style="float: left;width: 50%;">
+                <span class="input-group-addon" style="height: 18px;font-size: 12px;">编号日期</span>
+                <input id="testDate" name="testDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({ onpicked:handleDateChange })" autocomplete="off" style="width: 50%;height: 20px;font-size: 15px;font-weight: bold;" />
+                <a id="btn-search" class="btn btn-primary" style="margin-left: 5px;font-size: 12px;"> <i class="fa fa-search" style="margin-left: 2px;">查询</i></a>
+            </div>
+            <div id="status_horizon" class="btn-group" style="float: left;width: 50%;">
+                <a class="btn btn-default active" data-value="">全部</a>
+                <a class="btn btn-default" data-value="0">已编号</a>
+                <a class="btn btn-default" data-value="1">上机</a>
+                <a class="btn btn-default" data-value="2">检验完成</a>
+                <a class="btn btn-default" data-value="3">已审核</a>
+            </div>
+        </div>
+        <div class="col-xm-12 col-sm-5 col-md-5 col-lg-6">
+            <a class="btn btn-default" style="margin-left: 5px;font-size: 12px;" id="btn-assign"> <i class="fa fa-plus-square" style="margin-left: 2px;">编号</i></a>
+            <a class="btn btn-primary" style="margin-left: 5px;font-size: 12px;"> <i class="fa fa-play-circle" style="margin-left: 2px;">上机</i></a>
+            <a class="btn btn-warning" style="margin-left: 5px;font-size: 12px;" id="btn-audit"> <i class="fa fa-pencil" style="margin-left: 2px;">审核</i></a>
+            <a class="btn btn-danger" style="margin-left: 5px;font-size: 12px;"> <i class="fa fa-times-circle" style="margin-left: 2px;">删除</i></a>
+            <a class="btn btn-info" style="margin-left: 5px;font-size: 12px;"> <i class="fa fa-print" style="margin-left: 2px;">打印</i></a>
+        </div>
+    </div>
+    <div style="float: left;width: 24.9%;">
+        <div class="panel panel-info" style="margin: 5px 5px;">
+            <div class="panel-heading">
+                <h6 class="panel-title" style="font-size: 15px;">
+                    样本列表
+                </h6>
+            </div>
+            <div class="panel-body" style="padding: 3px;">
+                <div class="list-group" id="sample-list" style="overflow-y: auto;">
+                </div>
+            </div>
+            @*<div class="panel-footer" style="padding: 3px;">
+                    <p style="font-size: 12px;margin: 2px;">
+                        共计：0项
+                    </p>
+                </div>*@
+        </div>
+    </div>
+    <div style="float: right;width: 75%;">
+        <div class="operate1">
+            <ul class="nav nav-pills">
+                <li class="first">报告明细操作项</li>
+                <li><a id="NF-additem" authorize="yes" onclick="btn_additem()"><i class="fa fa-plus"></i>添加</a></li>
+                <li><a id="NF-deleteitem" authorize="yes" onclick="btn_deleteitem()"><i class="fa fa-trash-o"></i>删除</a></li>
+                <li><a id="NF-setdefault" authorize="yes" onclick="btn_setdefault()"><i class="fa fa-file-text"></i>默认值</a></li>
+                <li class="split"></li>
+                <li><a id="NF-saveitem" authorize="yes" onclick="btn_saveitem()"><i class="fa fa-save"></i>保存</a></li>
+                <li class="split"></li>
+                <li><a id="NF-reportcritical" authorize="yes" onclick="btn_critical()"><i class="fa fa-star" style="color: red;"></i>危急值</a></li>
+            </ul>
+        </div>
+        <div class="gridPanel" style="margin-top: 40px;width: 99%;">
+            <table id="gridList"></table>
+            <div id="gridPager"></div>
+        </div>
+    </div>
+</div>

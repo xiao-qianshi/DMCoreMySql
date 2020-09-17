@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<script src="~/Content/js/qrcode/jquery.qrcode.js"></script>
+<script src="~/Content/js/qrcode/qrcode.js"></script>
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+<link media="print" href="~/Content/js/jqprint/qrcode.css" rel="stylesheet" />
+
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        $('#qrcodeTable').qrcode({
+            render: "canvas",
+            text: keyValue,
+            width: "200",
+            height: "200"
+        });
+    });
+
+
+    function btn_print() {
+        //$("#qrcodeTable").jqprint();
+        var img = document.getElementById("image"); /// get image element
+        var canvas = document.getElementsByTagName("canvas")[0];  /// get canvas element
+        img.src = canvas.toDataURL();                     /// update image
+        //$("#image").jqprint({
+        //    debug: false,
+        //    importCSS: true,
+        //    printContainer: true,
+        //    operaSupport: false
+        //});
+        $("#image").attr("style", "display:block;");//显示div
+        $("#image").jqprint();
+        $("#image").attr("style", "display:none;");//隐藏div
+    }
+</script>
+<form id="form1">
+    <div style="position: absolute; top: 22px; right: 8px;">
+        <a class="btn btn-default " onclick="btn_print()"><i class="fa fa-print" style="margin-right: 5px; font-size: 13px;"></i>直接打印</a>
+    </div>
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <div class="mail-box">
+            <div class="mail-body">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top:25px;">二维码图像</th>
+                        <td class="formValue" style="padding-top:20px;">
+                            <div id="qrcodeTable"></div>
+                           @* <div style="color: #aaaaaa;margin-top:10px;">使用微信扫一扫</div>*@
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <img id="image" src="" />
+</form>

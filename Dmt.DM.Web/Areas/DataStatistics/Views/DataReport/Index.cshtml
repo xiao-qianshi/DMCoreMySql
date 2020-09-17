@@ -1,0 +1,1350 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+<script src="~/Content/js/datepicker/WdatePicker.js"></script>
+<script>
+    var types = [
+        { id: "1", text: "患者基本信息" },
+        { id: "2", text: "原发病诊断" },
+        { id: "3", text: "病理诊断" },
+        { id: "4", text: "并发症诊断" },
+        { id: "5", text: "传染病诊断" },
+        { id: "6", text: "肿瘤诊断" },
+        { id: "7", text: "过敏诊断" },
+        { id: "8", text: "转归情况" },
+        { id: "9", text: "血管通路" },
+        { id: "10", text: "透析处方" },
+        { id: "11", text: "血压测量" },
+        { id: "12", text: "透析充分性" },
+        { id: "13", text: "抗凝剂" },
+        { id: "14", text: "干体重" },
+        { id: "15", text: "合用其它透析模式" },
+        { id: "16", text: "实验室检查" },
+        { id: "17", text: "辅助检查" },
+        { id: "18", text: "患者周透析频率" },
+        { id: "19", text: "透析时间例次" },
+        { id: "20", text: "透析时间例数" },
+        { id: "21", text: "促红素" },
+        { id: "22", text: "铁剂" },
+        { id: "23", text: "抗高血压药" },
+        { id: "24", text: "活性维生素D" },
+        { id: "25", text: "钙剂" },
+        { id: "26", text: "降磷药物" },
+        { id: "27", text: "其它药物治疗" }
+    ]
+    var list1 = [];
+    var list2 = [];
+    var list3 = [];
+    var list4 = []; 
+    var list5 = [];
+    var list6 = [];
+    var list7 = [];
+    var list8 = [];
+    var list9 = [];
+    var list10 = [];
+    var list11 = [];
+    var list12 = [];
+    var list13 = [];
+    var list14 = [];
+    var list15 = [];
+    var list16 = [];
+    var list17 = [];
+    var list18 = [];
+    var list19 = [];
+    var list20 = [];
+    var list21 = [];
+    var list22 = [];
+    var list23 = [];
+    var list24 = [];
+    var list25 = [];
+    var list26 = [];
+    var list27 = [];
+
+    var dateEnd = new Date();
+    var dateStart = new Date(dateEnd.getTime() - 86400000 * 30);
+    $(function () {
+        $("#endDate").val(dateEnd.Format("yyyy-MM-dd"))
+        $("#startDate").val(dateStart.Format("yyyy-MM-dd"))
+        $("#selectType").bindSelect({
+            data: types,
+            search: true,
+            change: function (e) {
+                resetTable();
+                var $gridList = $("#gridList");
+                //console.log(e);
+                switch (e.id) {
+                    case "1":
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '透析中心名称', name: 'Field1', width: 150, align: 'left' },
+                                { label: '姓名', name: 'Field2', width: 50, align: 'left' },
+                                { label: '姓名拼音', name: 'Field3', width: 50, align: 'left' },
+                                { label: '性别', name: 'Field4', width: 35, align: 'left' },
+                                { label: '身份证号码', name: 'Field5', width: 125, align: 'left' },
+                                { label: '证件类型', name: 'Field6', width: 60, align: 'left' },
+                                { label: '证件编号', name: 'Field7', width: 125, align: 'left' },
+                                { label: '出生日期', name: 'Field8', width: 80, align: 'left' },
+                                { label: '地址', name: 'Field9', width: 200, align: 'left' },
+                                { label: '电话', name: 'Field10', width: 80, align: 'left' },
+                                { label: '手机号码', name: 'Field11', width: 80, align: 'left' },
+                                { label: '联系人', name: 'Field12', width: 80, align: 'left' },
+                                { label: '联系人电话', name: 'Field13', width: 80, align: 'left' },
+                                { label: '联系人手机', name: 'Field14', width: 80, align: 'left' },
+                                { label: '首透日期', name: 'Field15', width: 80, align: 'left' },
+                                { label: '病案号', name: 'Field16', width: 80, align: 'left' },
+                                { label: '门诊号', name: 'Field17', width: 80, align: 'left' },
+                                { label: '住院号', name: 'Field18', width: 80, align: 'left' },
+                                { label: '患者类型', name: 'Field19', width: 80, align: 'left' },
+                                { label: '调查日期', name: 'Field20', width: 80, align: 'left' },
+                                { label: '死亡日期', name: 'Field21', width: 80, align: 'left' },
+                                { label: '病历号', name: 'Field22', width: 80, align: 'left' },
+                                { label: '付费方式', name: 'Field23', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'Field2 asc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "2":
+                        $gridList.dataGrid({
+                            //url: "/PatientManage/BillingModel/GetGridJson",
+                            //postData: { dialysisType: "12", vascularAccess: "34" },
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证', name: 'Field2', width: 80, align: 'left' },
+                                { label: '诊断日期', name: 'Field3', width: 80, align: 'left' },
+                                { label: '原发病诊断分类', name: 'Field4', width: 80, align: 'left' },
+                                { label: '原发性肾小球疾病', name: 'Field5', width: 80, align: 'left' },
+                                { label: '其它原发性肾小球肾病', name: 'Field6', width: 80, align: 'left' },
+                                { label: '继发性肾小球疾病', name: 'Field7', width: 80, align: 'left' },
+                                { label: '其它继发性肾小球疾病说明', name: 'Field8', width: 80, align: 'left' },
+                                { label: '遗传性及先天性肾病', name: 'Field9', width: 80, align: 'left' },
+                                { label: '其它遗传性及先天性肾病', name: 'Field10', width: 80, align: 'left' },
+                                { label: '肾小管间质疾病', name: 'Field11', width: 80, align: 'left' },
+                                { label: '其他肾小管间质疾病', name: 'Field12', width: 80, align: 'left' },
+                                { label: '泌尿系感染和结石', name: 'Field13', width: 80, align: 'left' },
+                                { label: '其它泌尿系感染和结石', name: 'Field14', width: 80, align: 'left' },
+                                { label: '肾脏切除原因', name: 'Field15', width: 80, align: 'left' },
+                                { label: '其他肾脏切除原因', name: 'Field16', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'Field1 asc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "3":
+                        $gridList.dataGrid({
+                            //url: "/PatientManage/BillingModel/GetGridJson",
+                            //postData: { dialysisType: "12", vascularAccess: "34" },
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证', name: 'Field2', width: 80, align: 'left' },
+                                { label: '诊断日期', name: 'Field3', width: 80, align: 'left' },
+                                { label: '病理诊断分类', name: 'Field4', width: 80, align: 'left' },
+                                { label: '原发性肾小球疾病', name: 'Field5', width: 80, align: 'left' },
+                                { label: '其它原发性肾小球肾病', name: 'Field6', width: 80, align: 'left' },
+                                { label: '继发性肾小球疾病', name: 'Field7', width: 80, align: 'left' },
+                                { label: '其它继发性肾小球疾病说明', name: 'Field8', width: 80, align: 'left' },
+                                { label: '遗传性及先天性肾病', name: 'Field9', width: 80, align: 'left' },
+                                { label: '其它遗传性及先天性肾病', name: 'Field10', width: 80, align: 'left' },
+                                { label: '肾小管间质疾病', name: 'Field11', width: 80, align: 'left' },
+                                { label: '其他肾小管间质疾病', name: 'Field12', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "4":  						 
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证', name: 'Field2', width: 80, align: 'left' },
+                                { label: '检查日期', name: 'Field3', width: 80, align: 'left' },
+                                { label: '并发症分类', name: 'Field4', width: 80, align: 'left' },
+                                { label: '骨矿物质代谢紊乱', name: 'Field5', width: 80, align: 'left' },
+                                { label: '其它骨矿物质代谢紊乱', name: 'Field6', width: 80, align: 'left' },
+                                { label: '淀粉样变性', name: 'Field7', width: 80, align: 'left' },
+                                { label: '其它淀粉样变性', name: 'Field8', width: 80, align: 'left' },
+                                { label: '呼吸系统并发症', name: 'Field9', width: 80, align: 'left' },
+                                { label: '其它呼吸系统并发症', name: 'Field10', width: 80, align: 'left' },
+                                { label: '心血管', name: 'Field11', width: 80, align: 'left' },
+                                { label: '其它心血管并发症', name: 'Field12', width: 80, align: 'left' },
+                                { label: '神经系统', name: 'Field13', width: 80, align: 'left' },
+                                { label: '其它神经系统并发症', name: 'Field14', width: 80, align: 'left' },
+                                { label: '消化系统并发症', name: 'Field15', width: 80, align: 'left' },
+                                { label: '其它消化系统并发症', name: 'Field16', width: 80, align: 'left' },
+                                { label: '其它并发症', name: 'Field17', width: 80, align: 'left' },
+                                { label: '具体情况描述', name: 'Field18', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "5":
+                        //患者名字	身份证号	诊断日期	疾病分类	其它请说明
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者名字', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '诊断日期', name: 'Field3', width: 80, align: 'left' },
+                                { label: '疾病分类', name: 'Field4', width: 80, align: 'left' },
+                                { label: '其它请说明', name: 'Field5', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "6":
+                        //患者姓名	身份证号	诊断日期	肿瘤诊断分类	消化系统诊断	呼吸系统诊断	血液系统诊断	泌尿系统诊断	神经系统诊断
+                        //骨骼肌肉系统诊断	其它诊断
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '诊断日期', name: 'Field3', width: 80, align: 'left' },
+                                { label: '肿瘤诊断分类', name: 'Field4', width: 80, align: 'left' },
+                                { label: '消化系统诊断', name: 'Field5', width: 80, align: 'left' },
+                                { label: '呼吸系统诊断', name: 'Field6', width: 80, align: 'left' },
+                                { label: '血液系统诊断', name: 'Field7', width: 80, align: 'left' },
+                                { label: '泌尿系统诊断', name: 'Field8', width: 80, align: 'left' },
+                                { label: '神经系统诊断', name: 'Field9', width: 80, align: 'left' },
+                                { label: '骨骼肌肉系统诊断', name: 'Field10', width: 80, align: 'left' },
+                                { label: '其它诊断', name: 'Field11', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "7":
+                        //患者姓名	身份证号	诊断日期	过敏反应分类	其他过敏反应	透析器材过敏	透析膜 	其它透析膜说明 	
+                        //请填写具体透析器型号	消毒剂	其它消毒剂说明 	药物过敏 	抗生素	静脉铁剂	蔗糖铁	右旋糖苷铁	肝素	其它药物过敏说明 
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '诊断日期', name: 'Field3', width: 80, align: 'left' },
+                                { label: '过敏反应分类', name: 'Field4', width: 80, align: 'left' },
+                                { label: '其他过敏反应', name: 'Field5', width: 80, align: 'left' },
+                                { label: '透析器材过敏', name: 'Field6', width: 80, align: 'left' },
+                                { label: '透析膜', name: 'Field7', width: 80, align: 'left' },
+                                { label: '其它透析膜说明', name: 'Field8', width: 80, align: 'left' },
+                                { label: '请填写具体透析器型号', name: 'Field9', width: 80, align: 'left' },
+                                { label: '消毒剂', name: 'Field10', width: 80, align: 'left' },
+                                { label: '其它消毒剂说明', name: 'Field11', width: 80, align: 'left' },
+                                { label: '药物过敏', name: 'Field12', width: 80, align: 'left' },
+                                { label: '抗生素', name: 'Field13', width: 80, align: 'left' },
+                                { label: '静脉铁剂', name: 'Field14', width: 80, align: 'left' },
+                                { label: '蔗糖铁', name: 'Field15', width: 80, align: 'left' },
+                                { label: '右旋糖苷铁', name: 'Field16', width: 80, align: 'left' },
+                                { label: '肝素', name: 'Field17', width: 80, align: 'left' },
+                                { label: '其它药物过敏说明', name: 'Field18', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "8":
+                        //患者姓名	身份证号	日期	转归情况	退出情况	其它退出情况说明	转出地点	转出原因	其它请说明	死亡原因
+                        //心血管事件	其它心血管事件	脑血管事件	其它脑血管事件	感染	其它感染	其它死亡原因请说明
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '日期', name: 'Field3', width: 80, align: 'left' },
+                                { label: '转归情况', name: 'Field4', width: 80, align: 'left' },
+                                { label: '退出情况', name: 'Field5', width: 80, align: 'left' },
+                                { label: '其它退出情况说明', name: 'Field6', width: 80, align: 'left' },
+                                { label: '转出地点', name: 'Field7', width: 80, align: 'left' },
+                                { label: '转出原因', name: 'Field8', width: 80, align: 'left' },
+                                { label: '其它请说明', name: 'Field9', width: 80, align: 'left' },
+                                { label: '死亡原因', name: 'Field10', width: 80, align: 'left' },
+                                { label: '心血管事件', name: 'Field11', width: 80, align: 'left' },
+                                { label: '其它心血管事件', name: 'Field12', width: 80, align: 'left' },
+                                { label: '脑血管事件', name: 'Field13', width: 80, align: 'left' },
+                                { label: '其它脑血管事件', name: 'Field14', width: 80, align: 'left' },
+                                { label: '感染', name: 'Field15', width: 80, align: 'left' },
+                                { label: '其它感染', name: 'Field16', width: 80, align: 'left' },
+                                { label: '其它死亡原因请说明', name: 'Field17', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "9":
+                        //患者姓名	身份证	使用时期	血管通路类型	血管通路位置(左 - 右)	血管通路位置	中心静脉置管方法	
+                        //血管通路位置	改变原因	其它改变原因	其它血管通路类型
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证', name: 'Field2', width: 80, align: 'left' },
+                                { label: '使用时期', name: 'Field3', width: 80, align: 'left' },
+                                { label: '血管通路类型', name: 'Field4', width: 80, align: 'left' },
+                                { label: '血管通路位置(左、右)', name: 'Field5', width: 80, align: 'left' },
+                                { label: '血管通路位置', name: 'Field6', width: 80, align: 'left' },
+                                { label: '中心静脉置管方法', name: 'Field7', width: 80, align: 'left' },
+                                { label: '血管通路位置', name: 'Field8', width: 80, align: 'left' },
+                                { label: '改变原因', name: 'Field9', width: 80, align: 'left' },
+                                { label: '其它改变原因', name: 'Field10', width: 80, align: 'left' },
+                                { label: '其它血管通路类型', name: 'Field11', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "10":
+                        //患者姓名	身份证	处方日期	HD次数	HD治疗时间	HDF次数	其它HDF次数说明	HDF治疗时间	HP次数   	其它HP次数说明	HP治疗时间
+                        //透析浓缩液	透析浓缩A液	透析液钾离子浓度	其他钾离子浓度值	透析液钙离子浓度	其他钙离子浓度值	含糖透析液	
+                        //氨基酸透析液	透析浓缩B液	类型	通量	使用	透析膜	其它请说明	膜面积
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证', name: 'Field2', width: 80, align: 'left' },
+                                { label: '处方日期', name: 'Field3', width: 80, align: 'left' },
+                                { label: 'HD次数', name: 'Field4', width: 80, align: 'left' },
+                                { label: 'HD治疗时间', name: 'Field5', width: 80, align: 'left' },
+                                { label: 'HDF次数', name: 'Field6', width: 80, align: 'left' },
+                                { label: '其它HDF次数说明', name: 'Field7', width: 80, align: 'left' },
+                                { label: 'HDF治疗时间', name: 'Field8', width: 80, align: 'left' },
+                                { label: 'HP次数', name: 'Field9', width: 80, align: 'left' },
+                                { label: '其它HP次数说明', name: 'Field10', width: 80, align: 'left' },
+                                { label: 'HP治疗时间', name: 'Field11', width: 80, align: 'left' },
+                                { label: '透析浓缩液', name: 'Field12', width: 80, align: 'left' },
+                                { label: '透析浓缩A液', name: 'Field13', width: 80, align: 'left' },
+                                { label: '透析液钾离子浓度', name: 'Field14', width: 80, align: 'left' },
+                                { label: '其他钾离子浓度值', name: 'Field15', width: 80, align: 'left' },
+                                { label: '透析液钙离子浓度', name: 'Field16', width: 80, align: 'left' },
+                                { label: '其他钙离子浓度值', name: 'Field17', width: 80, align: 'left' },
+                                { label: '含糖透析液', name: 'Field18', width: 80, align: 'left' },
+                                { label: '氨基酸透析液', name: 'Field19', width: 80, align: 'left' },
+                                { label: '透析浓缩B液', name: 'Field20', width: 80, align: 'left' },
+                                { label: '类型', name: 'Field21', width: 80, align: 'left' },
+                                { label: '通量', name: 'Field22', width: 80, align: 'left' },
+                                { label: '使用', name: 'Field23', width: 80, align: 'left' },
+                                { label: '透析膜', name: 'Field24', width: 80, align: 'left' },
+                                { label: '其它请说明', name: 'Field25', width: 80, align: 'left' },
+                                { label: '膜面积', name: 'Field26', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "11":
+                        //患者姓名	身份证号	检查日期	测量部位	透析前收缩压	透析前舒张压	透析后收缩压 	透析后舒张压
+                        //非透析收缩压 	非透析舒张压
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '检查日期', name: 'Field3', width: 80, align: 'left' },
+                                { label: '测量部位', name: 'Field4', width: 80, align: 'left' },
+                                { label: '透析前收缩压', name: 'Field5', width: 80, align: 'left' },
+                                { label: '透析前舒张压', name: 'Field6', width: 80, align: 'left' },
+                                { label: '透析后收缩压', name: 'Field7', width: 80, align: 'left' },
+                                { label: '透析后舒张压', name: 'Field8', width: 80, align: 'left' },
+                                { label: '非透析收缩压', name: 'Field9', width: 80, align: 'left' },
+                                { label: '非透析舒张压', name: 'Field10', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "12":
+                        //患者姓名	身份证号	检查日期	身高（m）	体重（kg）	BMI	体表面积	透前尿素（mmol/L）
+                        //透后尿素（mmol / L）	透析时间（h）	超滤量（L）	URR	spKt / V
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证号', name: 'Field2', width: 120, align: 'left' },
+                                { label: '检查日期', name: 'Field3', width: 80, align: 'left' },
+                                { label: '身高（m）', name: 'Field4', width: 80, align: 'left' },
+                                { label: '体重（kg）', name: 'Field5', width: 80, align: 'left' },
+                                { label: 'BMI', name: 'Field6', width: 80, align: 'left' },
+                                { label: '体表面积', name: 'Field7', width: 80, align: 'left' },
+                                { label: '透前尿素（mmol/L）', name: 'Field8', width: 110, align: 'left' },
+                                { label: '透后尿素（mmol/L）', name: 'Field9', width: 110, align: 'left' },
+                                { label: '透析时间（h）', name: 'Field10', width: 80, align: 'left' },
+                                { label: '超滤量（L）', name: 'Field11', width: 80, align: 'left' },
+                                { label: 'URR', name: 'Field12', width: 80, align: 'left' },
+                                { label: 'spKt/V', name: 'Field13', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "13":
+                        //患者姓名	患者身份证号	是否使用	日期	抗凝剂	肝素首剂量	肝素追加剂量	肝素总剂量	低分子肝素	低分子肝素钠	
+                        //其它低分子肝素钠	低分子肝素钙	其它低分子肝素钙	低分子肝素首剂量	低分子肝素追加剂量	低分子肝素追加时间	
+                        //低分子肝素总剂量	其它抗凝剂	首剂量	追加剂量	总剂量
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '患者身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '是否使用', name: 'Field3', width: 80, align: 'left' },
+                                { label: '日期', name: 'Field4', width: 80, align: 'left' },
+                                { label: '抗凝剂', name: 'Field5', width: 80, align: 'left' },
+                                { label: '肝素首剂量', name: 'Field6', width: 80, align: 'left' },
+                                { label: '肝素追加剂量', name: 'Field7', width: 80, align: 'left' },
+                                { label: '肝素总剂量', name: 'Field8', width: 80, align: 'left' },
+                                { label: '低分子肝素', name: 'Field9', width: 80, align: 'left' },
+                                { label: '低分子肝素钠', name: 'Field10', width: 80, align: 'left' },
+                                { label: '其它低分子肝素钠', name: 'Field11', width: 80, align: 'left' },
+                                { label: '低分子肝素钙', name: 'Field12', width: 80, align: 'left' },
+                                { label: '其它低分子肝素钙', name: 'Field13', width: 80, align: 'left' },
+                                { label: '低分子肝素首剂量', name: 'Field14', width: 80, align: 'left' },
+                                { label: '低分子肝素追加剂量', name: 'Field15', width: 80, align: 'left' },
+                                { label: '低分子肝素追加时间', name: 'Field16', width: 80, align: 'left' },
+                                { label: '低分子肝素总剂量', name: 'Field17', width: 80, align: 'left' },
+                                { label: '其它抗凝剂', name: 'Field18', width: 80, align: 'left' },
+                                { label: '首剂量', name: 'Field19', width: 80, align: 'left' },
+                                { label: '追加剂量', name: 'Field20', width: 80, align: 'left' },
+                                { label: '总剂量', name: 'Field21', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "14":
+                        //患者姓名	身份证号	检查日期	情况	干体重	透前体重
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证号', name: 'Field2', width: 120, align: 'left' },
+                                { label: '检查日期', name: 'Field3', width: 80, align: 'left' },
+                                { label: '情况', name: 'Field4', width: 100, align: 'left' },
+                                { label: '干体重', name: 'Field5', width: 80, align: 'left' },
+                                { label: '透前体重', name: 'Field6', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "15":
+                        //患者姓名	身份证号	处方日期	合用其它透析模式	其它
+
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '处方日期', name: 'Field3', width: 80, align: 'left' },
+                                { label: '合用其它透析模式', name: 'Field4', width: 80, align: 'left' },
+                                { label: '其它', name: 'Field5', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "16":
+                        //患者姓名	身份证号	血常规检查日期	白细胞	血红蛋白	红细胞压积	血小板	骨矿物质代谢检查日期	血总钙	血磷	iPTH
+                        //铁代谢检查日期	血清铁	总铁结合力	转铁饱和度	铁蛋白	生化检查检查日期	尿素（mg / dl）	尿素（mmol / L）	肌酐（mg / dl）
+                        //肌酐（μmol / L）	血总蛋白	血白蛋白	AST	ALT	总胆红素	甘油三酯	总胆固醇	低密度脂蛋白	高密度脂蛋白	血糖	
+                        //血钾	血钠	血氯	二氧化碳	C反应蛋白检查日期	C反应蛋白	β2微球蛋白	乙肝二对半检查日期	HBsAg	AntiHBs	HBeAg	
+                        //AntiHBe	AntiHBc	HBV检查日期	HBVDNA	HCV检查日期	AntiHCV	HCV - RNA检查日期	HCV - RNA	艾滋病检查日期	艾滋病	梅毒检查日期
+                        //梅毒	结核抗体	结核菌素试验
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 60, align: 'left' },
+                                { label: '身份证号', name: 'Field2', width: 120, align: 'left' },
+                                { label: '血常规检查日期', name: 'Field3', width: 100, align: 'left' },
+                                { label: '白细胞', name: 'Field4', width: 60, align: 'left' },
+                                { label: '血红蛋白', name: 'Field5', width: 60, align: 'left' },
+                                { label: '红细胞压积', name: 'Field6', width: 80, align: 'left' },
+                                { label: '血小板', name: 'Field7', width: 60, align: 'left' },
+                                { label: '骨矿物质代谢检查日期', name: 'Field8', width: 150, align: 'left' },
+                                { label: '血总钙', name: 'Field9', width: 60, align: 'left' },
+                                { label: '血磷', name: 'Field10', width: 60, align: 'left' },
+                                { label: 'iPTH', name: 'Field11', width: 60, align: 'left' },
+                                { label: '铁代谢检查日期', name: 'Field12', width: 100, align: 'left' },
+                                { label: '血清铁', name: 'Field13', width: 60, align: 'left' },
+                                { label: '总铁结合力', name: 'Field14', width: 80, align: 'left' },
+                                { label: '转铁饱和度', name: 'Field15', width: 80, align: 'left' },
+                                { label: '铁蛋白', name: 'Field16', width: 60, align: 'left' },
+                                { label: '生化检查日期', name: 'Field17', width: 80, align: 'left' },
+                                { label: '尿素（mg/dl）', name: 'Field18', width: 90, align: 'left' },
+                                { label: '尿素（mmol/L）', name: 'Field19', width: 90, align: 'left' },
+                                { label: '肌酐（mg/dl）', name: 'Field20', width: 90, align: 'left' },
+                                { label: '肌酐（μmol/L）', name: 'Field21', width: 90, align: 'left' },
+                                { label: '血总蛋白', name: 'Field22', width: 80, align: 'left' },
+                                { label: '血白蛋白', name: 'Field23', width: 80, align: 'left' },
+                                { label: 'AST', name: 'Field24', width: 60, align: 'left' },
+                                { label: 'ALT', name: 'Field25', width: 60, align: 'left' },
+                                { label: '总胆红素', name: 'Field26', width: 80, align: 'left' },
+                                { label: '甘油三酯', name: 'Field27', width: 80, align: 'left' },
+                                { label: '总胆固醇', name: 'Field28', width: 80, align: 'left' },
+                                { label: '低密度脂蛋白', name: 'Field29', width: 100, align: 'left' },
+                                { label: '高密度脂蛋白', name: 'Field30', width: 100, align: 'left' },
+                                { label: '血糖', name: 'Field31', width: 60, align: 'left' },
+                                { label: '血钾', name: 'Field32', width: 60, align: 'left' },
+                                { label: '血钠', name: 'Field33', width: 60, align: 'left' },
+                                { label: '血氯', name: 'Field34', width: 60, align: 'left' },
+                                { label: '二氧化碳', name: 'Field35', width: 80, align: 'left' },
+                                { label: 'C反应蛋白检查日期', name: 'Field36', width: 120, align: 'left' },
+                                { label: 'C反应蛋白', name: 'Field37', width: 80, align: 'left' },
+                                { label: 'β2微球蛋白', name: 'Field38', width: 80, align: 'left' },
+                                { label: '乙肝二对半检查日期', name: 'Field39', width: 150, align: 'left' },
+                                  //血钾	血钠	血氯	二氧化碳	C反应蛋白检查日期	C反应蛋白	β2微球蛋白	乙肝二对半检查日期	HBsAg	AntiHBs	HBeAg	
+                        //AntiHBe	AntiHBc	HBV检查日期	HBVDNA	HCV检查日期	AntiHCV	HCV - RNA检查日期	HCV - RNA	艾滋病检查日期	艾滋病	梅毒检查日期
+                        //梅毒	结核抗体	结核菌素试验
+                                { label: 'HBsAg', name: 'Field40', width: 60, align: 'left' },
+                                { label: 'AntiHBs', name: 'Field41', width: 60, align: 'left' },
+                                { label: 'HBeAg', name: 'Field42', width: 60, align: 'left' },
+                                { label: 'AntiHBe', name: 'Field43', width: 60, align: 'left' },
+                                { label: 'AntiHBc', name: 'Field44', width: 60, align: 'left' },
+                                { label: 'HBV检查日期', name: 'Field45', width: 100, align: 'left' },
+                                { label: 'HBVDNA', name: 'Field46', width: 80, align: 'left' },
+                                { label: 'HCV检查日期', name: 'Field47', width: 100, align: 'left' },
+                                { label: 'AntiHCV', name: 'Field48', width: 80, align: 'left' },
+                                { label: 'HCV-RNA检查日期', name: 'Field49', width: 120, align: 'left' },
+                                { label: 'HCV-RNA', name: 'Field50', width: 80, align: 'left' },
+                                { label: '艾滋病检查日期', name: 'Field50', width: 120, align: 'left' },
+                                { label: '艾滋病', name: 'Field51', width: 60, align: 'left' },
+                                { label: '梅毒检查日期', name: 'Field52', width: 120, align: 'left' },
+                                { label: '梅毒', name: 'Field53', width: 60, align: 'left' },
+                                { label: '结核抗体', name: 'Field54', width: 80, align: 'left' },
+                                { label: '结核菌素试验', name: 'Field55', width: 120, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "17":
+                        //患者姓名	身份证号	胸部X线检查日期	心胸比	胸部X线诊断	 胸部X线其它请说明	心电图检查日期 	心电图诊断 	心电图其它请说明	超声心动图检查日期	 左室内径 	 左室舒张末期内径
+                        //室间隔厚度	左室后壁厚度	射血分数	心包积液	左房扩大 	右房扩大 	左室扩大	右室扩大 	左室增厚 	室间隔增厚 	左室舒张功能减低	二尖瓣钙化	二尖瓣返流 	
+                        //三尖瓣返流 	主动脉返流 	颈动脉超声检查日期	内膜增厚	中膜增厚	斑块形成	狭窄	闭塞
+
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '胸部X线检查日期', name: 'Field3', width: 80, align: 'left' },
+                                { label: '心胸比', name: 'Field4', width: 80, align: 'left' },
+                                { label: '胸部X线诊断', name: 'Field5', width: 80, align: 'left' },
+                                { label: '胸部X线其它请说明', name: 'Field6', width: 80, align: 'left' },
+                                { label: '心电图检查日期', name: 'Field7', width: 80, align: 'left' },
+                                { label: '心电图诊断', name: 'Field8', width: 80, align: 'left' },
+                                { label: '心电图其它请说明', name: 'Field9', width: 80, align: 'left' },
+                                { label: '超声心动图检查日期', name: 'Field10', width: 80, align: 'left' },
+                                { label: '左室内径', name: 'Field11', width: 80, align: 'left' },
+                                { label: '左室舒张末期内径', name: 'Field12', width: 80, align: 'left' },
+                                { label: '室间隔厚度', name: 'Field13', width: 80, align: 'left' },
+                                { label: '左室后壁厚度', name: 'Field14', width: 80, align: 'left' },
+                                { label: '射血分数', name: 'Field15', width: 80, align: 'left' },
+                                { label: '心包积液', name: 'Field16', width: 80, align: 'left' },
+                                { label: '左房扩大', name: 'Field17', width: 80, align: 'left' },
+                                { label: '右房扩大', name: 'Field18', width: 80, align: 'left' },
+                                { label: '左室扩大', name: 'Field19', width: 80, align: 'left' },
+                                { label: '右室扩大', name: 'Field20', width: 80, align: 'left' },
+                                { label: '左室增厚', name: 'Field21', width: 80, align: 'left' },
+                                { label: '室间隔增厚', name: 'Field22', width: 80, align: 'left' },
+                                { label: '左室舒张功能减低', name: 'Field23', width: 80, align: 'left' },
+                                { label: '二尖瓣钙化', name: 'Field24', width: 80, align: 'left' },
+                                { label: '二尖瓣返流', name: 'Field25', width: 80, align: 'left' },
+                                { label: '三尖瓣返流', name: 'Field26', width: 80, align: 'left' },
+                                { label: '主动脉返流', name: 'Field27', width: 80, align: 'left' },
+                                { label: '颈动脉超声检查日期', name: 'Field28', width: 80, align: 'left' },
+                                { label: '内膜增厚', name: 'Field29', width: 80, align: 'left' },
+                                { label: '中膜增厚', name: 'Field30', width: 80, align: 'left' },
+                                { label: '斑块形成', name: 'Field31', width: 80, align: 'left' },
+                                { label: '狭窄', name: 'Field32', width: 80, align: 'left' },
+                                { label: '闭塞', name: 'Field33', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "18":
+                        //身份证号	年份	透析中心名称	周透析次数
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                //{ label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证号', name: 'Field1', width: 80, align: 'left' },
+                                { label: '年份', name: 'Field2', width: 80, align: 'left' },
+                                { label: '透析中心名称', name: 'Field3', width: 80, align: 'left' },
+                                { label: '周透析次数', name: 'Field4', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "19":
+                        //透析中心名称	身份证号	年份	例数	透析方法
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                //{ label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '透析中心名称', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '年份', name: 'Field3', width: 80, align: 'left' },
+                                { label: '例数', name: 'Field4', width: 80, align: 'left' },
+                                { label: '透析方法', name: 'Field5', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "20":
+                        //身份证号	例数	年份	透析中心名称
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                //{ label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '身份证号', name: 'Field1', width: 80, align: 'left' },
+                                { label: '例数', name: 'Field2', width: 80, align: 'left' },
+                                { label: '年份', name: 'Field3', width: 80, align: 'left' },
+                                { label: '透析中心名称', name: 'Field4', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "21":
+                        //患者姓名	患者身份证号	是否使用	处方日期	种类	国产	其它国产促红素说明	进口	其它进口促红素说明	给药方式	单次剂量（IU）	单次剂量（mg）	用药次数	单位时间
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '患者身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '是否使用', name: 'Field3', width: 80, align: 'left' },
+                                { label: '处方日期', name: 'Field4', width: 80, align: 'left' },
+                                { label: '种类', name: 'Field5', width: 80, align: 'left' },
+                                { label: '国产', name: 'Field6', width: 80, align: 'left' },
+                                { label: '其它国产促红素说明', name: 'Field7', width: 80, align: 'left' },
+                                { label: '进口', name: 'Field8', width: 80, align: 'left' },
+                                { label: '其它进口促红素说明', name: 'Field9', width: 80, align: 'left' },
+                                { label: '给药方式', name: 'Field10', width: 80, align: 'left' },
+                                { label: '单次剂量（IU）', name: 'Field11', width: 80, align: 'left' },
+                                { label: '单次剂量（mg）', name: 'Field12', width: 80, align: 'left' },
+                                { label: '用药次数', name: 'Field13', width: 80, align: 'left' },
+                                { label: '单位时间', name: 'Field14', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "22":
+                        //患者姓名	患者身份证号	是否使用	处方日期	种类	其它请说明	方式	剂量	单位时间	用药次数
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '患者身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '是否使用', name: 'Field3', width: 80, align: 'left' },
+                                { label: '处方日期', name: 'Field4', width: 80, align: 'left' },
+                                { label: '种类', name: 'Field5', width: 80, align: 'left' },
+                                { label: '其它请说明', name: 'Field6', width: 80, align: 'left' },
+                                { label: '方式', name: 'Field7', width: 80, align: 'left' },
+                                { label: '剂量', name: 'Field8', width: 80, align: 'left' },
+                                { label: '单位时间', name: 'Field9', width: 80, align: 'left' },
+                                { label: '用药次数', name: 'Field10', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "23":
+                        //患者姓名	患者身份证号	是否使用	处方日期	处方	通用名	其它请说明	剂量	服药次数	通用名	其它请说明	剂量	服药次数	通用名	其它请说明	剂量	服药次数	
+                        //通用名	其它请说明	剂量	服药次数	通用名	其它请说明	剂量	服药次数	通用名	其它请说明	剂量	服药次数	通用名	剂量	服药次数	通用名	其它请说明	剂量	
+                        //服药次数	通用名	剂量	服药次数
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '患者身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '是否使用', name: 'Field3', width: 80, align: 'left' },
+                                { label: '处方日期', name: 'Field4', width: 80, align: 'left' },
+                                { label: '处方', name: 'Field5', width: 80, align: 'left' },
+                                { label: '通用名', name: 'Field6', width: 80, align: 'left' },
+                                { label: '其它请说明', name: 'Field7', width: 80, align: 'left' },
+                                { label: '剂量', name: 'Field8', width: 80, align: 'left' },
+                                { label: '服药次数', name: 'Field9', width: 80, align: 'left' },
+                                { label: '通用名', name: 'Field10', width: 80, align: 'left' },
+                                { label: '其它请说明', name: 'Field11', width: 80, align: 'left' },
+                                { label: '剂量', name: 'Field12', width: 80, align: 'left' },
+                                { label: '服药次数', name: 'Field13', width: 80, align: 'left' },
+                                { label: '通用名', name: 'Field14', width: 80, align: 'left' },
+                                { label: '其它请说明', name: 'Field15', width: 80, align: 'left' },
+                                { label: '剂量', name: 'Field16', width: 80, align: 'left' },
+                                { label: '服药次数', name: 'Field17', width: 80, align: 'left' },
+                                { label: '通用名', name: 'Field18', width: 80, align: 'left' },
+                                { label: '其它请说明', name: 'Field19', width: 80, align: 'left' },
+                                { label: '剂量', name: 'Field20', width: 80, align: 'left' },
+                                { label: '服药次数', name: 'Field21', width: 80, align: 'left' },
+                                { label: '通用名', name: 'Field22', width: 80, align: 'left' },
+                                { label: '其它请说明', name: 'Field23', width: 80, align: 'left' },
+                                { label: '剂量', name: 'Field124', width: 80, align: 'left' },
+                                { label: '服药次数', name: 'Field25', width: 80, align: 'left' },
+                                { label: '通用名', name: 'Field26', width: 80, align: 'left' },
+                                { label: '其它请说明', name: 'Field27', width: 80, align: 'left' },
+                                { label: '剂量', name: 'Field28', width: 80, align: 'left' },
+                                { label: '服药次数', name: 'Field29', width: 80, align: 'left' },
+                                { label: '通用名', name: 'Field30', width: 80, align: 'left' },
+                                { label: '剂量', name: 'Field31', width: 80, align: 'left' },
+                                { label: '服药次数', name: 'Field32', width: 80, align: 'left' },
+                                { label: '通用名', name: 'Field33', width: 80, align: 'left' },
+                                { label: '其它请说明', name: 'Field34', width: 80, align: 'left' },
+                                { label: '剂量', name: 'Field35', width: 80, align: 'left' },
+                                { label: '服药次数', name: 'Field36', width: 80, align: 'left' },
+                                { label: '通用名', name: 'Field37', width: 80, align: 'left' },
+                                { label: '剂量', name: 'Field38', width: 80, align: 'left' },
+                                { label: '服药次数', name: 'Field39', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "24":
+                        //患者姓名	患者身份证号	是否使用	处方日期	服药方式	口服	其它请说明	静脉	其它请说明	剂量	单位时间	服药次数
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '患者身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '是否使用', name: 'Field3', width: 80, align: 'left' },
+                                { label: '处方日期', name: 'Field4', width: 80, align: 'left' },
+                                { label: '服药方式', name: 'Field5', width: 80, align: 'left' },
+                                { label: '口服', name: 'Field6', width: 80, align: 'left' },
+                                { label: '其它请说明', name: 'Field7', width: 80, align: 'left' },
+                                { label: '静脉', name: 'Field8', width: 80, align: 'left' },
+                                { label: '其它请说明', name: 'Field9', width: 80, align: 'left' },
+                                { label: '剂量', name: 'Field10', width: 80, align: 'left' },
+                                { label: '单位时间', name: 'Field11', width: 80, align: 'left' },
+                                { label: '服药次数', name: 'Field12', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "25":
+                        //患者姓名	患者身份证号	是否使用	处方日期	单次口服剂量	单位时间	服药次数
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '患者身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '是否使用', name: 'Field3', width: 80, align: 'left' },
+                                { label: '处方日期', name: 'Field4', width: 80, align: 'left' },
+                                { label: '单次口服剂量', name: 'Field5', width: 80, align: 'left' },
+                                { label: '单位时间', name: 'Field6', width: 80, align: 'left' },
+                                { label: '服药次数', name: 'Field7', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "26":
+                        //患者姓名	患者身份证号	是否使用	处方日期	种类	其它请说明	剂量	方式	单位时间	用药次数
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '患者身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '是否使用', name: 'Field3', width: 80, align: 'left' },
+                                { label: '处方日期', name: 'Field4', width: 80, align: 'left' },
+                                { label: '种类', name: 'Field5', width: 80, align: 'left' },
+                                { label: '其它请说明', name: 'Field6', width: 80, align: 'left' },
+                                { label: '剂量', name: 'Field7', width: 80, align: 'left' },
+                                { label: '方式', name: 'Field8', width: 80, align: 'left' },
+                                { label: '单位时间', name: 'Field9', width: 80, align: 'left' },
+                                { label: '用药次数', name: 'Field10', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                    case "27":
+                        //患者姓名	患者身份证号	是否使用	处方日期	营养支持药物分类	左旋肉碱名称	其它左旋肉碱名称	用药方式	单次给药剂量	服药频率	其它服药频率	用药方式	
+                        //单次给药剂量	服药频率	其它服药频率	用药方式	单次给药剂量	服药频率	其它服药频率	用药方式	单次给药剂量	服药频率	其它服药频率	α酮酸名称	其它	
+                        //用药方式	单次给药剂量	服药频率	其它服药频率	其他营养支持药物名称	用药方式	单次给药剂量	服药频率	其它服药频率	降脂药物分类	他汀类药物	其它他汀类药物
+                        //贝特类药物	其它贝特类药物	其它降脂药物	单次给药剂量	服药频率	其它服药频率	抗血小板药物分类	其它抗血小板药物	单次给药剂量	服药频率	其它服药频率
+                        //中成药名称	其它
+                        $gridList.dataGrid({
+                            datatype: 'local',
+                            height: $(window).height() - 128,
+                            colModel: [
+                                { label: '主键', name: 'id', hidden: true },
+                                { label: '患者姓名', name: 'Field1', width: 80, align: 'left' },
+                                { label: '患者身份证号', name: 'Field2', width: 80, align: 'left' },
+                                { label: '是否使用', name: 'Field3', width: 80, align: 'left' },
+                                { label: '处方日期', name: 'Field4', width: 80, align: 'left' },
+                                { label: '营养支持药物分类', name: 'Field5', width: 80, align: 'left' },
+                                { label: '左旋肉碱名称', name: 'Field6', width: 80, align: 'left' },
+                                { label: '其它左旋肉碱名称', name: 'Field7', width: 80, align: 'left' },
+                                { label: '用药方式', name: 'Field8', width: 80, align: 'left' },
+                                { label: '单次给药剂量', name: 'Field9', width: 80, align: 'left' },
+                                { label: '服药频率', name: 'Field10', width: 80, align: 'left' },
+                                { label: '其它服药频率', name: 'Field11', width: 80, align: 'left' },
+                                { label: '用药方式', name: 'Field12', width: 80, align: 'left' },
+                                { label: '单次给药剂量', name: 'Field13', width: 80, align: 'left' },
+                                { label: '服药频率', name: 'Field14', width: 80, align: 'left' },
+                                { label: '其它服药频率', name: 'Field15', width: 80, align: 'left' },
+                                { label: '用药方式', name: 'Field16', width: 80, align: 'left' },
+                                { label: '单次给药剂量', name: 'Field17', width: 80, align: 'left' },
+                                { label: '服药频率', name: 'Field18', width: 80, align: 'left' },
+                                { label: '其它服药频率', name: 'Field19', width: 80, align: 'left' },
+                                { label: '用药方式', name: 'Field20', width: 80, align: 'left' },
+                                { label: '单次给药剂量', name: 'Field21', width: 80, align: 'left' },
+                                { label: '服药频率', name: 'Field22', width: 80, align: 'left' },
+                                { label: '其它服药频率', name: 'Field23', width: 80, align: 'left' },
+                                { label: 'α酮酸名称', name: 'Field24', width: 80, align: 'left' },
+                                { label: '其它', name: 'Field25', width: 80, align: 'left' },
+                                { label: '用药方式', name: 'Field26', width: 80, align: 'left' },
+                                { label: '单次给药剂量', name: 'Field27', width: 80, align: 'left' },
+                                { label: '服药频率', name: 'Field28', width: 80, align: 'left' },
+                                { label: '其它服药频率', name: 'Field29', width: 80, align: 'left' },
+                                { label: '其他营养支持药物名称', name: 'Field30', width: 80, align: 'left' },
+                                { label: '用药方式', name: 'Field31', width: 80, align: 'left' },
+                                { label: '单次给药剂量', name: 'Field32', width: 80, align: 'left' },
+                                { label: '服药频率', name: 'Field33', width: 80, align: 'left' },
+                                { label: '其它服药频率', name: 'Field34', width: 80, align: 'left' },
+                                { label: '降脂药物分类', name: 'Field35', width: 80, align: 'left' },
+                                { label: '他汀类药物', name: 'Field36', width: 80, align: 'left' },
+                                { label: '其它他汀类药物', name: 'Field37', width: 80, align: 'left' },
+                                { label: '贝特类药物', name: 'Field38', width: 80, align: 'left' },
+                                { label: '其它贝特类药物', name: 'Field39', width: 80, align: 'left' },
+                                { label: '其它降脂药物', name: 'Field40', width: 80, align: 'left' },
+                                { label: '单次给药剂量', name: 'Field41', width: 80, align: 'left' },
+                                { label: '服药频率', name: 'Field42', width: 80, align: 'left' },
+                                { label: '其它服药频率', name: 'Field43', width: 80, align: 'left' },
+                                { label: '抗血小板药物分类', name: 'Field44', width: 80, align: 'left' },
+                                { label: '其它抗血小板药物', name: 'Field45', width: 80, align: 'left' },
+                                { label: '单次给药剂量', name: 'Field46', width: 80, align: 'left' },
+                                { label: '服药频率', name: 'Field47', width: 80, align: 'left' },
+                                { label: '其它服药频率', name: 'Field48', width: 80, align: 'left' },
+                                { label: '中成药名称', name: 'Field49', width: 80, align: 'left' },
+                                { label: '其它', name: 'Field50', width: 80, align: 'left' }
+                            ],
+                            pager: "#gridPager",
+                            sortname: 'F_CreatorTime desc',
+                            viewrecords: true
+                        });
+                        break;
+                }
+                var paras = {};
+                paras.startDate = dateStart;
+                paras.endDate = dateEnd;
+                paras.index = e.id;
+                //查询数据
+                $.ajax({
+                    url: "/DataStatistics/DataReport/GetDataReportJson",
+                    data: { keyValue: JSON.stringify(paras) },
+                    dataType: "json",
+                    async: false,
+                    success: function (value) {
+                        $gridList.setGridParam({ data: [] }).trigger('reloadGrid');
+                        var listtemp = [];
+                        $.each(value, function (index, item) {
+                            var child = item;
+                            child.id = index;
+                            listtemp.push(child);
+                        });
+                        switch (e.id) {
+                            case "1":
+                                list1 = listtemp;
+                                $gridList.setGridParam({ data: list1 }).trigger('reloadGrid');
+                                break;
+                            case "2":
+                                list2 = listtemp;
+                                $gridList.setGridParam({ data: list2 }).trigger('reloadGrid');
+                                break;
+                            case "3":
+                                list3 = listtemp;
+                                $gridList.setGridParam({ data: list3 }).trigger('reloadGrid');
+                                break;
+                            case "4":
+                                list4 = listtemp;
+                                $gridList.setGridParam({ data: list4 }).trigger('reloadGrid');
+                                break;
+                            case "5":
+                                list5 = listtemp;
+                                $gridList.setGridParam({ data: list5 }).trigger('reloadGrid');
+                                break;
+                            case "6":
+                                list6 = listtemp;
+                                $gridList.setGridParam({ data: list6 }).trigger('reloadGrid');
+                                break;
+                            case "7":
+                                list7 = listtemp;
+                                $gridList.setGridParam({ data: list7 }).trigger('reloadGrid');
+                                break;
+                            case "8":
+                                list8 = listtemp;
+                                $gridList.setGridParam({ data: list8 }).trigger('reloadGrid');
+                                break;
+                            case "9":
+                                list9 = listtemp;
+                                $gridList.setGridParam({ data: list9 }).trigger('reloadGrid');
+                                break;
+                            case "10":
+                                list10 = listtemp;
+                                $gridList.setGridParam({ data: list10 }).trigger('reloadGrid');
+                                break;
+                            case "11":
+                                list11 = listtemp;
+                                $gridList.setGridParam({ data: list11 }).trigger('reloadGrid');
+                                break;
+                            case "12":
+                                list12 = listtemp;
+                                $gridList.setGridParam({ data: list12 }).trigger('reloadGrid');
+                                break;
+                            case "13":
+                                list13 = listtemp;
+                                $gridList.setGridParam({ data: list13 }).trigger('reloadGrid');
+                                break;
+                            case "14":
+                                list14 = listtemp;
+                                $gridList.setGridParam({ data: list14 }).trigger('reloadGrid');
+                                break;
+                            case "15":
+                                list15 = listtemp;
+                                $gridList.setGridParam({ data: list15 }).trigger('reloadGrid');
+                                break;
+                            case "16":
+                                list16 = listtemp;
+                                $gridList.setGridParam({ data: list16 }).trigger('reloadGrid');
+                                break;
+                            case "17":
+                                list17 = listtemp;
+                                $gridList.setGridParam({ data: list17 }).trigger('reloadGrid');
+                                break;
+                            case "18":
+                                list18 = listtemp;
+                                $gridList.setGridParam({ data: list18 }).trigger('reloadGrid');
+                                break;
+                            case "19":
+                                list19 = listtemp;
+                                $gridList.setGridParam({ data: list19 }).trigger('reloadGrid');
+                                break;
+                            case "20":
+                                list20 = listtemp;
+                                $gridList.setGridParam({ data: list20 }).trigger('reloadGrid');
+                                break;
+                            case "21":
+                                list21 = listtemp;
+                                $gridList.setGridParam({ data: list21 }).trigger('reloadGrid');
+                                break;
+                            case "22":
+                                list22 = listtemp;
+                                $gridList.setGridParam({ data: list22 }).trigger('reloadGrid');
+                                break;
+                            case "23":
+                                list23 = listtemp;
+                                $gridList.setGridParam({ data: list23 }).trigger('reloadGrid');
+                                break;
+                            case "24":
+                                list24 = listtemp;
+                                $gridList.setGridParam({ data: list24 }).trigger('reloadGrid');
+                                break;
+                            case "25":
+                                list25 = listtemp;
+                                $gridList.setGridParam({ data: list25 }).trigger('reloadGrid');
+                                break;
+                            case "26":
+                                list26 = listtemp;
+                                $gridList.setGridParam({ data: list26 }).trigger('reloadGrid');
+                                break;
+                            case "27":
+                                list27 = listtemp;
+                                $gridList.setGridParam({ data: list27 }).trigger('reloadGrid');
+                                break;
+                        }
+                        //$gridList.setGridParam({ data: value}).trigger('reloadGrid');
+                    }
+                });
+            }
+        });
+        $("#selectType").trigger('change');
+    });
+
+    function btn_query() {
+        $("#selectType").trigger('change');
+    }
+    function startDateChange(e) {
+        dateStart = e.el.realValue; 
+    }
+    function endDateChange(e) {
+        dateEnd = e.el.realValue;
+    }
+
+    //重建表格
+    function resetTable() {
+        var $panel = $("#content");//$("div .gridPanel");    
+        $panel.html("");
+        $panel.html("<table id=\"gridList\"></table><div id = \"gridPager\" ></div>");
+    }
+
+    function btn_delete() {
+        var $target = $("#gridList");
+        var id = $target.jqGridRowValue().id;
+        if (!!id) {
+            var selectId = $("#selectType").val();
+            switch (selectId) {
+                case "1":
+                    list1 = $.grep(list1, function (ele, index) { return ele.id != id; });
+                    break;
+                case "2":
+                    list2 = $.grep(list2, function (ele, index) { return ele.id != id; });
+                    break;
+                case "3":
+                    list3 = $.grep(list3, function (ele, index) { return ele.id != id; });
+                    break;
+                case "4":
+                    list4 = $.grep(list4, function (ele, index) { return ele.id != id; });
+                    break;
+                case "5":
+                    list5 = $.grep(list5, function (ele, index) { return ele.id != id; });
+                    break;
+                case "6":
+                    list6 = $.grep(list6, function (ele, index) { return ele.id != id; });
+                    break;
+                case "7":
+                    list7 = $.grep(list7, function (ele, index) { return ele.id != id; });
+                    break;
+                case "8":
+                    list8 = $.grep(list8, function (ele, index) { return ele.id != id; });
+                    break;
+                case "9":
+                    list9 = $.grep(list9, function (ele, index) { return ele.id != id; });
+                    break;
+                case "10":
+                    list10 = $.grep(list10, function (ele, index) { return ele.id != id; });
+                    break;
+                case "11":
+                    list11 = $.grep(list11, function (ele, index) { return ele.id != id; });
+                    break;
+                case "12":
+                    list12 = $.grep(list12, function (ele, index) { return ele.id != id; });
+                    break;
+                case "13":
+                    list13 = $.grep(list13, function (ele, index) { return ele.id != id; });
+                    break;
+                case "14":
+                    list14 = $.grep(list14, function (ele, index) { return ele.id != id; });
+                    break;
+                case "15":
+                    list15 = $.grep(list15, function (ele, index) { return ele.id != id; });
+                    break;
+                case "16":
+                    list16 = $.grep(list16, function (ele, index) { return ele.id != id; });
+                    break;
+                case "17":
+                    list17 = $.grep(list17, function (ele, index) { return ele.id != id; });
+                    break;
+                case "18":
+                    list18 = $.grep(list18, function (ele, index) { return ele.id != id; });
+                    break;
+                case "19":
+                    list19 = $.grep(list19, function (ele, index) { return ele.id != id; });
+                    break;
+                case "20":
+                    list20 = $.grep(list20, function (ele, index) { return ele.id != id; });
+                    break;
+                case "21":
+                    list21 = $.grep(list21, function (ele, index) { return ele.id != id; });
+                    break;
+                case "22":
+                    list22 = $.grep(list22, function (ele, index) { return ele.id != id; });
+                    break;
+                case "23":
+                    list23 = $.grep(list23, function (ele, index) { return ele.id != id; });
+                    break;
+                case "24":
+                    list24 = $.grep(list24, function (ele, index) { return ele.id != id; });
+                    break;
+                case "25":
+                    list25 = $.grep(list25, function (ele, index) { return ele.id != id; });
+                    break;
+                case "26":
+                    list26 = $.grep(list26, function (ele, index) { return ele.id != id; });
+                    break;
+                case "27":
+                    list27 = $.grep(list27, function (ele, index) { return ele.id != id; });
+                    break;
+            }
+            //var rowid = $("#igrid").getGridParam("selrow");
+            //$("#igrid").delRowData(rowid);
+            var rowid = $target.jqGrid("getGridParam", "selrow");
+            if (rowid >= 0) {
+                $target.delRowData(rowid);
+            }
+        }
+    }
+
+    function btn_save() {
+        var selectId = $("#selectType").val();
+        var submitData = [];
+        switch (selectId) {
+            case "1":
+                submitData = list1 ;
+                break;
+            case "2":
+                submitData = list2 ;
+                break;
+            case "3":
+                submitData = list3 ;
+                break;
+            case "4":
+                submitData = list4 ;
+                break;
+            case "5":
+                submitData = list5 ;
+                break;
+            case "6":
+                submitData = list6 ;
+                break;
+            case "7":
+                submitData = list7 ;
+                break;
+            case "8":
+                submitData = list8 ;
+                break;
+            case "9":
+                submitData = list9 ;
+                break;
+            case "10":
+                submitData = list10 ;
+                break;
+            case "11":
+                submitData = list11 ;
+                break;
+            case "12":
+                submitData = list12 ;
+                break;
+            case "13":
+                submitData = list13 ;
+                break;
+            case "14":
+                submitData = list14 ;
+                break;
+            case "15":
+                submitData = list15 ;
+                break;
+            case "16":
+                submitData = list16 ;
+                break;
+            case "17":
+                submitData = list17 ;
+                break;
+            case "18":
+                submitData = list18 ;
+                break;
+            case "19":
+                submitData = list19 ;
+                break;
+            case "20":
+                submitData = list20 ;
+                break;
+            case "21":
+                submitData = list21 ;
+                break;
+            case "22":
+                submitData = list22 ;
+                break;
+            case "23":
+                submitData = list23 ;
+                break;
+            case "24":
+                submitData = list24 ;
+                break;
+            case "25":
+                submitData = list25 ;
+                break;
+            case "26":
+                submitData = list26 ;
+                break;
+            case "27":
+                submitData = list27 ;
+                break;
+        }
+        $.submitForm({
+            url: "/DataStatistics/DataReport/SubmitDataSet",
+            param: {
+                keyValue: JSON.stringify({
+                    index: selectId,
+                    data: submitData
+                })
+            },
+            success: function () {
+                //$.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+
+    function btn_download() {
+        //var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        $.download("/DataStatistics/DataReport/Download", "keyValue=" + "jjj", 'post');
+    }
+
+    // 对Date的扩展，将 Date 转化为指定格式的String
+    // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+    // 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+    Date.prototype.Format = function (fmt) { //author: meizz
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+
+</script>
+<div class="topPanel">
+    <div class="toolbar">
+        <div class="btn-group">
+            <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
+        <div class="btn-group">
+            <a id="NF-query" class="btn btn-primary dropdown-text" onclick="btn_query()"><i class="fa fa-search"></i>查询</a>
+        </div>
+        <div class="btn-group">
+            <a id="NF-download" class="btn btn-primary dropdown-text" onclick="btn_download()"><i class="fa fa-cloud-download"></i>下载Excel</a>
+        </div>
+        <div class="operate">
+            <ul class="nav nav-pills">
+                <li class="first">已选中<span>1</span>项</li>
+                @*<li><a id="NF-add" authorize="yes" onclick="btn_details()"><i class="fa fa-search-plus"></i>添加</a></li>
+                <li class="split"></li>*@
+                <li><a id="NF-save" authorize="yes" onclick="btn_save()"><i class="fa fa-pencil-square-o"></i>保存至Ecxel</a></li>
+                <li class="split"></li>
+                <li><a id="NF-delete" authorize="yes" onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除</a></li>
+            </ul>
+            <a href="javascript:;" class="close"></a>
+        </div>
+        <script>$('.toolbar').authorizeButton()</script>
+    </div>
+    <div class="search">
+        <table>
+            <tr>
+                <td>
+                    <div class="input-group" style="width: 150px;">
+                        <input id="startDate" name="startDate" type="text" class="form-control input-wdatepicker"
+                               onfocus="WdatePicker({maxDate: '%y-%M-%d', onpicked:startDateChange })" 
+                        style="width: 150px;" />
+                    </div>
+                </td>
+                <td style="padding-left: 15px;">
+                    <div class="input-group" style="width: 150px;">
+                        <input id="endDate" name="endDate" type="text" class="form-control input-wdatepicker"
+                               onfocus="WdatePicker({maxDate: '%y-%M-%d', onpicked:endDateChange })" 
+                        style="width: 150px;" />
+                    </div>
+                </td>
+                <td style="padding-left: 15px;">
+                    <div class="input-group" style="width: 200px;">
+                        <select id="selectType" name="selectType" class="form-control" placeholder="选择类别"></select>
+                    </div>
+                </td>
+            </tr>
+        </table>
+       
+    </div>
+</div>
+<div class="gridPanel" id="content">
+    <table id="gridList"></table>
+    <div id="gridPager"></div>
+</div>
+
+

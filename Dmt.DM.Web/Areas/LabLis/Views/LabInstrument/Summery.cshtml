@@ -1,0 +1,425 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var currentInstrumentId = '';
+    var currentItemId = '';
+    var machineList = [];
+    $(function () {
+        initControl();
+        $.ajax({
+            url: "/LabLis/LabInstrument/GetListJson",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if ($.isArray(data)) {
+                    if (data.length == 0) {
+                        $.modalMsg('请先添加检验仪器！', 'warning');
+                        return false;
+                    }
+                    currentInstrumentId = data[0].F_Id;
+                    setHeader(data[0]);
+                    resetItemList();
+                    machineList = data;
+                } else {
+                    $.modalMsg('查询检验仪器出错！', 'warning');
+                    return false;
+                }
+            }
+        });
+    });
+    function initControl() {
+        $.ajax({
+            url: "/PatientManage/QualityItem/GetSelectJson",
+            dataType: "json",
+            async: false,
+            success: function (value) {
+                if ($.isArray(value)) {
+                    var tags = [];
+                    tags = value;
+                    tags.splice(0, 0, { Id: '', Name: '请选择项目' })
+                    $("#F_QualityItemId").bindSelect({
+                        data: tags,
+                        id: "Id",
+                        text: "Name"
+                    });
+                } 
+            }
+        });
+        
+        $("#item-list").height($(window).height() - 140);
+        $("#item-content").height($(window).height() - 75);
+        $("#F_QualityItemId").bindSelect();
+        $("#btn-choose").click(function () {
+            $.modalOpen({
+                id: "ChooseInstrument",
+                title: "选择设备",
+                url: "/LabLis/LabInstrument/ChooseInstrument",
+                width: "800px",
+                height: "600px",
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
+            });
+        });
+        $("#btn-additem").click(function () {
+            currentItemId = '';
+            var $form = $("#item-content");
+            $form.find('input[type="text"]').val('');
+            $form.find('input[type="number"]').val('');
+            $form.find('input[type="checkbox"]').prop('checked', false);
+            $form.find('select').val('').trigger('change');
+        });
+        $("#btn-saveitem").click(function () {
+            if (!!currentInstrumentId) {
+                //if (!$('#item-content').formValid()) {
+                //    return false;
+                //}
+                var itemCode = $("#F_Code").val();
+                var itemName = $("#F_Name").val();
+                if (itemCode == '' || itemName == '') {
+                    return false;
+                }
+                var params = $("#item-content").formSerialize();
+                params = $.extend({ F_MachineId: currentInstrumentId }, params);
+                $.submitForm({
+                    url: "/LabLis/LabInstrument/SubmitItemForm",
+                    param: {
+                        entity: params,
+                        keyValue: currentItemId
+                    },
+                    success: function (result) {
+                        var item = result.data;
+                        if (!!currentItemId) {
+                            //列表项删除此行
+                            $("#" + item.F_Id).parent().parent().remove();
+                        }
+                        //列表项新增一行
+                        $("#item-list").append('\
+                                <a class="list-group-item">\
+                                    '+ (item.F_IsQualityItem ? '<span class="badge" style="background-color: forestgreen;">QC</span>' : '') + '\
+                                    <h6 class="list-group-item-heading">\
+                                        <strong>'+ item.F_Code + '</strong>\
+                                        <i class="fa fa-trash fa-lg" style="float: right;margin-right: 20px;" id="'+ item.F_Id + '"></i>\
+                                    </h6>\
+                                    <p class="list-group-item-text">\
+                                        '+ item.F_Name + '\
+                                    </p>\
+                                </a>\
+                                ');
+                        currentItemId = item.F_Id;
+                        var trashDom = $("#" + item.F_Id);
+                        trashDom.on('click', function (e) {
+                            $.modalConfirm("注：您确定要【删除】该项吗？", function (r) {
+                                if (r) {
+                                    $.submitForm({
+                                        url: "/LabLis/LabInstrument/DeleteItem",
+                                        param: { keyValue: e.currentTarget.id },
+                                        success: function () {
+                                            $("#" + e.currentTarget.id).parent().parent().remove();
+                                            $("#btn-additem").trigger('click');
+                                        }
+                                    });
+                                }
+                            });
+                            event.stopPropagation();
+                        });
+                        $(trashDom.parent().parent()).on('click', function (e) {
+                            var find = $(this).find('i.fa-trash');
+                            if (!!find[0].id) {
+                                $.ajax({
+                                    url: '/LabLis/LabInstrument/GetSingleItemJson?keyValue=' + find[0].id,
+                                    dataType: 'json',
+                                    async: false,
+                                    success: function (result) {
+                                        if (!!result.F_Id) {
+                                            $("#item-content").formSerialize(result);
+                                            currentItemId = result.F_Id;
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                })
+            }
+        });
+        //刷新列表
+        $("#btn-refresh").click(function () {
+            if (!!currentInstrumentId) {
+                resetItemList();
+                $("#btn-additem").trigger('click');
+            }
+            event.stopPropagation();
+        })
+    }
+
+    function resetTitle(keyValue) {
+        if (!!keyValue) {
+            $.each(machineList, function (i, v) {
+                if (v.F_Id == keyValue) {
+                    setHeader(v);
+                    currentInstrumentId = v.F_Id;
+                    resetItemList();
+                }
+            });
+        }      
+    }
+
+    function resetItemList() {
+        if (!!currentInstrumentId) {
+            $.ajax({
+                url: '/LabLis/LabInstrument/GetItemJson?keyValue=' + currentInstrumentId,
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    if ($.isArray(data)) {
+                        var $target = $("#item-list");
+                        $target.empty();
+                        $target.html('');
+                        $.each(data, function (i, v) {
+                            $target.append('\
+                                <a class="list-group-item">\
+                                    '+ (v.F_IsQualityItem? '<span class="badge" style="background-color: forestgreen;">QC</span>': '')+'\
+                                    <h6 class="list-group-item-heading">\
+                                        <strong>'+ v.F_Code+'</strong>\
+                                        <i class="fa fa-trash fa-lg" style="float: right;margin-right: 20px;" id="'+v.F_Id+'"></i>\
+                                    </h6>\
+                                    <p class="list-group-item-text">\
+                                        '+ v.F_Name +'\
+                                    </p>\
+                                </a>\
+                                ');
+                        });
+                        $target.find('i.fa-trash').on('click', function (e) {
+                            $.modalConfirm("注：您确定要【删除】该项吗？", function (r) {
+                                if (r) {
+                                    $.submitForm({
+                                        url: "/LabLis/LabInstrument/DeleteItem",
+                                        param: { keyValue: e.currentTarget.id},
+                                        success: function () {
+                                            $("#" + e.currentTarget.id).parent().parent().remove();
+                                            $("#btn-additem").trigger('click');
+                                        }
+                                    });
+                                }
+                            });
+                            event.stopPropagation();
+                        });
+                        $target.find('a').on('click', function () {
+                            var find = $(this).find('i.fa-trash');
+                            if (!!find[0].id) {
+                                $.ajax({
+                                    url: '/LabLis/LabInstrument/GetSingleItemJson?keyValue=' + find[0].id ,
+                                    dataType: 'json',
+                                    async: false,
+                                    success: function (result) {
+                                        if (!!result.F_Id) {
+                                            $("#item-content").formSerialize(result);
+                                            currentItemId = result.F_Id;
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        $('div.panel-footer').find('p').html('共计：' + data.length + '项');
+                    }
+                }
+            });
+        }
+    }
+
+    function setHeader(machine) {
+        $("#h-instrumentCode").html(machine.F_Code);
+        $("#h-instrumentName").html(machine.F_Name);
+        if (machine.F_IsExternal) {
+            $("#h-isExternal").attr('style', 'display: inline;');
+        } else {
+            $("#h-isExternal").attr('style', 'display: none;');
+        }
+        if (machine.F_IsDuplex) {
+            $("#h-isDuplex").removeClass().addClass('fa').addClass('fa-arrows-h');
+        } else {
+            $("#h-isDuplex").removeClass().addClass('fa').addClass('fa-arrows-right');
+        }
+        $("#h-workStationIp").html(machine.F_WorkStationIp);
+    }
+
+</script>
+
+<div style="position: absolute; top: 1px; right: 10px;">
+    <a class="btn btn-default" id="btn-choose" style="font-size: 12px;margin-right: 15px;"><i class="fa fa-exchange fa-lg"></i>切换仪器</a>
+    <a class="btn btn-primary" id="btn-additem" style="font-size: 12px;margin-right: 15px;"><i class="fa fa-plus fa-lg"></i>新建项目</a>
+    <a class="btn btn-warning" id="btn-saveitem" style="font-size: 12px;margin-right: 15px;"><i class="fa fa-save fa-lg"></i>保存项目</a>
+</div>
+<div style="margin-top:-1px;width:80%;margin-left:30px;">
+    <h5>
+        已选仪器：
+        &nbsp;&nbsp;
+        <i id="h-instrumentCode" class="fa fa-television" style="font-size: 15px;"></i>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <strong id="h-instrumentName" style="font-size: 12px;"></strong>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span id="h-isExternal" class="badge" style="background: red;font-size:12px">外</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <i id="h-isDuplex" class="fa fa-arrows-h" style="font-size: 15px;color: blue;"></i>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <strong id="h-workStationIp" style="font-size:12px"></strong>
+    </h5>
+</div>
+
+<div class="wrapper" style="margin-top:10px;">
+    <div style="float: left;width: 24%;">
+        <div class="panel panel-info" style="margin: 5px 5px;">
+            <div class="panel-heading">
+                <h6 class="panel-title" style="font-size: 15px;">
+                    项目列表 <i class="fa fa-refresh fa-lg" id="btn-refresh" style="float: right;margin-right: 30px;"></i>
+                </h6>
+            </div>
+            <div class="panel-body" style="padding: 3px;">
+                <div class="list-group" id="item-list">
+                </div>
+            </div>
+            <div class="panel-footer" style="padding: 3px;">
+                <p style="font-size: 12px;margin: 2px;">
+                    共计：0项
+                </p>
+            </div>
+        </div>
+    </div>
+    <div style="float: right;width: 75%;">
+        <div id="item-content" style="padding: 5px 20px;overflow: auto;">
+            <h6>
+                <strong>基本信息</strong>
+            </h6>
+            <p>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">项目编码</th>
+                        <td class="formValue">
+                            <input id="F_Code" name="F_Code" type="text" class="form-control required" placeholder="请输入项目代码" autocomplete="off" />
+                        </td>
+                        <th class="formTitle">项目名称</th>
+                        <td class="formValue">
+                            <input id="F_Name" name="F_Name" type="text" class="form-control required" placeholder="请输入项目名称" autocomplete="off" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">中文名</th>
+                        <td class="formValue">
+                            <input id="F_CnName" name="F_CnName" type="text" class="form-control" placeholder="" autocomplete="off" />
+                        </td>
+                        <th class="formTitle">英文名</th>
+                        <td class="formValue">
+                            <input id="F_EnName" name="F_EnName" type="text" class="form-control" placeholder="" autocomplete="off" />
+                        </td>
+                    </tr>
+                </table>
+            </p>
+            <h6>
+                <strong>结果描述</strong>
+            </h6>
+            <p>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">结果类型</th>
+                        <td class="formValue">
+                            <div class="ckbox">
+                                <input id="F_ResultType" name="F_ResultType" type="checkbox"><label for="F_ResultType">是否定量</label>
+                            </div>
+                        </td>
+                        <th class="formTitle">显示顺序</th>
+                        <td class="formValue">
+                            <input id="F_Sorter" name="F_Sorter" type="number" class="form-control" value="0" autocomplete="off" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">结果单位</th>
+                        <td class="formValue">
+                            <input id="F_ValueUnit" name="F_ValueUnit" type="text" class="form-control" placeholder="eg: mmol/L" autocomplete="off" />
+                        </td>
+                        <th class="formTitle">保留小数位</th>
+                        <td class="formValue">
+                            <input id="F_KeepDecimal" name="F_KeepDecimal" type="number" class="form-control" placeholder="" value="2" autocomplete="off" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">默认值</th>
+                        <td class="formValue">
+                            <input id="F_DefaultValue" name="F_DefaultValue" type="number" class="form-control" placeholder="" autocomplete="off" />
+                        </td>
+                        <th class="formTitle">参考值文本</th>
+                        <td class="formValue">
+                            <input id="F_ReferenceTextValue" name="F_ReferenceTextValue" type="text" class="form-control" placeholder="eg: 阴性" autocomplete="off" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">参考值下限</th>
+                        <td class="formValue">
+                            <input id="F_ReferenceMinValue" name="F_ReferenceMinValue" type="number" class="form-control" placeholder="" autocomplete="off" />
+                        </td>
+                        <th class="formTitle">参考值上限</th>
+                        <td class="formValue">
+                            <input id="F_ReferenceMaxValue" name="F_ReferenceMaxValue" type="number" class="form-control" placeholder="" autocomplete="off" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">危机值下限</th>
+                        <td class="formValue">
+                            <input id="F_CriticalMinValue" name="F_CriticalMinValue" type="number" class="form-control" placeholder="" autocomplete="off" />
+                        </td>
+                        <th class="formTitle">危机值上限</th>
+                        <td class="formValue">
+                            <input id="F_CriticalMaxValue" name="F_CriticalMaxValue" type="number" class="form-control" placeholder="" autocomplete="off" />
+                        </td>
+                    </tr>
+                </table>
+            </p>
+            <h6>
+                <strong>关联质控</strong>
+            </h6>
+            <p>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">选项</th>
+                        <td class="formValue">
+                            <div class="ckbox">
+                                <input id="F_IsQualityItem" name="F_IsQualityItem" type="checkbox"><label for="F_IsQualityItem">是否质控指标</label>
+                            </div>
+                        </td>
+                        <th class="formTitle">质控项目</th>
+                        <td class="formValue">
+                            <select id="F_QualityItemId" name="F_QualityItemId" type="text" class="form-control"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">转换系数</th>
+                        <td class="formValue">
+                            <div class="input-group">
+                                <input id="F_ConvertCoefficient" name="F_ConvertCoefficient" type="number" class="form-control" value="100" autocomplete="off" />
+                                <span class="input-group-addon">%</span>
+                            </div>
+
+                        </td>
+                    </tr>
+                </table>
+            </p>
+            <h6>
+                <strong>数据解码</strong>
+            </h6>
+            <p>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">通道号</th>
+                        <td class="formValue">
+                            <input id="F_ChannelValue" name="F_ChannelValue" type="text" class="form-control" placeholder="有多项时，用英文逗号分隔" />
+                        </td>
+                    </tr>
+                </table>
+            </p>
+        </div>
+    </div>
+</div>
+
+

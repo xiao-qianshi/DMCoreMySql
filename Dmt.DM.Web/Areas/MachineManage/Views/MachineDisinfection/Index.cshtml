@@ -1,0 +1,652 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+<script src="~/Content/js/datepicker/WdatePicker.js"></script>
+<script src="~/Content/js/validate/jquery.validate.min.js"></script>
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+<link media="print" href="~/Content/js/jqprint/common-l.css" rel="stylesheet" />
+
+<script>
+    var selectID = "";
+    $(function () {
+        //添加分组选择项
+        $.ajax({
+            url: "/SystemManage/ItemsData/GetSelectJson?enCode=BedGroup",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                var ul = $("ul.dropdown-menu");
+                ul.append('<li><a data-value=\"\">全部</a></li>');
+                if (data.length > 0) {
+                    data.forEach(function(item) {
+                        ul.append('<li><a data-value=\"' + item.id + '\">' + item.text + '</a></li>');
+                    });
+                }
+            }
+        });
+        $("#txt_condition .dropdown-menu li").click(function () {
+            var text = $(this).find('a').html();
+            var value = $(this).find('a').attr('data-value');
+            $("#txt_condition .dropdown-text").html(text).attr('data-value', value)
+        });
+        var datenow = new Date().Format('yyyy-MM-dd');
+        $("#txt_StartDate").val(datenow);
+        $("#txt_EndDate").val(datenow);
+        $("#F_Option1Value").bindSelect();
+        $("#F_Option2Value").bindSelect();
+        $("#F_Option6Value").bindSelect({
+            multiple: true,
+            allowClear: true,
+            closeOnSelect: false,
+            placeholder: "可多选"
+        });
+        $("div .mail-body").css({ "height": $(window).height() - 60 });
+        gridList();
+    })
+
+    Date.prototype.Format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+    function gridList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            url: "/MachineManage/MachineDisinfection/GetGridJson",
+            height: $(window).height() - 135,
+            colModel: [
+                { label: '主键', name: 'F_Id', hidden: true },
+                { label: '分组', name: 'F_GroupName', width: 30, align: 'left' },
+                { label: '床号', name: 'F_DialylisBedNo', width: 30, align: 'center' },
+                {
+                    label: '状态', name: 'Status', width: 60, align: 'left',
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (rowObject.F_OperatePerson != null && rowObject.F_CheckPerson != null) {
+                            return '<span class=\"label label-success\">消毒结束</span>';
+                        } else if (rowObject.F_OperatePerson != null) {
+                            return '<span class=\"label label-default\">水路消毒</span>';
+                        } else if (rowObject.F_CheckPerson != null) {
+                            return '<span class=\"label label-primary\">表面消毒</span>'
+                        } else {
+                            return '<span class=\"label label-danger\">未消毒</span>'
+                        }
+                    }
+                },
+                {
+                    label: '透析日期', name: 'F_VisitDate', width: 70, align: "left",
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                },
+                { label: '班次', name: 'F_VisitNo', width: 30, align: 'left' },
+                { label: '患者姓名', name: 'F_PName', width: 60, align: 'left' },
+                //{
+                //    label: '消毒时间', name: 'F_StartTime', width: 100, align: "left",
+                //    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                //},
+                //{
+                //    label: '水路消毒', name: 'F_StartTime', width: 100, align: "left",
+                //    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                //},
+                {
+                    label: '水路消毒方式', name: 'F_DisinfectType', width: 100, align: 'left',
+                    formatter: function (cellvalue, options, rowObject) {
+                        var disinfectType = '';
+                        if (rowObject.F_Option1 === true) {
+                            disinfectType = disinfectType + '热化学消毒 ';
+                        }
+                        if (rowObject.F_Option2 === true) {
+                            disinfectType = disinfectType + '化学消毒 ';
+                        }
+                        if (rowObject.F_Option3 === true) {
+                            disinfectType = disinfectType + '热消毒 ';
+                        }
+                        return disinfectType;
+                    }
+                },
+                {
+                    label: '消毒时间', name: 'DisinfectTime', width: 75, align: "left",
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (!!rowObject.F_StartTime && !!rowObject.F_EndTime) {
+                            return rowObject.F_StartTime.substr(11, 5) + '-' + rowObject.F_EndTime.substr(11, 5);
+                        } else {
+                            return "";
+                        }
+                    }
+                },
+                { label: '技师签名', name: 'F_OperatePerson', width: 60, align: 'left' },
+                { label: '护士签名', name: 'F_CheckPerson', width: 60, align: 'left' },
+                { label: '机器名', name: 'F_MachineName', width: 120, align: 'left' },
+                { label: '编号', name: 'F_MachineNo', width: 80, align: 'left' }
+            ],
+            pager: "#gridPager",
+            sortname: 'F_VisitDate desc',
+            viewrecords: true,
+            postData: {
+                keyword:
+                    JSON.stringify({
+                        startDate: $("#txt_StartDate").val(),
+                        endDate: $("#txt_EndDate").val()
+                    })
+            },
+            onCellSelect: function (rowid, iCol, cellcontent, e) { //单击选择行
+                var data = $gridList.jqGrid('getRowData', rowid);
+                selectID = data.F_Id;
+                $("span.badge").html(data.F_GroupName + data.F_DialylisBedNo);
+                resetForm();
+            }
+        });
+
+        $("#btn_search").click(function () {
+            var startDate = $("#txt_StartDate").val();
+            var endDate = $("#txt_EndDate").val();
+            $gridList.jqGrid('setGridParam', {
+                postData: {
+                    keyword:
+                        JSON.stringify({
+                            condition: $("#txt_condition").find('.dropdown-text').attr('data-value'),
+                            startDate: startDate,
+                            endDate: endDate
+                        })
+                },
+            }).trigger('reloadGrid');
+        });
+        //技师消毒保存
+        $("#btn-save").click(function () {
+            if (!!selectID) {
+                $("#F_StartTime,#F_EndTime").addClass('required');
+                $("#F_WipeStartTime,#WipeF_EndTime").removeClass('required');
+                if (!$('#form1').formValid()) {
+                    return false;
+                }
+                $.submitForm({
+                    url: "/MachineManage/MachineDisinfection/SubmitForm",
+                    param: {
+                        entity: $("#form1").formSerialize(),
+                        keyValue: selectID
+                    },
+                    success: function () {
+                        //1、查找行号
+                        var $gridList = $("#gridList");
+                        var rownum = Number($gridList.jqGrid("getGridParam", "selrow"));
+                        var rowcount = $gridList.jqGrid("getGridParam", "reccount");
+                        console.log(rownum, rowcount);
+                        //更新当前行数据
+                        $.ajax({
+                            url: "/MachineManage/MachineDisinfection/GetFormTransferJson",
+                            data: { keyValue: selectID },
+                            dataType: "json",
+                            async: false,
+                            success: function (data) {
+                                var json = data;
+                                var disinfectType = '';
+                                if (json.F_Option1 === true) {
+                                    disinfectType = disinfectType + '热化学消毒 ';
+                                }
+                                if (json.F_Option2 === true) {
+                                    disinfectType = disinfectType + '化学消毒 ';
+                                }
+                                if (json.F_Option3 === true) {
+                                    disinfectType = disinfectType + '热消毒 ';
+                                }
+                                json.F_DisinfectType = disinfectType;
+                                if (!!json.F_StartTime && !!json.F_EndTime) {
+                                    json.DisinfectTime = json.F_StartTime.substr(11, 5) + '-' + json.F_EndTime.substr(11, 5);
+                                } else {
+                                    json.DisinfectTime = "";
+                                }
+                                var status = "";
+                                if (json.F_OperatePerson != null && json.F_CheckPerson != null) {
+                                    status = '<span class=\"label label-success\">消毒结束</span>';
+                                } else if (json.F_OperatePerson != null) {
+                                    status = '<span class=\"label label-default\">水路消毒</span>';
+                                } else if (json.F_CheckPerson != null) {
+                                    status = '<span class=\"label label-primary\">表面消毒</span>'
+                                } else {
+                                    status = '<span class=\"label label-danger\">未消毒</span>'
+                                }
+                                json.Status = status;
+                                $gridList.setRowData(rownum, json);
+                                //跳转至下一行
+                                if (rownum < rowcount) {
+                                    //$gridList.resetSelection(rownum + 1);
+                                    $gridList.jqGrid('setSelection', rownum + 1, false);
+                                    //console.log(Number($gridList.jqGrid("getGridParam", "selrow")));
+                                    var data = $gridList.jqGrid('getRowData', rownum + 1);
+                                    selectID = data.F_Id;
+                                    $("span.badge").html(data.F_GroupName + data.F_DialylisBedNo);
+                                    resetForm();
+                                }
+                            }
+                        });
+
+                    }
+                });
+            }
+        });
+        //护士消毒保存
+        $("#btn-nurse").click(function () {
+            if (!!selectID) {
+                $("#F_StartTime,#F_EndTime").removeClass('required');
+                $("#F_WipeStartTime,#WipeF_EndTime").addClass('required');
+                if (!$('#form1').formValid()) {
+                    return false;
+                }
+                $.submitForm({
+                    url: "/MachineManage/MachineDisinfection/SubmitFormWipe",
+                    param: {
+                        entity: $("#form1").formSerialize(),
+                        keyValue: selectID
+                    },
+                    success: function () {
+                        //1、查找行号
+                        var $gridList = $("#gridList");
+                        var rownum = Number($gridList.jqGrid("getGridParam", "selrow"));
+                        var rowcount = $gridList.jqGrid("getGridParam", "reccount");
+                        //console.log(rownum, rowcount);
+                        //更新当前行数据
+                        $.ajax({
+                            url: "/MachineManage/MachineDisinfection/GetFormTransferJson",
+                            data: { keyValue: selectID },
+                            dataType: "json",
+                            async: false,
+                            success: function (data) {
+                                var json = data;
+                                var disinfectType = '';
+                                if (json.F_Option1 === true) {
+                                    disinfectType = disinfectType + '热化学消毒 ';
+                                }
+                                if (json.F_Option2 === true) {
+                                    disinfectType = disinfectType + '化学消毒 ';
+                                }
+                                if (json.F_Option3 === true) {
+                                    disinfectType = disinfectType + '热消毒 ';
+                                }
+                                json.F_DisinfectType = disinfectType;
+                                if (!!json.F_StartTime && !!json.F_EndTime) {
+                                    json.DisinfectTime = json.F_StartTime.substr(11, 5) + '-' + json.F_EndTime.substr(11, 5);
+                                } else {
+                                    json.DisinfectTime = "";
+                                }
+                                var status = "";
+                                if (json.F_OperatePerson != null && json.F_CheckPerson != null) {
+                                    status = '<span class=\"label label-success\">消毒结束</span>';
+                                } else if (json.F_OperatePerson != null) {
+                                    status = '<span class=\"label label-default\">水路消毒</span>';
+                                } else if (json.F_CheckPerson != null) {
+                                    status = '<span class=\"label label-primary\">表面消毒</span>'
+                                } else {
+                                    status = '<span class=\"label label-danger\">未消毒</span>'
+                                }
+                                json.Status = status;
+                                $gridList.setRowData(rownum, json);
+                                //跳转至下一行
+                                if (rownum < rowcount) {
+                                    //$gridList.resetSelection(rownum + 1);
+                                    $gridList.jqGrid('setSelection', rownum + 1, false);
+                                    //console.log(Number($gridList.jqGrid("getGridParam", "selrow")));
+                                    var data = $gridList.jqGrid('getRowData', rownum + 1);
+                                    selectID = data.F_Id;
+                                    $("span.badge").html(data.F_GroupName + data.F_DialylisBedNo);
+                                    resetForm();
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    function resetForm() {
+        if (!!selectID) {
+            $.ajax({
+                url: "/MachineManage/MachineDisinfection/GetFormJson",
+                data: { keyValue: selectID },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                    //未消毒设置默认值
+                    if (data.F_StartTime === null || data.F_StartTime === '') {
+                        $("#F_Option1, #F_Option4, #F_Option5, #F_Option6").prop('checked', true);//热化学消毒
+                        $("#F_Option1Value").val('20%柠檬酸').trigger('change');
+                        $("#F_Option6Value").val('消毒湿巾').trigger('change');
+                    }
+                }
+            });
+        }
+    }
+
+    function startTimeChanged(e) {
+        if (e.el.name === 'F_StartTime') {
+            var startTime = $("#F_StartTime").val();
+            if (startTime === '' || startTime === null) {
+                return false;
+            } else {
+                //var temp1 = new Date(startTime);
+                //var temp2 = new Date(startTime).getTime();
+                //var temp3 = new Date(startTime).getTime() + 30 * 60 * 1000;
+                //var temp4 = new Date(new Date(startTime).getTime() + 30 * 60 * 1000);
+                ////var endTime = new Date(new Date(startTime).getTime() + 30 * 60 * 1000) ;
+                //console.log(temp1, temp2, temp3, temp4);
+                var endTime = new Date(new Date(startTime).getTime() + 30 * 60 * 1000).Format('yyyy-MM-dd HH:mm:ss');
+                if (endTime === '' || endTime === null) {
+                    return false;
+                } else {
+                    $("#F_EndTime").val(endTime);
+                }
+            }
+        } else if (e.el.name === 'F_WipeStartTime') {
+            var startTime = $("#F_WipeStartTime").val();
+            if (startTime === '' || startTime === null) {
+                return false;
+            } else {
+                //var temp1 = new Date(startTime);
+                //var temp2 = new Date(startTime).getTime();
+                //var temp3 = new Date(startTime).getTime() + 30 * 60 * 1000;
+                //var temp4 = new Date(new Date(startTime).getTime() + 30 * 60 * 1000);
+                ////var endTime = new Date(new Date(startTime).getTime() + 30 * 60 * 1000) ;
+                //console.log(temp1, temp2, temp3, temp4);
+                var endTime = new Date(new Date(startTime).getTime() + 8 * 60 * 1000).Format('yyyy-MM-dd HH:mm:ss');
+                if (endTime === '' || endTime === null) {
+                    return false;
+                } else {
+                    $("#F_WipeEndTime").val(endTime);
+                }
+            }
+        }
+    }
+
+    function btn_add() {
+        //selectID = "";
+        $('#form1').find("input[type='text']").each(function () {
+            $(this).val("");
+        });
+        $('#form1').find("input[type='number']").each(function () {
+            $(this).val("");
+        });
+        $('#form1').find("input[type='checkbox']").each(function () {
+            $(this).prop('checked', false);
+        });
+    }
+
+    function btn_delete() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.deleteForm({
+                url: "/MachineManage/MachineDisinfection/DeleteForm",
+                param: { keyValue: keyValue },
+                success: function () {
+                    $.currentWindow().$("#gridList").trigger("reloadGrid");
+                }
+            })
+            selectID = "";
+            $("span.badge").html('');
+            $('#form1').find("input[type='text']").each(function () {
+                $(this).val("");
+            });
+            $('#form1').find("input[type='number']").each(function () {
+                $(this).val("");
+            });
+            $('#form1').find("input[type='checkbox']").each(function () {
+                $(this).prop('checked', false);
+            });
+        }
+    }
+
+    function btn_checked() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        var status = $("#gridList").jqGridRowValue().F_CheckPerson;
+        if (!!status) {
+            $.modalMsg("注：该项记录【已提交】！");
+            return;
+        }
+        $.modalConfirm("注：您确定要【提交】该项记录吗？", function (r) {
+            if (r) {
+                $.submitForm({
+                    url: "/MachineManage/MachineDisinfection/SignForm",
+                    param: { keyValue: keyValue },
+                    success: function () {
+                        //$.currentWindow().$("#gridList").trigger("reloadGrid");
+                        $("#btn_search").trigger('click');
+                    }
+                })
+            }
+        });
+    }
+
+    function btn_print() {
+        $.modalOpen({
+            id: "Form",
+            title: "打印记录",
+            url: "/MachineManage/MachineDisinfection/Form?keyValue=" + encodeURI(JSON.stringify({
+                startDate: $("#txt_StartDate").val(),
+                endDate: $("#txt_EndDate").val()
+            })),
+            width: "650px",
+            height: "500px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+
+    function printPreview(result) {
+        $("#print").html(result);
+        //console.log(result);
+        $("#print").attr("style", "display:block;");//显示div
+        $("#print").jqprint();
+        $("#print").attr("style", "display:none;");//隐藏div
+    }
+</script>
+
+<div class="rows" style="margin-bottom: 1%; overflow: hidden;">
+    <div style="float: left; width: 54%;">
+        <div class="topPanel">
+            <div class="toolbar">
+                <div class="btn-group">
+                    <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+                </div>
+                <div class="btn-group">
+                    <a id="NF-add" class="btn btn-primary" onclick="btn_add()"><i class="fa fa-plus"></i>重置</a>
+                </div>
+                <div class="btn-group">
+                    <a id="NF-print" class="btn btn-primary" onclick="btn_print()"><i class="fa fa-print"></i>预览</a>
+                </div>
+                <div class="operate">
+                    <ul class="nav nav-pills">
+                        <li class="first">已选中<span>1</span>项</li>
+                        <li><a id="NF-delete" authorize="yes" onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除记录</a></li>
+                        <li class="split"></li>
+                        @* <li><a id="NF-checked" authorize="yes" onclick="btn_checked()"><i class="fa fa-play-circle"></i>护士签名</a></li>*@
+                    </ul>
+                    <a href="javascript:;" class="close"></a>
+                </div>
+                <script>$('.toolbar').authorizeButton()</script>
+            </div>
+            <div class="search">
+                <table>
+                    <tr>
+                        <td>
+                            <div id="txt_condition" class="btn-group">
+                                <a class="btn btn-default dropdown-text" data-toggle="dropdown">选择分区</a>
+                                <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                                <ul class="dropdown-menu"></ul>
+                            </div>
+                        </td>
+
+                        <td style="padding-left: 2px;">
+                            <div class="input-group">
+                                <input id="txt_StartDate" autocomplete="off" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" placeholder="起始日期" style="width: 90px;">
+                                <input id="txt_EndDate" autocomplete="off" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" placeholder="截至日期" style="width: 90px;">
+                                <span class="input-group-btn">
+                                    <button id="btn_search" type="button" class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="gridPanel">
+            <table id="gridList"></table>
+            <div id="gridPager"></div>
+        </div>
+    </div>
+    <div style="float: right; width: 45%">
+        <div style="position: absolute; top: 10px; right: 250px;">
+            <span class="badge"></span>
+        </div>
+        <div style="position: absolute; top: 20px; right: 30px;">
+            <a class="btn btn-warning" id="btn-save"><i class="fa fa-pencil" style="margin-right: 5px; font-size: 13px;"></i>技师签名</a>
+            <a class="btn btn-default" id="btn-nurse"><i class="fa fa-pencil" style="margin-right: 5px; font-size: 13px;"></i>护士签名</a>
+        </div>
+        <form id="form1">
+            <div class="mail-box">
+                <div class="mail-body" style="overflow-y:auto">
+                    <h4>水路消毒</h4>
+                    <table class="form">
+                        <tr>
+                            <th class="formTitle">消毒时间</th>
+                            <td class="formValue">
+                                <input id="F_StartTime" name="F_StartTime" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss', onpicked: startTimeChanged})" placeholder="开始时间" autocomplete="off" />
+                            </td>
+                            <td class="formValue">
+                                <input id="F_EndTime" name="F_EndTime" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" placeholder="结束时间" autocomplete="off" />
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="form">
+                        <tr>
+                            <th class="formTitle">消毒方法</th>
+                            <td class="formValue">
+                                <div class="ckbox">
+                                    <input id="F_Option1" name="F_Option1" type="checkbox">
+                                    <label for="F_Option1">热化学消毒</label>
+                                </div>
+                            </td>
+                            <td class="formValue">
+                                <select id="F_Option1Value" name="F_Option1Value" type="text" class="form-control">
+                                    <option value="">请选择消毒剂</option>
+                                    <option value="Clean Cart C">Clean Cart C</option>
+                                    <option value="Clean Cart A">Clean Cart A</option>
+                                    <option value="50%柠檬酸">50%柠檬酸</option>
+                                    <option value="20%柠檬酸">20%柠檬酸</option>
+
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="formTitle"></th>
+                            <td class="formValue">
+                                <div class="ckbox">
+                                    <input id="F_Option2" name="F_Option2" type="checkbox">
+                                    <label for="F_Option2">化学消毒</label>
+                                </div>
+                            </td>
+                            <td class="formValue">
+                                <select id="F_Option2Value" name="F_Option2Value" type="text" class="form-control">
+                                    <option value="">请选择消毒剂</option>
+                                    <option value="次氯酸钠">次氯酸钠</option>
+                                    <option value="过氧乙酸">过氧乙酸</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="formTitle"></th>
+                            <td class="formValue">
+                                <div class="ckbox">
+                                    <input id="F_Option3" name="F_Option3" type="checkbox">
+                                    <label for="F_Option3">热消毒</label>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="form">
+                        <tr>
+                            <th class="formTitle">选项</th>
+                            <td class="formValue">
+                                <div class="ckbox">
+                                    <input id="F_Option4" name="F_Option4" type="checkbox">
+                                    <label for="F_Option4">是否除钙</label>
+                                </div>
+                            </td>
+                            <td class="formValue">
+                                <div class="ckbox">
+                                    <input id="F_Option5" name="F_Option5" type="checkbox">
+                                    <label for="F_Option5">是否除杂质</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr></tr>
+                    </table>
+                    <h4>表面擦拭消毒</h4>
+                    <table class="form">
+                        <tr>
+                            <th class="formTitle"></th>
+                            <td class="formValue">
+                                <div class="ckbox">
+                                    <input id="F_Option6" name="F_Option6" type="checkbox">
+                                    <label for="F_Option6">外表擦拭</label>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="form">
+                        <tr>
+                            <th class="formTitle">消毒时间</th>
+                            <td class="formValue">
+                                <input id="F_WipeStartTime" name="F_WipeStartTime" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss', onpicked: startTimeChanged})" placeholder="开始时间" autocomplete="off" />
+                            </td>
+                            <td class="formValue">
+                                <input id="F_WipeEndTime" name="F_WipeEndTime" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" placeholder="结束时间" autocomplete="off" />
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="form">
+                        <tr>
+                            <th class="formTitle">消毒药物</th>
+                            <td class="formValue">
+                                <select id="F_Option6Value" name="F_Option6Value" type="text" class="form-control" multiple="multiple">
+                                    @*<option value="">请选择消毒剂</option>*@
+                                    <option value="75%乙醇">75%乙醇</option>
+                                    <option value="消毒湿巾">消毒湿巾</option>
+                                    <option value="含氯消毒剂500mg/L">含氯消毒剂500mg/L</option>
+                                    <option value="含氯消毒剂1000mg/L">含氯消毒剂1000mg/L</option>
+                                    <option value="含氯消毒剂2000mg/L">含氯消毒剂2000mg/L</option>
+                                    <option value="无菌布">无菌布</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <h4>异常情况描述</h4>
+                    <table class="form">
+                        <tr>
+                            <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            </th>
+                            <td class="formValue">
+                                <textarea id="F_MEMO" name="F_MEMO" class="form-control" style="height: 80px;"></textarea>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="print" style="visibility:hidden;display:none">
+</div>
+

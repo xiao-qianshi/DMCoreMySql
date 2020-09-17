@@ -1,0 +1,256 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script>
+    $(function () {
+        gridList();
+    })
+    function gridList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            url: "/PatientManage/Infection/GetGridJson",
+            caption: '注：空气细菌培养:≤4.0CFU/皿;物表细菌培养:≤10cfu/cm²;手卫生细菌培养:≤10cfu/cm²;透析用水细菌培养:＜100cfu/ml;透析用水内毒素检测:＜0.25EU/ml;透析液细菌培养:＜100cfu/ml;透析液内毒素检测:＜0.25EU/ml。', 
+            height: $(window).height() - 160,
+            colModel: [
+                { label: '主键', name: 'F_Id', hidden: true },
+                {
+                    label: '报告日期', name: 'F_ReportDate', width: 80, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                },
+                {
+                    label: '空气细菌培养', name: 'F_Item1', width: 100, align: 'center',
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == undefined) return '-';
+                        if (cellvalue > 4) {
+                            return '<b style="color:red;">' + cellvalue + '' + '</b>';
+                        } else {
+                            return cellvalue;
+                        }
+                    }
+                },
+                {
+                    label: '物表细菌培养', name: 'F_Item2', width: 100, align: 'center',
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == undefined) return '-';
+                        if (cellvalue > 10) {
+                            return '<b style="color:red;">' + cellvalue + '' + '</b>';
+                        } else {
+                            return cellvalue;
+                        }
+                    }
+                },
+                {
+                    label: '手卫生细菌培养', name: 'F_Item3', width: 100, align: 'center',
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == undefined) return '-';
+                        if (cellvalue > 10) {
+                            return '<b style="color:red;">' + cellvalue + '' + '</b>';
+                        } else {
+                            return cellvalue;
+                        }
+                    }
+                },
+                {
+                    label: '透析用水细菌培养', name: 'F_Item4', width: 100, align: 'center',
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == undefined) return '-';
+                        if (cellvalue > 100) {
+                            return '<b style="color:red;">' + cellvalue + '' + '</b>';
+                        } else {
+                            return cellvalue;
+                        }
+                    }
+                },
+                {
+                    label: '透析用水内毒素检测', name: 'F_Item5', width: 100, align: 'center',
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == undefined) return '-';
+                        if (cellvalue > 0.25) {
+                            return '<b style="color:red;">' + cellvalue + '' + '</b>';
+                        } else {
+                            return cellvalue;
+                        }
+                    }
+                },
+                {
+                    label: '透析液细菌培养', name: 'F_Item6', width: 100, align: 'center',
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == undefined) return '-';
+                        if (cellvalue > 100) {
+                            return '<b style="color:red;">' + cellvalue + '' + '</b>';
+                        } else {
+                            return cellvalue;
+                        }
+                    }
+                },
+                {
+                    label: '透析液内毒素检测', name: 'F_Item7', width: 100, align: 'center',
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == undefined) return '-';
+                        if (cellvalue > 0.25) {
+                            return '<b style="color:red;">' + cellvalue + '' + '</b>';
+                        } else {
+                            return cellvalue;
+                        }
+                    }
+                },
+                { label: '记录者', name: 'F_RecordPerson', width: 100, align: 'left' },
+                { label: '备注', name: 'F_Memo', width: 200, align: 'left' },
+                {
+                    label: "状态", name: "F_EnabledMark", width: 60, align: "center",
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == 1) {
+                            return '<span class=\"label label-success\">正常</span>';
+                        } else if (cellvalue == 0) {
+                            return '<span class=\"label label-default\">禁用</span>';
+                        }
+                    }
+                },
+                {
+                    label: '创建日期', name: 'F_CreatorTime', width: 80, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                }, 
+                {
+                    label: '最后修改日期', name: 'F_LastModifyTime', width: 80, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                }           
+            ],
+            pager: "#gridPager",
+            sortname: 'F_ReportDate desc',
+            viewrecords: true
+        });
+        $("#btn_search").click(function () {
+            $gridList.jqGrid('setGridParam', {
+                postData: { keyword: $("#txt_keyword").val() },
+            }).trigger('reloadGrid');
+        });
+    }
+    function btn_add() {
+        $.modalOpen({
+            id: "Form",
+            title: "新增",
+            url: "/PatientManage/Infection/Form",
+            width: "800px",
+            height: "600px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+    function btn_edit() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.modalOpen({
+                id: "Form",
+                title: "修改",
+                url: "/PatientManage/Infection/Form?keyValue=" + keyValue,
+                width: "800px",
+                height: "600px",
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
+            });
+        }
+    }
+    function btn_delete() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.deleteForm({
+                url: "/PatientManage/Infection/DeleteForm",
+                param: { keyValue: keyValue },
+                success: function () {
+                    $.currentWindow().$("#gridList").trigger("reloadGrid");
+                }
+            })
+        }
+    }
+    function btn_details() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.modalOpen({
+                id: "Details",
+                title: "查看",
+                url: "/PatientManage/Infection/Details?keyValue=" + keyValue,
+                width: "800px",
+                height: "600px",
+                btn: null,
+            });
+        }
+    }
+   
+    function btn_disabled() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.modalConfirm("注：您确定要【禁用】该项吗？", function (r) {
+                if (r) {
+                    $.submitForm({
+                        url: "/PatientManage/Infection/DisabledAccount",
+                        param: { keyValue: keyValue },
+                        success: function () {
+                            $.currentWindow().$("#gridList").trigger("reloadGrid");
+                        }
+                    })
+                }
+            });
+        }
+    }
+    function btn_enabled() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.modalConfirm("注：您确定要【启用】该项吗？", function (r) {
+                if (r) {
+                    $.submitForm({
+                        url: "/PatientManage/Infection/EnabledAccount",
+                        param: { keyValue: keyValue },
+                        success: function () {
+                            $.currentWindow().$("#gridList").trigger("reloadGrid");
+                        }
+                    })
+                }
+            });
+        }
+    }
+</script>
+
+<div class="topPanel">
+    <div class="toolbar">
+        <div class="btn-group">
+            <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
+        <div class="btn-group">
+            <a id="NF-add" authorize="yes" class="btn btn-primary dropdown-text" onclick="btn_add()"><i class="fa fa-plus"></i>新建</a>
+        </div>
+        <div class="operate">
+            <ul class="nav nav-pills">
+                <li class="first">已选中<span>1</span>项</li>
+                <li><a id="NF-edit" authorize="yes" onclick="btn_edit()"><i class="fa fa-pencil-square-o"></i>修改</a></li>
+                <li><a id="NF-delete" authorize="yes" onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除</a></li>
+                <li><a id="NF-Details" authorize="yes" onclick="btn_details()"><i class="fa fa-search-plus"></i>查看</a></li>
+                <li class="split"></li>
+                <li><a id="NF-disabled" authorize="yes" onclick="btn_disabled()"><i class="fa fa-stop-circle"></i>禁用</a></li>
+                <li><a id="NF-enabled" authorize="yes" onclick="btn_enabled()"><i class="fa fa-play-circle"></i>启用</a></li>
+            </ul>
+            <a href="javascript:;" class="close"></a>
+        </div>
+        <script>$('.toolbar').authorizeButton()</script>
+    </div>
+    <div class="search">
+        <table>
+            <tr>
+                <td>
+                    <div class="input-group">
+                        <input id="txt_keyword" type="text" class="form-control" placeholder="" style="width: 200px;">
+                        <span class="input-group-btn">
+                            <button id="btn_search" type="button" class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridList"></table>
+    <div id="gridPager"></div>
+</div>

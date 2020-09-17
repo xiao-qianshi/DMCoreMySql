@@ -1,0 +1,112 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        $.ajax({
+            url: "/PatientManage/DialysisMachine/GetGroupListJson",
+            //data: { keyValue: keyValue },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                //$("#print").html($("<div>").html(data.content).text());
+                refreshTable(data);
+            }
+        });
+    });
+
+    function refreshTable(data) {
+        var $table = $("#bedList");
+        $table.html();
+        var htmlstr = "";
+        if (data instanceof Array) {
+            $.each(data, function (index, item) {
+                var json = eval(item);
+                json.sort(function (a, b) {
+                    return a.F_ShowOrder - b.F_ShowOrder
+                });
+                $.each(json, function (idx, obj) {
+                    if (idx % 5 == 0) {
+                        if (idx == 0) {
+                            htmlstr = htmlstr + "<tr>";
+                        }
+                        else {
+                            htmlstr = htmlstr + "</tr><tr>";
+                        }
+                    }
+                    htmlstr = htmlstr + "<td class=\"formValue\" style=\"padding-top: 1px;\"><div class=\"ckbox\"><input id=\"check" + obj.F_Id + "\" name=\"check" + obj.F_Id + "\" type=\"checkbox\"  value=\"" + obj.F_Id + "\"><label for=\"check" + obj.F_Id + "\">" + obj.F_GroupName + " " + obj.F_DialylisBedNo + "</label></div></td>";
+                });
+                htmlstr = htmlstr + "</tr>";
+            });
+        }
+        $table.html(htmlstr);
+    }
+
+    function initControl() {
+        $("#startDate").val(keyValue);
+        $("#endDate").val(keyValue);
+    }
+
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        var selectIds = [];
+        $("#bedList").find("input:checkbox:checked").each(function () {
+            selectIds.push($(this).val());
+        });
+        if (selectIds.length == 0) {
+            $.modalClose();
+            return false;
+        }
+        var postdata = {
+            startDate: $("#startDate").val(),
+            endDate: $("#endDate").val(),
+            ids: selectIds.join(","),
+            isMerge: $("#isMerge").prop('checked')
+        };
+        $.post("/MachineManage/MachineProcess/CreateReport", postdata, function (data) {
+            $.currentWindow().printPreview(data);
+            $.modalClose();
+        });    
+    }
+</script>
+
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">起始日期</th>
+                <td class="formValue">
+                    <input id="startDate" name="startDate" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker()" autocomplete="off" />
+                </td>
+                <th class="formTitle">截至日期</th>
+                <td class="formValue">
+                    <input id="endDate" name="endDate" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker()" autocomplete="off" />
+                </td>
+            </tr>
+        </table>
+        <table id="bedList" class="form"></table>
+        <table class="form">
+            <tr>
+                <td class="formValue">
+                    <div class="ckbox"><input id="isMerge" name="isMerge" type="checkbox"><label for="isMerge">是否合并打印</label></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="formValue">
+                    <div class="alert alert-danger" style="text-align: left; margin-bottom: 10px;">
+                        <i class="fa fa-warning alert-dismissible" style="position: relative; top: 1px; font-size: 15px; padding-right: 5px;"></i>
+                        选择此项，连续打印！
+                    </div>
+                </td>
+            </tr>
+        </table>
+       
+    </div>
+</form>
+

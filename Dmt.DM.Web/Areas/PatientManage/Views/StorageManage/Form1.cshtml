@@ -1,0 +1,310 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<script src="~/Content/js/jqgrid/jqgrid.min.js"></script>
+<link href="~/Content/js/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/js/jqgrid/grid.locale-cn.js"></script>
+<script>
+    var keyValue = $.request("keyValue");
+    var availableTags = [];
+    var itemlist = "";
+    var lastrow = -1;
+    var lastcell = -1;
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/PatientManage/StorageManage/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                }
+            });
+        }
+        gridList();
+    });
+    function initControl() {
+        getmaterialdict();
+        $("#F_ImpClass").bindSelect();
+        $("#F_ImpType").bindSelect();
+        $("#F_ImpClass").attr('readonly', 'readonly');
+    }
+    function submitForm() {
+        var $gridList = $("#gridMaterialList");
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        $gridList.jqGrid("saveCell", lastrow, lastcell);//保存单元格，切换为文本模式
+        var ids = $gridList.getDataIDs();
+        var rows = [];
+        var details = [];
+        $(ids).each(function (i) {
+            rows.push($gridList.getRowData(i + 1));
+        })
+        $.each(rows, function (index, val) {
+            if (!!val.F_ItemId) {
+                details.push({ F_Id: val.F_Id, F_Amount: val.F_Amount, F_ItemId: val.F_ItemId });
+            }
+        });
+        if (details.length == 0) {
+            $.modalAlert("请添加项目！", "error");
+            return false; 
+        }
+        var master = {};
+        master.F_ImpClass = $("#F_ImpClass").val();
+        master.F_ImpType = $("#F_ImpType").val();
+        master.F_ImpDate = $("#F_ImpDate").val();
+        master.F_ImpNo = $("#F_ImpNo").val();
+        master.F_Storage = $("#F_Storage").val();
+        master.F_Costs = $("#F_Costs").val();
+        master.F_Supplier = $("#F_Supplier").val();
+        master.F_Contacts = $("#F_Contacts").val();
+        master.F_SupplierPhone = $("#F_SupplierPhone").val();
+        //ImportMaster.ImportDetails = details;
+        var data = {};
+        data.master = master;
+        data.details = details;
+        data.keyValue = keyValue;
+        $.submitForm({
+            url: "/PatientManage/StorageManage/SubmitForm",
+            param: data,
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        });
+    }
+    function gridList() {
+        var $gridList = $("#gridMaterialList");
+        $gridList.dataGrid({
+            url: "/PatientManage/StorageManage/GetImportDetailGridJson?keyValue=" + keyValue,
+            height: $(window).height() - 48,
+            colModel: [
+                { label: '主键', name: 'F_Id', hidden: true },
+                { label: '药品主键', name: 'F_ItemId', hidden: true },
+                { label: '代码', name: 'F_Code', width: 100, align: 'left' },
+                {
+                    label: '名称',
+                    name: 'F_Name',
+                    width: 200,
+                    align: 'left',
+                    editable: true,
+                    editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: itemlist }  
+                },
+                { label: '规格', name: 'F_Spec', width: 100, align: 'left' },
+                { label: '单位', name: 'F_Unit', width: 80, align: 'left' },
+                { label: '价格', name: 'F_Charges', width: 100, align: 'left' },
+                {
+                    label: '数量', name: 'F_Amount', width: 100, align: 'left', editable: true, formatter: 'integer',
+                    formatoptions: { thousandSeparator: ',', defaulValue: 1 }
+                },
+                { label: '金额', name: 'F_TotalCharges', width: 100, align: 'left' },
+            ],
+            viewrecords: true,
+            cellEdit: true,
+            cellsubmit: 'clientArray',
+            //cellurl: '/PatientManage/DialysisSchedule/SaveCellData',
+            autoScroll: true,
+            afterSaveCell: function (id, name, val, iRow, iCol) {
+                var id = $("#gridMaterialList").jqGrid("getCell", iRow, "F_Id");
+                //选择了项目 iCol = 4   修改了数量 iCol = 8
+                if (iCol == 4) {
+                    if (val == -1 || val == "") {
+                        //$("#grid-table").jqGrid('setCell', rowId, "virUseData", equip.virUseData);
+                        $("#gridMaterialList").jqGrid("setRowData", iRow, {
+                            F_Id: id, F_ItemId: "", F_Code: "", F_Name: "", F_Spec: "", F_Unit: "", F_Charges: 0, F_Amount: 1, F_TotalCharges: 0
+                        });
+                    } else {
+                        var materialitem = availableTags[val].item;
+                        $("#gridMaterialList").jqGrid("setRowData", iRow, {
+                            F_Id: id,
+                            F_ItemId: materialitem.F_Id,
+                            F_Code: materialitem.F_MaterialCode,
+                            F_Name: materialitem.F_MaterialName,
+                            F_Spec: materialitem.F_MaterialSpec,
+                            F_Unit: materialitem.F_MaterialUnit,
+                            F_Charges: materialitem.F_Charges,
+                            F_Amount: 1,
+                            F_TotalCharges: parseFloat(materialitem.F_Charges).toFixed(2)
+                        });
+                    }
+                } else if (iCol == 8) {
+                    $("#gridMaterialList").jqGrid(
+                        "setCell",
+                        iRow,
+                        "F_TotalCharges",
+                        parseFloat(parseInt(val) * $("#gridMaterialList").jqGrid("getCell", iRow, iCol - 1)).toFixed(2)
+                    );
+                }
+            },
+            beforeEditCell: function (rowid, cellname, v, iRow, iCol) {
+                lastrow = iRow;
+                lastcell = iCol;
+            }
+        });
+    }
+    function btn_add() {
+        var $gridList = $("#gridMaterialList");
+        var ids = $gridList.jqGrid("getDataIDs");//得到jqgrid当前行数        
+        var rowid = Math.max.apply(Math, ids);//获得当前最大行号
+        var nextrowid = rowid + 1;
+        var dataRow = {
+            F_Id : null, F_ItemId: "", F_Code: "",  F_Spec: "", F_Unit: "", F_Charges: 0, F_Amount: 1, F_TotalCharges: 0
+        };
+        //将新添加的行插入到最后列
+        $gridList.jqGrid("addRowData", nextrowid, dataRow, "last");
+    } 
+    function btn_delete() {
+        var selRowId = $("#gridMaterialList").jqGrid('getGridParam', 'selrow');
+        console.log(selRowId);
+        if (!!selRowId) {
+            var deleteid = $("#gridMaterialList").jqGridRowValue().F_Id;
+            if (!!deleteid) {
+                $.ajax({
+                    url: "/PatientManage/StorageManage/DeleteDetailForm",
+                    data: JSON.stringify({ keyValue: deleteid }),
+                    dataType: "json",
+                    async: false,
+                    type: 'post'
+                })
+            }
+            $("#gridMaterialList").jqGrid("delRowData", selRowId);
+        }
+    } 
+    function btn_dict() {
+        var $gridList = $("#gridMaterialList");
+        //清空
+        $gridList.jqGrid("clearGridData");
+        $.each(availableTags, function (index, val) {
+            //将新添加的行插入到最后列
+            $gridList.jqGrid("addRowData", null, {
+                F_Id: null,
+                F_ItemId: val.item.F_Id,
+                F_Code: val.item.F_DrugCode,
+                F_Name: val.item.F_DrugName,
+                F_Spec: val.item.F_DrugSpec,
+                F_Unit: val.item.F_DrugUnit,
+                F_Charges: val.item.F_Charges,
+                F_Amount: 0,
+                F_TotalCharges: 0
+            });
+        });
+
+    }
+    function getmaterialdict() {
+        $.ajax({
+            url: "/PatientManage/Material/GetListJson",
+            dataType: "json",
+            async: false,
+            type: 'get',
+            success: function(data) {
+                itemlist = itemlist + '-1:';
+                $.each(data,
+                    function(index, item) {
+                        availableTags.push({ index, item });
+                        itemlist = itemlist + ';' + index + ':' + item.F_MaterialName + '  ' + item.F_MaterialSpec;
+                    });
+            }
+        });
+        return itemlist;
+    }
+</script>
+
+<style type="text/css">
+    .ui-jqgrid .ui-jqgrid-view input[type="text"] {
+        width: 96%;
+        border-top-width: 0px;
+        border-bottom-width: 0px;
+        padding-bottom: 0px;
+        padding-top: 0px;
+        height: 30px;
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+</style>
+
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+            <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">扩展信息</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">入库类型</th>
+                        <td class="formValue">
+                            <select id="F_ImpClass" name="F_ImpClass" class="form-control">
+                                <option value="耗材入库">耗材入库</option>
+                                @*<option value="药品入库">药品入库</option>*@
+                            </select>
+                        </td>
+                        <th class="formTitle">入库类别</th>
+                        <td class="formValue">
+                            <select id="F_ImpType" name="F_ImpType" class="form-control">
+                                <option value="采购入库">采购入库</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">入库日期</th>
+                        <td class="formValue">
+                            <input id="F_ImpDate" name="F_ImpDate" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" autocomplete="off"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">入库单号</th>
+                        <td class="formValue">
+                            <input id="F_ImpNo" name="F_ImpNo" class="form-control" />
+                        </td>
+                        <th class="formTitle">存放位置</th>
+                        <td class="formValue">
+                            <input id="F_Storage" name="F_Storage" class="form-control" />
+                        </td>
+                        <th class="formTitle">总金额(元)</th>
+                        <td class="formValue">
+                            <input id="F_Costs" name="F_Costs" class="form-control" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            供货商
+                        </th>
+                        <td class="formValue" colspan="3">
+                            <textarea id="F_Supplier" name="F_Supplier" class="form-control" style="height: 40px; width :760px"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">供应商联络人</th>
+                        <td class="formValue">
+                            <input id="F_Contacts" name="F_Contacts" class="form-control" />
+                        </td>
+                        <th class="formTitle">供应商电话</th>
+                        <td class="formValue">
+                            <input id="F_SupplierPhone" name="F_SupplierPhone" class="form-control" />
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend">
+                <div class="operate">
+                    <ul class="nav nav-pills">
+                        <li><a onclick="btn_add()"><i class="fa fa-pencil-square-o"></i>增加</a></li>
+                        <li><a onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除</a></li>
+                        <li class="split"></li>
+                        @*<li><a onclick="btn_dict()"><i class="fa fa-pencil-square-o"></i>导入字典</a></li>*@
+                    </ul>
+                </div>
+                <div class="gridPanel">
+                    <table id="gridMaterialList"></table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>

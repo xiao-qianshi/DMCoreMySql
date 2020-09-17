@@ -1,0 +1,166 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyword = $.request("keyword");
+    var ids = keyword.split(',');
+    var currentIndex = 0;
+    $(function () {
+        initControl();
+        if (ids.length > 0) {
+            var id = ids[0];
+            querySample(id)
+        }
+    });
+
+    function querySample(id) {
+        $.ajax({
+            url: '/LabLis/LabRequest/GetSampleInfo',
+            data: {
+                keyValue: id
+            },
+            //datatype: 'json',
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                refreshSheet(data)
+            }
+        });
+    }
+
+    function refreshSheet(data) {
+        if (!!data.barcode) {
+            $("#alertmsg").attr("style", "display:block;");
+        } else {
+            $("#alertmsg").attr("style", "display:none;");
+        }
+        var target = $("#sheetInfo");
+        target.empty();
+        target.html('');
+        var arrItems = [];
+        $.each(data.rows, function (i, v) {
+            arrItems.push(v.shortName);
+        });
+        var htmlstr = '\
+                <div id="sheetInfo">\
+                    <div class="page-header">\
+                        <h4>申请单信息<small></small></h4>\
+                    </div>\
+                    <p>\
+                        <h5>基本信息</h5>\
+                        <div class="row">\
+                            <div class="col-sm-3">\
+                                <strong>姓名：&nbsp;</strong>'+ data.name + '\
+                            </div>\
+                            <div class="col-sm-2">\
+                                <strong>性别：&nbsp;</strong>'+ data.gender + '\
+                            </div>\
+                            <div class="col-sm-3">\
+                                <strong>透析号：&nbsp;</strong>'+ data.dialysisNo + '\
+                            </div>\
+                            <div class="col-sm-3">\
+                                <strong>病历号：&nbsp;</strong>'+ data.recordNo + '\
+                            </div>\
+                            <div class="col-sm-1">\
+                                '+ (data.beInfected ? '<i style="color:red;font-size:15px" class="fa fa-star"></i>' : '') + '\
+                            </div>\
+                        </div>\
+                    </p>\
+                    <p>\
+                        <h5>开单信息</h5>\
+                        <div class="row">\
+                            <div class="col-sm-3">\
+                                <strong>申请时间：&nbsp;</strong>'+ data.orderTime.substr(5, 11) + '\
+                            </div>\
+                            <div class="col-sm-3">\
+                                <strong>条码号：&nbsp;</strong>'+ data.barcode + '\
+                            </div>\
+                            <div class="col-sm-3">\
+                                <strong>标本类型：&nbsp;</strong>'+ data.sampleType + '\
+                            </div>\
+                            <div class="col-sm-3">\
+                                <strong>采样容器：&nbsp;</strong>'+ data.container + '\
+                            </div>\
+                            <div class="col-sm-10" style="margin-top: 15px;">\
+                                <strong>项目明细：&nbsp;</strong>'+ arrItems.join(',') + '\
+                            </div>\
+                        </div>\
+                    </p>\
+                </div>\
+                ';
+        target.html(htmlstr);
+    }
+
+    function initControl() {
+        $("#btn-p").click(function () {
+            if (currentIndex > 0) {
+                currentIndex = currentIndex - 1;
+                $("#currentNo").html(currentIndex + 1);
+                querySample(ids[currentIndex]);
+            }
+            $("#txt_barcode").focus();
+        });
+        $("#btn-n").click(function () {
+            if (currentIndex < ids.length - 1) {
+                currentIndex = currentIndex + 1;
+                $("#currentNo").html(currentIndex + 1);
+                querySample(ids[currentIndex]);
+            }
+            $("#txt_barcode").focus();
+        });
+        $("#currentNo").html(currentIndex + 1);
+        $("#totalCount").html(ids.length);
+        $("#txt_barcode").focus();
+        $("#txt_barcode").keyup(function (e) {
+            if (e.which == 13) {
+                console.log(e.currentTarget.value);//
+                var txt_value = e.currentTarget.value;
+                if (!!txt_value) {
+                    if (txt_value.length > 8) {
+                         //保存条码号
+                        var params = {
+                            keyValue: ids[currentIndex],
+                            barcode: txt_value
+                        };
+                        if ($('[name=__RequestVerificationToken]').length > 0) {
+                            params["__RequestVerificationToken"] = $('[name=__RequestVerificationToken]').val();
+                        }
+                        $.ajax({
+                            url: '/LabLis/LabRequest/SetBarcode',
+                            data: JSON.stringify(params),
+                            dataType: "json",
+                            async: false,
+                            type: 'post',
+                            success: function () {
+                                $("#btn-n").trigger('click');
+                                $("#txt_barcode").val('');
+                            }
+                        });
+                       
+                    }
+                }
+            }
+        });
+    }
+    function submitForm() {
+        $.currentWindow().$("#btn_search").trigger('click');
+        $.modalClose();
+    }
+
+</script>
+<div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+    <div class="input-group">
+        <input type="number" id="txt_barcode" placeholder="请扫描条码号..." style="font-size: 25px;font-weight: bold;" autocomplete="off" />
+        <a id="btn-p" class="btn btn-default" style="margin-left: 40px;font-size: 18px;font-weight: bold;"><i class="fa fa-arrow-left" aria-hidden="true">上一条</i></a>
+        <a id="btn-n" class="btn btn-default" style="margin-left: 20px;font-size: 18px;font-weight: bold;"><i class="fa fa-arrow-right" aria-hidden="true">下一条</i></a>
+        <span id="currentNo" style="margin-left: 20px;font-size: 15px;background-color: bisque;color: black;" class="badge">12</span>
+        <span id="totalCount" style="margin-left: 20px;font-size: 15px;" class="badge">30</span>
+    </div>
+    <div id="alertmsg" class="alert alert-danger" style="text-align: left; margin-bottom: 10px; margin-top: 10px;width:auto;display: none;">
+        <i class="fa fa-warning alert-dismissible" style="position: relative; top: 1px; font-size: 15px; padding-right: 5px;"></i>
+        已录入条码号！
+    </div>
+    <div id="sheetInfo">
+    </div>
+</div>

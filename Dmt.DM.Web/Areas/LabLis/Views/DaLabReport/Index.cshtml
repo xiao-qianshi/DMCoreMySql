@@ -1,0 +1,48 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script src="~/Content/js/datepicker/WdatePicker.js"></script>
+<environment include="Development">
+    <script src="~/view-js/lablis/DaLabReport/Index.js" asp-append-version="true"></script>
+</environment>
+<environment exclude="Development">
+    <script src="~/view-js/lablis/DaLabReport/Index.min.js" asp-append-version="true"></script>
+</environment>
+
+<div class="input-group" style="margin-top: 3px;margin-bottom: 2px;margin-left: 20px;width: 95%">
+    <span class="input-group-addon">报告日期</span>
+    <input id="da-startdate" name="da-startdate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off" placeholder="起始日期" style="width: 150px;height: 18px;" />
+    <input id="da-enddate" name="da-enddate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off" placeholder="截至日期" style="width: 150px;height: 18px;" />
+    <span class="input-group-addon">条码号</span>
+    <input id="da-barcode" name="da-barcode" type="text" class="form-control" placeholder="条码号" style="width: 150px;height: 18px;" />
+    <div class="btn-group" style="float: right;width: auto;">
+        <a id="btn-daquery" class="btn btn-default dropdown-text"><i class="fa fa-search"></i>查询报告</a>
+        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+        <ul class="dropdown-menu pull-left">
+            <li><a id="btn-daprint" class="btn btn-default">打印预览</a></li>
+        </ul>
+    </div>
+</div>
+
+<div style="float: left;width: 30%;margin: 5px 2px 1px 2px;">
+    <div class="panel panel-default" style="border: 1px solid #e6e6e6; background-color: #fff;">
+        <div class="panel-heading">
+            <strong>报告列表</strong>
+        </div>
+        <div class="panel-body">
+            <div class="list-group" id="report-list" style="padding-bottom: 1px; overflow-y: auto;margin: 1px;">
+            </div>
+        </div>
+    </div>
+</div>
+<div style="float: right;width: 69%;margin: 1px;background-color: #fff;overflow-y: auto;">
+    <div class="gridPanel">
+        <table id="gridList"></table>
+        <div id="gridPager"></div>
+    </div>
+</div>
+
+
+

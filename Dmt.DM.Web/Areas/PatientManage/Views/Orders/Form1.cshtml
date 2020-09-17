@@ -1,0 +1,274 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    //var keyValue = $.request("keyword");
+    var parms = $.request("keyValue");
+    if (!parms) {
+        parms = $.request("keyword");
+    }
+    var keyValue = parms;
+    var treatmentDict = null;
+    $(function () {
+        initControl();
+        $.ajax({
+            url: "/PatientManage/Treatment/GetGridJson1",
+            dataType: "json",
+            async: false,
+            success: function (data) {             
+                treatmentDict = data;
+                var $target = $("#F_OrderCode");
+                var json = eval(treatmentDict);
+                $.each(json, function (F_Id) {
+                    var Name = json[F_Id].F_TreatmentName;
+                    var Id = json[F_Id].F_Id
+                    $target.append('<option value="' + Id + '">' + Name + '</option>');
+                })
+                $target.bindSelect();
+            }
+        });
+
+        $.ajax({
+            url: "/PatientManage/Orders/GetFormJson",
+            data: { keyValue: keyValue },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                $("#form1").formSerialize(data);
+            }
+        });
+
+
+    });
+    function initControl() {
+        //$("#F_OrderAmount").spinner();
+        $("#F_OrderFrequency").bindSelect();      
+        //$("#F_IsTemporary").bindSelect(); 
+        $("#F_OrderSpec").attr('disabled', 'disabled');
+        $("#F_Charges").attr('disabled', 'disabled');
+        $("#F_TreatmentUnit").attr('disabled', 'disabled');
+
+        $("#F_Pid").val(keyValue);
+        
+
+
+        $('.spinner .btn:first-of-type').on('click', function () {
+            $('.spinner input').val(parseInt($('.spinner input').val(), 10) + 1);
+        });
+        $('.spinner .btn:last-of-type').on('click', function () {
+            $('.spinner input').val(parseInt($('.spinner input').val(), 10) - 1);
+        });
+
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        $.submitForm({
+            url: "/PatientManage/Orders/SubmitDrugForm?keyValue=" + $("#F_Id").val(),
+            param: $("#form1").formSerialize(),
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+    function drugChanged() {
+        var drugId = $('#F_OrderCode').val();
+        if (!!drugId) {
+            if (!!treatmentDict) {
+                var filter = $.grep(treatmentDict, function (p) { return p.F_Id == drugId })
+                $("#F_OrderSpec").val(filter[0].F_TreatmentSpec);
+                $("#F_Charges").val(filter[0].F_Charges);
+                $("#F_TreatmentUnit").val(filter[0].F_TreatmentUnit);
+                //$("#F_DrugMiniAmount").val(filter[0].F_DrugMiniAmount);
+                //$("#F_DrugMiniSpec").val(filter[0].F_DrugMiniSpec);
+                //$("#F_DrugMiniPackage").val(filter[0].F_DrugMiniPackage);
+                //$("#F_OrderAdministration").val(filter[0].F_DrugAdministration);
+                $("#F_OrderAmount").val(1);
+                $("#F_OrderText").val(filter[0].F_TreatmentName);
+            }
+        }
+    }
+
+</script>
+
+<style type="text/css">
+    .spinner {
+        width: 100%;
+    }
+        .spinner input {
+            text-align: right;
+        }
+
+    .input-group-btn-vertical {
+        position: relative;
+        white-space: nowrap;
+        width: 1%;
+        vertical-align: middle;
+        display: table-cell;
+    }
+
+        .input-group-btn-vertical > .btn {
+            display: block;
+            float: none;
+            width: 100%;
+            max-width: 100%;
+            padding: 8px;
+            margin-left: -1px;
+            position: relative;
+            border-radius: 0;
+        }
+
+            .input-group-btn-vertical > .btn:first-child {
+                border-top-right-radius: 4px;
+            }
+
+            .input-group-btn-vertical > .btn:last-child {
+                margin-top: -2px;
+                border-bottom-right-radius: 4px;
+            }
+
+        .input-group-btn-vertical i {
+            position: absolute;
+            top: 0;
+            left: 4px;
+        }  
+</style>
+
+
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">治疗医嘱</a></li>
+            @*<li role="presentation"><a href="#extend1" role="tab" data-toggle="tab">治疗医嘱</a></li>
+            <li role="presentation"><a href="#extend2" role="tab" data-toggle="tab">检验医嘱</a></li>*@
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">项目名称</th>
+                        <td class="formValue">
+                            <select id="F_OrderCode" name="F_OrderCode" type="text" class="form-control required" onchange="drugChanged()">
+                                <option value="">==请选择==</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">项目规格</th>
+                        <td class="formValue">
+                            <input id="F_OrderSpec" name="F_OrderSpec" type="text" class="form-control required" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">单价</th>
+                        <td class="formValue">
+                            <input id="F_Charges" name="F_Charges" type="text" class="form-control" />
+                        </td>
+                        <th class="formTitle">单位</th>
+                        <td class="formValue">
+                            <input id="F_TreatmentUnit" name="F_TreatmentUnit" type="text" class="form-control" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">数量</th>
+                        <td class="input-group spinner">
+                            @*<input id="F_OrderAmount" name="F_OrderAmount" type="text" class="form-control">
+                <div class="input-group-btn-vertical">
+                    <button class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+                    <button class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+                </div>*@
+                            @*<div class="input-group spinner">*@
+                            <input id="F_OrderAmount" name="F_OrderAmount" type="text" class="form-control" value="1">
+                            <div class="input-group-btn-vertical">
+                                <button class="btn btn-default" type="button"><i class="fa fa-caret-up"></i></button>
+                                <button class="btn btn-default" type="button"><i class="fa fa-caret-down"></i></button>
+                            </div>
+                            @*</div>*@
+                        </td>
+                        <th class="formTitle">执行频率</th>
+                        <td class="formValue">
+                            <select id="F_OrderFrequency" name="F_OrderFrequency" class="form-control required">
+                                <option value="Qd">Qd(每日一次)</option>
+                                <option value="Bid">Bid(每日两次)</option>
+                                <option value="Tid">Tid(每日三次)</option>
+                                <option value="Qid">Qid(每日)</option>
+                                <option value="Qod">Qod(隔日一次)</option>
+                                <option value="Qw">Qw(每周一次)</option>
+                                <option value="Biw">Biw(每周两次)</option>
+                                <option value="Tiw">Tiw(每周三次)</option>
+                                <option value="Qow">QQow(隔周一次)</option>
+                                <option value="Q2w">QQ2w(每两周一次)</option>
+                                <option value="Q3w">Q3w(每三周一次)</option>
+                                <option value="Q4w">Q4w(每四周一次)</option>
+                                <option value="Q1/2h">Q1/2h(30分钟一次）</option>
+                                <option value="Qh">Qh(每小时一次）</option>
+                                <option value="Q2h">Q2h(二小时一次）</option>
+                                <option value="Q3h">Q3h(三小时一次）</option>
+                                <option value="Q4h">Q4h(四小时一次）</option>
+                                <option value="Q6h">Q6h(六小时一次）</option>
+                                <option value="Q8h">Q8h(八小时一次）</option>
+                                <option value="Q12h">Q12h(12小时一次）</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">起始日期</th>
+                        <td class="formValue">
+                            <input id="F_OrderStartTime" name="F_OrderStartTime" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss',minDate: '%y-%M-%d 00:00:00'})" autocomplete="off"/>
+                        </td>
+                        <th class="formTitle">截至日期</th>
+                        <td class="formValue">
+                            <input id="F_OrderStopTime" name="F_OrderStopTime" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss',minDate: '%y-%M-%d 00:00:00'})" autocomplete="off"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="formTitle" style="height: 35px;">选项</th>
+                        <td class="formValue" style="padding-top: 1px;">
+                            <div class="ckbox">
+                                <input id="F_IsTemporary" name="F_IsTemporary" type="checkbox"><label for="F_IsTemporary">长期医嘱</label>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="formTitle">
+                            备注
+                        </th>
+                        <td class="formValue">
+                            <input id="F_Memo" name="F_Memo" class="form-control"  placeholder="透前 / 透后 "/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formValue">
+                            <input id="F_OrderText" name="F_OrderText" type="text" class="form-control" style="visibility:hidden" />
+                        </td>
+                        <td class="formValue">
+                            <input id="F_Pid" name="F_Pid" type="text" class="form-control" style="visibility:hidden" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="formValue">
+                            <input id="F_OrderType" name="F_OrderType" type="text" class="form-control" style="visibility:hidden" value="治疗" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="formValue">
+                            <input id="F_Id" name="F_Id" type="text" class="form-control" style="visibility:hidden" />
+                        </td>
+                    </tr>
+                </table>
+                
+            </div>
+
+
+            @*<div role="tabpanel" class="tab-pane" id="extend1">
+
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend2">
+
+            </div>*@
+        </div>
+    </div>
+</form>

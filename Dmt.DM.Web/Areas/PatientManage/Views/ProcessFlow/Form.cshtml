@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/PatientManage/ProcessFlow/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                }
+            });
+        }
+    });
+    function initControl() {
+       
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        $.submitForm({
+            url: "/PatientManage/ProcessFlow/SubmitForm?keyValue=" + keyValue,
+            param: $("#form1").formSerialize(),
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">透析时间</th>
+                <td class="formValue input-group">
+                    <input id="F_TotalHours" name="F_TotalHours" type="number" class="form-control required" placeholder="" />
+                    <span class="input-group-addon">h</span>
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle">透前体重</th>
+                <td class="formValue input-group">
+                    <input id="F_PreWeight" name="F_PreWeight" type="number" class="form-control required" placeholder="" />
+                    <span class="input-group-addon">Kg</span>
+                </td>
+                <th class="formTitle">透后体重</th>
+                <td class="formValue input-group">
+                    <input id="F_PostWeight" name="F_PostWeight" type="number" class="form-control required" placeholder="" />
+                    <span class="input-group-addon">Kg</span>
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle">透前Urea</th>
+                <td class="formValue input-group">
+                    <input id="F_PreUrea" name="F_PreUrea" type="number" class="form-control required" />
+                    <span class="input-group-addon">mmol/L</span>
+                </td>
+                <th class="formTitle">透后Urea</th>
+                <td class="formValue input-group">
+                    <input id="F_PostUrea" name="F_PostUrea" type="number" class="form-control required" />
+                    <span class="input-group-addon">mmol/L</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>

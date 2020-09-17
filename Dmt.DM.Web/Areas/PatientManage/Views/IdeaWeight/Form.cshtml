@@ -1,0 +1,220 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<script src="~/Content/js/jqgrid/jqgrid.min.js"></script>
+<link href="~/Content/js/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/js/jqgrid/grid.locale-cn.js"></script>
+
+<script>
+    var keyValue = $.request("keyValue");
+    if (!keyValue) {
+        keyValue = $.request("keyword");
+    }
+    var availableTags = [];
+    var itemlist = "";
+    var lastrow = -1;
+    var lastcell = -1;
+    $(function () {
+        initControl();
+        $("#F_Pid").val(keyValue);
+    });
+    function initControl() {
+        $.ajax({
+            url: "/PatientManage/QualityItem/GetAllJson",
+            dataType: "json",
+            async: false,
+            type: 'get',
+            success: function (data) {
+                itemlist = itemlist + '-1:';
+                $.each(data, function (index, item) {
+                    availableTags.push({ index, item });
+                    itemlist = itemlist + ';' + index + ':' + item.F_ItemName;
+                });
+            }
+        })
+        gridList(); 
+    }
+
+    var flagstr = '↑:偏高;-:-;↓:偏低;-:阴性;+:阳性';
+
+    function gridList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            url: "/PatientManage/QualityResult/GetResultModel",
+            height: $(window).height() - 128,
+            colModel: [
+                {
+                    label: '报告日期',
+                    name: 'F_ReportTime',
+                    width: 140,
+                    align: 'left',
+                    editable: true,
+                    editoptions: {
+                        //方式1
+                        dataInit: function (el) {
+                            $(el).click(function () {
+                                WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss' });
+                            });
+                        }
+                    }
+                },
+                { label: '项目ID', name: 'F_ItemId', hidden: true },
+                { label: '代码', name: 'F_ItemCode', width: 80, align: 'left' },
+                {
+                    label: '名称',
+                    name: 'F_ItemName',
+                    width: 120,
+                    align: 'left',
+                    editable: true,
+                    editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: itemlist }
+                },
+                {
+                    label: '结果',
+                    name: 'F_Result',
+                    width: 100,
+                    align: 'left',
+                    editable: true
+                },
+                {
+                    label: '标识',
+                    name: 'F_Flag',
+                    width: 60,
+                    align: 'left',
+                    editable: true,
+                    editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: flagstr }
+                    
+                },
+                { label: '单位', name: 'F_Unit', width: 80, align: 'left' },
+                //{
+                //    label: '备注',name: 'F_Memo', width: 300, align: 'left', editable: true
+                //}
+                {
+                    label: '结果',
+                    name: 'F_Memo',
+                    width: 100,
+                    align: 'left',
+                    editable: true
+                }
+            ],
+            viewrecords: true,
+            cellEdit: true,
+            cellsubmit: 'clientArray',
+            //cellurl: '/PatientManage/DialysisSchedule/SaveCellData',
+            autoScroll: true,
+            afterSaveCell: function (id, name, val, iRow, iCol) {
+                var id = $("#gridList").jqGrid("getCell", iRow, "F_Id");
+                //选择了项目 iCol = 4   修改了数量 iCol = 8
+                if (iCol == 4) {
+                    if (val == -1 || val == "") {
+                        //$("#grid-table").jqGrid('setCell', rowId, "virUseData", equip.virUseData);
+                        $("#gridList").jqGrid("setRowData", iRow, {
+                            F_ReportTime: null, F_ItemId: null, F_ItemCode: "", F_ItemName: "", F_Result: "", F_Flag: "-", F_Unit: "",  F_Memo: ""
+                        });
+                    } else {
+                        var dictitem = availableTags[val].item;
+                        $("#gridList").jqGrid("setRowData", iRow, {
+                            F_ItemId: dictitem.F_Id,
+                            F_ItemCode: dictitem.F_ItemCode,
+                            F_ItemName: dictitem.F_ItemName,
+                            F_Result: dictitem.F_Result,
+                            F_Flag: dictitem.F_Flag,
+                            F_Unit: dictitem.F_Unit,
+                            F_Memo: dictitem.F_Memo
+                        });
+                    }
+                } else if (iCol == 8) {
+                    //$("#gridList").jqGrid(
+                    //    "setCell", iRow,
+                    //    "F_TotalCharges",
+                    //    parseFloat(parseInt(val) * $("#gridList").jqGrid("getCell", iRow, iCol - 1)).toFixed(2)
+                    //)
+                }
+            },
+            beforeEditCell: function (rowid, cellname, v, iRow, iCol) {
+                lastrow = iRow;
+                lastcell = iCol;
+            }
+        });
+        //$("#btn_search").click(function () {
+        //    $gridList.jqGrid('setGridParam', {
+        //        postData: { keyword: currentPID, filterword: $("txt_keyword").val() },
+        //    }).trigger('reloadGrid');
+        //});
+    }
+
+    function btn_add() {
+        var $gridList = $("#gridList");
+        var ids = $gridList.jqGrid("getDataIDs");//得到jqgrid当前行数        
+        var rowid = Math.max.apply(Math, ids);//获得当前最大行号
+        var nextrowid = rowid + 1;
+        var dataRow = {
+            F_ReportTime: null, F_ItemCode: "", F_ItemName: "", F_Result: "", F_Flag: "-", F_Unit: "", F_Unit: "", F_Memo: ""
+        };
+        //将新添加的行插入到最后列
+        $gridList.jqGrid("addRowData", nextrowid, dataRow, "last");
+    }
+    function btn_delete() {
+        var selRowId = $("#gridList").jqGrid('getGridParam', 'selrow');
+        console.log(selRowId);
+        if (!!selRowId) {
+            $("#gridList").jqGrid("delRowData", selRowId);
+        }
+    }
+
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        var $gridList = $("#gridList");
+        $gridList.jqGrid("saveCell", lastrow, lastcell);//保存单元格，切换为文本模式
+
+        var ids = $gridList.getDataIDs();
+        var rows = [];
+        var data = [];
+        $(ids).each(function (i) {
+            rows.push($gridList.getRowData(i + 1));
+        })
+
+        $.each(rows, function (index, val) {
+            if (!!val.F_ItemCode && !!val.F_Result) {
+                data.push({
+                    F_ItemId: val.F_ItemId,
+                    F_ItemCode: val.F_ItemCode,
+                    F_Result: val.F_Result,
+                    F_ReportTime: val.F_ReportTime,
+                    F_Memo: val.F_Memo,
+                    F_Flag: val.F_Flag
+                });
+            }
+        });
+
+
+        $.submitForm({
+            url: "/PatientManage/QualityResult/SubmitForm",
+            param: { pid: keyValue, data: JSON.stringify(data) },
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <div class="operate">
+            <ul class="nav nav-pills">
+                <li><a onclick="btn_add()"><i class="fa fa-pencil-square-o"></i>增加</a></li>
+                <li><a onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除</a></li>
+                <li class="split"></li>
+            </ul>
+        </div>
+        <div class="gridPanel">
+            <table id="gridList"></table>
+        </div>
+    </div>
+</form>

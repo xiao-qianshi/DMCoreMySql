@@ -1,0 +1,248 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<script src="~/Content/js/jqgrid/jqgrid.min.js"></script>
+<link href="~/Content/js/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/js/jqgrid/grid.locale-cn.js"></script>
+<script>
+    var jsonobj = $.parseJSON($.request("keyword"));
+    var pid = jsonobj.pid;
+    var type = decodeURI(jsonobj.type);
+    var keyValue = "";
+    var availableTags = [];
+    var itemlist = "";
+    var lastrow = -1;
+    var lastcell = -1;
+    $(function () {
+        initControl();
+        gridList();
+    });
+    function initControl() {
+        getdict();
+        //$("#F_ImpClass").bindSelect();
+        //$("#F_ImpType").bindSelect();
+        //$("#F_ImpClass").attr('readonly', 'readonly');
+    }
+    function submitForm() {
+        var $gridList = $("#gridList");
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        $gridList.jqGrid("saveCell", lastrow, lastcell);//保存单元格，切换为文本模式
+
+        var ids = $gridList.getDataIDs();
+        var rows = [];
+        var details = [];
+        $(ids).each(function (i) {
+            rows.push($gridList.getRowData(i + 1));
+        })
+
+        var typeValue = type === '药品' ? 1 : (type === '耗材' ? 2 : (type === '诊疗' ? 3 : 0));
+
+        $.each(rows, function (index, val) {
+            if (!!val.F_ItemId) {
+                details.push({
+                    billType: typeValue,
+                    Amount: val.F_Amount,
+                    ItemId: val.F_ItemId
+                });
+            }
+        });
+
+
+        if (details.length == 0) {
+            $.modalAlert("请添加项目！", "error");
+            return false;
+        }
+
+        $.submitForm({
+            url: "/PatientManage/Billing/SubmitForm",
+            param: { patientId: pid, items: details },
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        });
+    }
+
+    
+
+    function gridList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            url: "/PatientManage/Billing/GetFeeModel?keyword=" + type,
+            height: $(window).height() - 48,
+            colModel: [
+                { label: '项目ID', name: 'F_ItemId', hidden: true },
+                { label: '类别', name: 'F_ItemClass', hidden: true },
+                { label: '代码', name: 'F_ItemCode', width: 100, align: 'left' },
+                {
+                    label: '名称',
+                    name: 'F_ItemName',
+                    width: 200,
+                    align: 'left',
+                    editable: true,
+                    editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: itemlist }
+                },
+                { label: '规格', name: 'F_ItemSpec', width: 60, align: 'left' },
+                { label: '单位', name: 'F_ItemUnit', width: 50, align: 'left' },
+                { label: '价格', name: 'F_Charges', width: 50, align: 'left' },
+                {
+                    label: '数量', name: 'F_Amount', width: 50, align: 'left', editable: true, formatter: 'integer',
+                    formatoptions: { thousandSeparator: ',', defaulValue: 1 }
+                },
+                { label: '金额', name: 'F_Costs', width: 50, align: 'left' },
+                { label: '供应商', name: 'F_Supplier', width: 200, align: 'left' }
+            ],
+            viewrecords: true,
+            cellEdit: true,
+            cellsubmit: 'clientArray',
+            autoScroll: true,
+            afterSaveCell: function (id, name, val, iRow, iCol) {
+                //选择了项目 iCol = 4   修改了数量 iCol = 8
+                if (iCol == 4) {
+                    if (val == -1 || val == "") {
+                        $("#gridList").jqGrid("setRowData", iRow, {
+                            F_ItemId: "", F_ItemCode: "", F_ItemName: "", F_ItemSpec: "", F_ItemUnit: "", F_Charges: 0, F_Amount: 1, F_Costs: 0
+                        });
+                    } else {
+                        var item = availableTags[val].item;
+                        $("#gridList").jqGrid("setRowData", iRow, {
+                            F_ItemId: item.F_ItemId,
+                            F_ItemCode: item.F_ItemCode,
+                            F_ItemName: item.F_ItemName,
+                            F_ItemSpec: item.F_ItemSpec,
+                            F_ItemUnit: item.F_ItemUnit,
+                            F_Charges: item.F_Charges,
+                            F_Amount: 1,
+                            F_Costs: parseFloat(item.F_Charges).toFixed(2)
+                        });
+                    }
+                } else if (iCol == 8) {
+                    $("#gridList").jqGrid(
+                        "setCell", iRow,
+                        "F_Costs",
+                        parseFloat(parseInt(val) * $("#gridList").jqGrid("getCell", iRow, iCol - 1)).toFixed(2)
+                    )
+                }
+            },
+            beforeEditCell: function (rowid, cellname, v, iRow, iCol) {
+                lastrow = iRow;
+                lastcell = iCol;
+            }
+        });
+    }
+    function btn_add() {
+        var $gridList = $("#gridList");
+        var ids = $gridList.jqGrid("getDataIDs");//得到jqgrid当前行数
+        var rowid = Math.max.apply(Math, ids);//获得当前最大行号
+        var nextrowid = rowid + 1;
+        var dataRow = {
+            F_ItemClass: type, F_ItemId: "", F_ItemCode: "", F_ItemSpec: "", F_ItemUnit: "", F_Charges: 0, F_Amount: 1, F_Costs: 0
+        };
+        //将新添加的行插入到最后列
+        $gridList.jqGrid("addRowData", nextrowid, dataRow, "last");
+    }
+    function btn_delete() {
+        var selRowId = $("#gridList").jqGrid('getGridParam', 'selrow');
+        console.log(selRowId);
+        if (!!selRowId) {
+            //var deleteid = $("#gridList").jqGridRowValue().F_Id;
+            $("#gridList").jqGrid("delRowData", selRowId);
+        }
+    }
+   
+    function getdict() {
+        if (type == '药品') {
+            $.ajax({
+                url: "/PatientManage/Drugs/GetListJson",
+                dataType: "json",
+                async: false,
+                type: 'get',
+                success: function (data) {
+                    itemlist = itemlist + '-1:';
+                    $.each(data, function (index, elem) {
+                        var item = {};
+                        item.F_ItemId = elem.F_Id;
+                        item.F_ItemCode = elem.F_DrugCode;
+                        item.F_ItemName = elem.F_DrugName;
+                        item.F_ItemSpec = elem.F_DrugSpec;
+                        item.F_ItemUnit = elem.F_DrugUnit;
+                        item.F_Charges = elem.F_Charges;
+                        //item.F_Amount = elem.F_DrugCode;
+                        //item.F_Costs = elem.F_DrugCode;
+                        //item.F_Supplier = elem.F_DrugCode;
+                        availableTags.push({ index, item });
+                        itemlist = itemlist + ';' + index + ':' + item.F_ItemName + '   ' + item.F_ItemSpec;
+                    });
+                }
+            })
+        } else if (type == '诊疗') {
+            $.ajax({
+                url: "/PatientManage/Treatment/GetListJson",
+                dataType: "json",
+                async: false,
+                type: 'get',
+                success: function (data) {
+                    itemlist = itemlist + '-1:';
+                    $.each(data, function (index, elem) {
+                        var item = {};
+                        item.F_ItemId = elem.F_Id;
+                        item.F_ItemCode = elem.F_TreatmentCode;
+                        item.F_ItemName = elem.F_TreatmentName;
+                        item.F_ItemSpec = elem.F_TreatmentSpec;
+                        item.F_ItemUnit = elem.F_TreatmentUnit;
+                        item.F_Charges = elem.F_Charges;
+                        //item.F_Amount = elem.F_DrugCode;
+                        //item.F_Costs = elem.F_DrugCode;
+                        //item.F_Supplier = elem.F_DrugCode;
+                        availableTags.push({ index, item });
+                        itemlist = itemlist + ';' + index + ':' + item.F_ItemName + '   ' + item.F_ItemSpec;
+                    });
+                }
+            })
+        } else if (type == '耗材') {
+            $.ajax({
+                url: "/PatientManage/Material/GetListJson",
+                dataType: "json",
+                async: false,
+                type: 'get',
+                success: function (data) {
+                    itemlist = itemlist + '-1:';
+                    $.each(data, function (index, elem) {
+                        var item = {};
+                        item.F_ItemId = elem.F_Id;
+                        item.F_ItemCode = elem.F_MaterialCode;
+                        item.F_ItemName = elem.F_MaterialName;
+                        item.F_ItemSpec = elem.F_MaterialSpec;
+                        item.F_ItemUnit = elem.F_MaterialUnit;
+                        item.F_Charges = elem.F_Charges;
+                        //item.F_Amount = elem.F_DrugCode;
+                        //item.F_Costs = elem.F_DrugCode;
+                        //item.F_Supplier = elem.F_DrugCode;
+                        availableTags.push({ index, item });
+                        itemlist = itemlist + ';' + index + ':' + item.F_ItemName + '   ' + item.F_ItemSpec;
+                    });
+                }
+            })
+        }
+        return itemlist;
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <div class="operate">
+            <ul class="nav nav-pills">
+                <li><a onclick="btn_add()"><i class="fa fa-pencil-square-o"></i>增加</a></li>
+                <li><a onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除</a></li>
+                <li class="split"></li>
+            </ul>
+        </div>
+        <div class="gridPanel">
+            <table id="gridList"></table>
+        </div>
+    </div>
+</form>

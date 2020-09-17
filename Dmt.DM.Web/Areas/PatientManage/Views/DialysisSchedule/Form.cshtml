@@ -1,0 +1,240 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    var params = {};
+    var dialysisTypeOptions = [];
+    var changeRows = [];
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            params = $.parseJSON(decodeURI(keyValue));
+            params.startDate = $("#startDate").val();
+            params.endDate = $("#endDate").val();
+            $.ajax({
+                url: "/PatientManage/DialysisSchedule/GetHistoryListJson",
+                data: { keyword: JSON.stringify(params) },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    resetTable(data);
+                }
+            });
+        }
+    });
+    function resetTable(data) {
+        var $table = $("#historyTable");
+        $table.find('tr').remove();
+        if (data.length > 0) {
+            //$("#pid").select2("val", data[0].F_PId);
+            $("#pid").val(data[0].F_PId).trigger("change");
+            //$("#pid").val(data[0].F_PId);
+            //var $pidselect = $("#pid");
+            //console.log(data[0].F_PId);
+            //$pidselect.val(data[0].F_PId);
+            data.forEach(function (value) {
+                //$target.append('<tr id=""');
+                var strtemp = '<tr id="' + value.F_Id + '">';
+                strtemp = strtemp + '<td class="formValue">';
+                strtemp = strtemp + '<input type="text" autocomplete="off" class="form-control input-wdatepicker" value="' + value.F_VisitDate + '"/>';
+                strtemp = strtemp + '</td>';
+                strtemp = strtemp + '<td class="formValue">';
+                strtemp = strtemp + '<input type="text" class="form-control" value="第' + value.F_VisitNo + '班"/>';
+                strtemp = strtemp + '</td>';
+                strtemp = strtemp + '<td class="formValue">';
+                strtemp = strtemp + '<input type="text" class="form-control" value="床号：' + value.F_GroupName + value.F_DialysisBedNo + '"/>';
+                strtemp = strtemp + '</td>';
+                strtemp = strtemp + '<td class="formValue">';
+                strtemp = strtemp + '<select type="text" class="form-control"></select>';
+                strtemp = strtemp + '</td>';
+                strtemp = strtemp + '</tr>';
+                $table.append(strtemp);
+                var $target = $("#" + value.F_Id).find('select');
+                $target.bindSelect({
+                    data: dialysisTypeOptions,
+                    change: function () {
+                        var id = $target.parent().parent()[0].id;
+                        var value = $target.val();
+                        var flag = false;
+                        changeRows.forEach(function (item) {
+                            if (item.id === id) {
+                                item.value = value;
+                                flag = true;
+                                return;
+                            }
+                        })
+                        if (!flag) changeRows.push({ id: id, value: value });
+                    }
+                });
+                $target.val(value.F_DialysisType).trigger("change");
+            });
+            $table.find('input').attr('readonly', 'readonly');
+        }
+    }
+    function initControl() {
+        var year = new Date().getFullYear();
+        var month = new Date().getMonth() + 1;
+        var day = new Date().getDate();
+        var date1 = 0;
+        if (new Date().getDay() == 0) {  //周天的情况；
+            date1 = (new Date(year + '/' + month + '/' + day)).getTime() - ((new Date().getDay()) + 6) * 86400000;
+        } else {
+            date1 = (new Date(year + '/' + month + '/' + day)).getTime() - ((new Date().getDay()) - 1) * 86400000;
+        }
+        //最近三个星期
+        $("#startDate").val(new Date(date1 - 7 * 86400000).Format("yyyy-MM-dd"));
+        $("#endDate").val(new Date(date1 + (7 + 6) * 86400000).Format("yyyy-MM-dd"));
+
+        //$("#pid").bindSelect({
+        //    url: "/PatientManage/Patient/GetSelectJson",
+        //    id: "id",
+        //    text: "text",
+        //    search: true,
+        //    change: function () {}
+        //});
+
+        $.ajax({
+            url: "/PatientManage/Patient/GetSelectJson",
+            dataType: "json",
+            async: false,
+            success: function(data) {
+                //dialysisTypeOptions = data;
+                if ($.isArray(data)) {
+                    data.unshift({ id: '', name: '请选择', recordNo: '', py: '' });
+                    var tags = [];
+                    $.each(data,
+                        function(index, value) {
+                            tags.push({ id: value.id, text: value.name + '(' + value.py + ')' });
+                        });
+                    $("#pid").bindSelect({
+                        data: tags,
+                        search: true,
+                        change: function() {}
+                    });
+                }
+            }
+        });
+
+        $.ajax({
+            url: "/SystemManage/ItemsData/GetSelectJson?enCode=DialysisType",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                dialysisTypeOptions = data;
+            }
+        })
+
+        $("#btn_query").on('click', function () {
+            if (changeRows.length > 0) {
+                //$.modalConfirm("是否保存数据？", function (flag) {
+                //    if (flag) {
+                //        $.ajax({
+                //            url: "/PatientManage/DialysisSchedule/UpdateBatch",
+                //            data: {
+                //                keyValue: JSON.stringify(changeRows)
+                //            },
+                //            type: "post",
+                //            dataType: "json",
+                //            success: function (data) {
+                //                if (data.state == "success") {
+                //                    $.modalMsg(data.message, data.state);
+                //                } else {
+                //                    $.modalAlert(data.message, data.state);
+                //                }
+                //            }
+                //        })
+                //    }
+                //    changeRows = [];
+                //})
+                $.ajax({
+                    url: "/PatientManage/DialysisSchedule/UpdateBatch",
+                    data: {
+                        keyValue: JSON.stringify(changeRows)
+                    },
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.state == "success") {
+                            //$.modalMsg(data.message, data.state);
+                        } else {
+                            $.modalAlert(data.message, data.state);
+                        }
+                    }
+                })
+
+                changeRows = [];
+            }
+            //查询新数据
+            params.pid = $("#pid").val();
+            if (params.pid == null || params.pid == "") {
+                $.modalAlert("请选择患者！","warning");
+                return;
+            }
+            params.startDate = $("#startDate").val();
+            params.endDate = $("#endDate").val();
+            $.ajax({
+                url: "/PatientManage/DialysisSchedule/GetHistoryListJson",
+                data: { keyword: JSON.stringify(params) },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    resetTable(data);
+                }
+            });
+        })
+    }
+    function submitForm() {
+        $.submitForm({
+            url: "/PatientManage/DialysisSchedule/UpdateBatch",
+            param: {
+                keyValue: JSON.stringify(changeRows)
+            },
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+    Date.prototype.Format = function (fmt) { //author: meizz
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">患者姓名</th>
+                <td class="formValue">
+                    <select id="pid" name="pid" type="text" class="form-control" placeholder="请选择患者"></select>
+                </td>
+                <td class="formValue">
+                    <input id="startDate" name="startDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({maxDate:'%y-%M-%d'})" placeholder="起始日期" autocomplete="off"/>
+                </td>
+                <td class="formValue">
+                    <input id="endDate" name="endDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({minDate:'%y-%M-%d'})" placeholder="截至日期" autocomplete="off"/>
+                </td>
+                <td class="formValue">
+                    <div class="btn-group">
+                        <a id="btn_query" class="btn btn-primary dropdown-text"><i class="fa fa-search"></i>查询</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div style="margin-top: 10px; margin-left: 30px; margin-right: 60px;">
+            <table class="form" id="historyTable"></table>
+        </div>
+    </div>
+</form>

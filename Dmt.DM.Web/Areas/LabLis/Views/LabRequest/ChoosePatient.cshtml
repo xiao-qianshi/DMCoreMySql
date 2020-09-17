@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    var patientOptions = [];
+    var selectedIds = [];
+    $(function () {
+        initControl();
+        //if (!!keyValue) {
+        //    $("#patient").val(keyValue);
+        //}
+    });
+    function initControl() {
+        $.ajax({
+            url: "/PatientManage/Patient/GetSelectJson",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                patientOptions = data;
+                var tags = [];
+                refreshTable(data);
+            }
+        });
+
+        $("#btn-selectall").on('click', function () {
+            $("#selectTable").find("input[type=checkbox]").prop('checked', true);
+        });
+        $("#btn-clearall").on('click', function () {
+            $("#selectTable").find("input[type=checkbox]").prop('checked', false);
+        });
+        $("#time_horizon a.btn-default").on('click', function (e) {
+            $("#time_horizon a.btn-default").removeClass("active");
+            $(this).addClass("active");
+            var tempValue = $(this).attr('data-value');
+            if (tempValue == '1') {
+                refreshTable(patientOptions);
+            } else if (tempValue == '2') {
+                refreshTable($.grep(patientOptions, function (el) {
+                    return el.beInfected == true;
+                }));
+            } else if (tempValue == '3') {
+                refreshTable($.grep(patientOptions, function (el) {
+                    return el.beInfected == false;
+                }));
+            }
+        });
+    }
+
+    function refreshTable(data) {
+        if (data instanceof Array) {
+            if (data.length === 0) {
+                return false;
+            }
+            var $table = $("#selectTable");
+            $table.html();
+            var htmlstr = "";
+            $.each(data, function (index, item) {
+                if (index % 5 == 0) {
+                    if (index == 0) {
+                        htmlstr = htmlstr + "<tr>";
+                    }
+                    else {
+                        htmlstr = htmlstr + "</tr><tr>";
+                    }
+                }
+                htmlstr = htmlstr + "<td class=\"formValue\" style=\"padding-top: 1px;\"><div class=\"ckbox\"><input id=\"check" + item.id + "\" name=\"check" + item.id + "\" type=\"checkbox\"  value=\"" + item.id + "\"><label for=\"check" + item.id + "\">" + item.name + "  No." + item.recordNo + "</label></div></td>";                
+            });
+            htmlstr = htmlstr + "</tr>";
+            $table.html(htmlstr);
+            $table.find("input[type=checkbox]").on('click', function (e) {
+                //$table.find("input[type=checkbox]:checked").prop('checked', false);
+                //$(this).prop('checked', true);
+                //$("#patient").val($(this).val()).trigger('change');
+            })
+        }
+    }
+
+    function submitForm() {
+        selectedIds = [];
+        var arrtemp = [];
+        $.each($("#selectTable").find('input[type=checkbox]:checked'), function (i, v) {
+            //var id = v.val();
+            //$.inArray(id,)
+            arrtemp.push(v.defaultValue);
+        });
+        if (arrtemp.length === 0) {
+            $.modalMsg("请勾选患者!", 'warning');
+            return false;
+        } else {
+            $.each(patientOptions, function (index, value) {
+                if ($.inArray(value.id, arrtemp) >= 0) {
+                    selectedIds.push(value);
+                }
+            });
+        }
+        $.currentWindow().setpatients(selectedIds);
+        $.modalClose();
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 5px; margin-left: 10px; margin-right: 10px;">
+        @*<table class="form">
+            <tr>
+            </tr>
+        </table>*@
+        <div>
+            <div style="float: left;margin-left: 50px;">
+                @*<div class="ckbox">
+                    <input type="checkbox" id="ck-yx" /><label for="ck-yx">是否阳性患者</label>
+                </div>*@
+                <div id="time_horizon" class="btn-group">
+                    <a class="btn btn-default active" data-value="1">全部</a>
+                    <a class="btn btn-default" data-value="2">阳性</a>
+                    <a class="btn btn-default" data-value="3">阴性</a>
+                </div>
+            </div>
+            <div style="float: right;">
+                <a class="btn btn-primary" id="btn-selectall">全选</a>
+                <a class="btn btn-primary" style="margin-right: 60px;" id="btn-clearall">反选</a>
+            </div>
+        </div>
+
+        <table id="selectTable" class="form" style="margin-top: 10px;">
+        </table>
+    </div>
+</form>

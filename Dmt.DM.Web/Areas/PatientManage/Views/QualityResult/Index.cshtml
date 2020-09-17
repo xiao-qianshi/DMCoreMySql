@@ -1,0 +1,271 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+<script src="~/Content/js/datepicker/WdatePicker.js"></script>
+
+<script>
+    var currentPID = "";
+    $(function() {
+        $("#F_ResultType").bindSelect();
+        $.ajax({
+            url: "/PatientManage/Patient/GetSelectJson",
+            dataType: "json",
+            async: false,
+            success: function(data) {
+                var tags = [];
+                var first = {};
+                first.id = "";
+                first.text = "";
+                tags.push(first);
+                $.each(data,
+                    function(index, item) {
+                        var obj = {};
+                        obj.id = item.id;
+                        obj.text = item.name + "[" + item.py + "]";
+                        tags.push(obj);
+                    }
+                );
+
+                $("#F_ParentId").bindSelect({
+                    search: true,
+                    data: tags,
+                    change: function(e) {
+                        currentPID = e.id;
+                        $("#gridList").jqGrid('setGridParam',
+                            {
+                                postData: {
+                                    queryJson: createParms()
+                                }
+                            }).trigger('reloadGrid');
+                    }
+                });
+            }
+        });
+        gridList();
+    })
+
+    function gridList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            url: "/PatientManage/QualityResult/GetGridJson",
+            height: $(window).height() - 128,
+            colModel: [
+                { label: '主键', name: 'F_Id', hidden: true },
+                {
+                    label: '标本日期',
+                    name: 'F_ReportTime',
+                    width: 120,
+                    align: 'left',
+                    formatter: "time",
+                    formatoptions: { srcformat: 'Y-m-d h:m:s', newformat: 'Y-m-d h:m' }
+                },
+                { label: '代码', name: 'F_ItemCode', width: 80, align: 'left' },
+                { label: '名称', name: 'F_ItemName', width: 120, align: 'left' },
+                {
+                    label: '结果',
+                    name: 'F_Result',
+                    width: 100,
+                    align: 'left',
+                    formatter: function(value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                { label: '标识', name: 'F_Flag', width: 60, align: 'left' },
+                { label: '单位', name: 'F_Unit', width: 80, align: 'left' },
+                { label: '参考下限', name: 'F_LowerValue', width: 80, align: 'left' },
+                { label: '参考上限', name: 'F_UpperValue', width: 80, align: 'left' },
+                { label: '危急值下限', name: 'F_LowerCriticalValue', width: 80, align: 'left' },
+                { label: '危急值上限', name: 'F_UpperCriticalValue', width: 80, align: 'left' },
+                { label: '结果类型', name: 'F_ResultType', hidden: true },
+                { label: '备注', name: 'F_Memo', width: 300, align: 'left' },
+                {
+                    label: '最后修改日期',
+                    name: 'F_LastModifyTime',
+                    width: 80,
+                    align: 'left',
+                    formatter: "date",
+                    formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                }
+            ],
+            pager: "#gridPager",
+            sortname: 'F_ReportTime desc',
+            viewrecords: true
+        });
+        $("#btn_search").click(function() {
+            $gridList.jqGrid('setGridParam',
+                {
+                    postData: {
+                        queryJson: createParms()
+                    }
+                }).trigger('reloadGrid');
+        });
+    }
+
+    function changeCellColor(value, options, rowData) {
+        if (!!value) {
+            if (!isNaN(value)) {
+                if (true /*rowData.F_ResultType*/) {
+                    if (!!rowData.F_LowerValue && !isNaN(rowData.F_LowerValue)) {
+                        if (value <= rowData.F_LowerValue) {
+                            return '<b style="color:#87ceeb">' + value + '</b>'
+                        }
+                    }
+                    if (!!rowData.F_UpperValue && !isNaN(rowData.F_UpperValue)) {
+                        if (value >= rowData.F_UpperValue) {
+                            return '<b style="color:#eba589">' + value + '</b>'
+                        }
+                    }
+                }
+            }
+        }
+        return value;
+    }
+
+    function btn_add() {
+        if (!!currentPID) {
+            $.modalOpen({
+                id: "Form",
+                title: "新建报告单",
+                url: "/PatientManage/QualityResult/Form?keyword=" + currentPID, //encodeURI(JSON.stringify(selectedValues)),
+                width: "800px",
+                height: "600px",
+                callBack: function(iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
+            });
+        } else {
+            $.modalMsg('请选择患者！', 'warning');
+        }
+    }
+    
+    function btn_delete() {
+        $.deleteForm({
+            url: "/PatientManage/QualityResult/DeleteForm",
+            param: { keyValue: $("#gridList").jqGridRowValue().F_Id },
+            success: function() {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        });
+    }
+
+    function btn_disabled() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.modalConfirm("注：您确定要【停用】该项吗？",
+                function(r) {
+                    if (r) {
+                        $.submitForm({
+                            url: "/PatientManage/QualityResult/DisableForm",
+                            param: { keyValue: keyValue },
+                            success: function() {
+                                $.currentWindow().$("#gridList").trigger("reloadGrid");
+                            }
+                        });
+                    }
+                });
+        }
+       
+    }
+
+    function btn_enabled() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.modalConfirm("注：您确定要【启用】该项吗？",
+                function(r) {
+                    if (r) {
+                        $.submitForm({
+                            url: "/PatientManage/QualityResult/EnabledForm",
+                            param: { keyValue: keyValue },
+                            success: function() {
+                                $.currentWindow().$("#gridList").trigger("reloadGrid");
+                            }
+                        });
+                    }
+                });
+        }
+       
+    }
+
+    function createParms() {
+        var postData = {};
+        postData.patientId = $("#F_ParentId").val();
+        var resultType = $("#F_ResultType").val(); 
+        if (!!resultType) {
+            postData.resultType = resultType;
+        }
+        var startDate = $("#startDate").val();
+        if (!!startDate) {
+            postData.startDate = startDate;
+        }
+        var endDate = $("#endDate").val();
+        if (!!endDate) {
+            postData.endDate = endDate;
+        }
+        return JSON.stringify(postData);
+    }
+
+</script>
+
+<div class="topPanel">
+    <div class="toolbar">
+        <div class="btn-group">
+            <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
+        <div class="btn-group">
+            <a id="NF-add" authorize="yes" class="btn btn-primary dropdown-text" onclick="btn_add()"><i class="fa fa-plus"></i>新建报告</a>
+        </div>
+        <div class="operate">
+            <ul class="nav nav-pills">
+                <li class="first">已选中<span>1</span>项</li>
+                <li><a id="NF-delete" authorize="yes" onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除</a></li>
+                <li class="split"></li>
+                <li><a id="NF-disabled" authorize="yes" onclick="btn_disabled()"><i class="fa fa-stop-circle"></i>禁用</a></li>
+                <li><a id="NF-enabled" authorize="yes" onclick="btn_enabled()"><i class="fa fa-play-circle"></i>启用</a></li>
+            </ul>
+            <a href="javascript:;" class="close"></a>
+        </div>
+        <script>$('.toolbar').authorizeButton()</script>
+    </div>
+    <div class="search">
+        <table>
+            <tr>
+                <td>
+                    <div class="input-group" style="width: 135px;">
+                        <select id="F_ParentId" name="F_ParentId" class="form-control" placeholder="选择患者"></select>
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group" style="padding-left: 10px;width: 100px;">
+                        <select id="F_ResultType" name="F_ResultType" class="form-control" placeholder="选择类别">
+                            <option value="">全部</option>
+                            <option value="临检">临检</option>
+                            <option value="生化">生化</option>
+                            <option value="免疫">免疫</option>
+                            <option value="分子发光">分子发光</option>
+                            <option value="微生物">微生物</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                </td>
+                <td style="padding-left: 10px;">
+                    <div class="input-group"  style="padding-left: 10px;">
+                        <input id="startDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker()" placeholder="起始日期" autocomplete="off" style="width: 100px; margin-right: 5px;" />
+                        <input id="endDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({maxDate:'%y-%M-%d'})" placeholder="截至日期" autocomplete="off" style="width: 100px; margin-right: 1px;" />
+                        <span class="input-group-btn">
+                            <button id="btn_search" type="button" class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </td>
+               
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridList"></table>
+    <div id="gridPager"></div>
+</div>

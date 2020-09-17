@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>Dmt.DM.Domain</AssemblyName>
+    <RootNamespace>Dmt.DM.Domain</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Dmt.DM.Data\Dmt.DM.Data.csproj" />
+  </ItemGroup>
+
+</Project>

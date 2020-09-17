@@ -1,0 +1,328 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    //var keyValue = $.request("keyValue");
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/PatientManage/QualityItem/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                    //$("#F_UserPassword").val("******").attr('disabled', 'disabled');
+                }
+            });
+
+            $.ajax({
+                url: "/PatientManage/QualityItem/GetPartitionListJson",
+                data: { keyword: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if ($.isArray(data)) {
+                        var htmlstr = '';
+                        $.each(data, function (index, value) {
+                            htmlstr = htmlstr + '\
+                                <tr>\
+                                    <th class="formTitle">序号</th>\
+                                    <td class="formValue">\
+                                        <input type="number" class="form-control" placeholder="" value="'+ value.orderNo + '"/>\
+                                    </td>\
+                                    <td class="formValue">\
+                                        <select type="text" class="form-control">\
+                                            <option value=true  '+ (value.lowerCheck ? 'selected' : '') + '>包含</option>\
+                                            <option value=false  '+ (value.lowerCheck ? '' : 'selected') + '>不包含</option>\
+                                        </select>\
+                                    </td>\
+                                    <td class="formValue">\
+                                        <input type="number" class="form-control" placeholder="下限" value="'+ value.lowerValue + '"/>\
+                                    </td>\
+                                    <td class="formValue">\
+                                        <select type="text" class="form-control">\
+                                             <option value=true  '+ (value.upperCheck ? 'selected' : '') + '>包含</option>\
+                                            <option value=false  '+ (value.upperCheck ? '' : 'selected') + '>不包含</option>\
+                                        </select>\
+                                    </td>\
+                                    <td class="formValue">\
+                                        <input type="number" class="form-control" placeholder="上限" value="'+ value.upperValue + '"/>\
+                                    </td>\
+                                    <td class="formValue">\
+                                        <i class="fa fa-trash-o" style="font-size: 20px;margin-right: 12px;"></i>\
+                                    </td>\
+                                </tr>\
+                                ';
+                        });
+
+                        var tableTarget = $("#table-partition");
+                        tableTarget.html(htmlstr);
+                        tableTarget.find('select').bindSelect();
+                        tableTarget.find('i.fa-trash-o').click(function (e) {
+                            $(e.currentTarget).parent().parent().remove();
+                        });
+
+                    };
+                }
+            });
+        }
+    });
+    function initControl() {
+        $("#F_ItemType").bindSelect();
+        $("#F_ResultType").bindSelect();
+        var tableTarget = $("#table-partition");
+        tableTarget.find('select').bindSelect();
+        tableTarget.find('i.fa-trash-o').click(function (e) {
+            //console.log(e);
+            $(e.currentTarget).parent().parent().remove();
+        });
+        $("i.fa-plus").on('click', function (e) {
+            console.log(e);
+            tableTarget.append('\
+                        <tr>\
+                            <th class="formTitle">序号</th>\
+                            <td class="formValue">\
+                                <input type="number" class="form-control" placeholder="" />\
+                            </td>\
+                            <td class="formValue">\
+                                <select type="text" class="form-control">\
+                                    <option value=true>包含</option>\
+                                    <option value=false>不包含</option>\
+                                </select>\
+                            </td>\
+                            <td class="formValue">\
+                                <input type="number" class="form-control" placeholder="下限" />\
+                            </td>\
+                            <td class="formValue">\
+                                <select type="text" class="form-control">\
+                                    <option value=false>不包含</option>\
+                                    <option value=true>包含</option>\
+                                </select>\
+                            </td>\
+                            <td class="formValue">\
+                                <input type="number" class="form-control" placeholder="上限" />\
+                            </td>\
+                            <td class="formValue">\
+                                <i class="fa fa-trash-o" style="font-size: 20px;margin-right: 12px;"></i>\
+                            </td>\
+                        </tr>\
+                        ');
+            tableTarget.find('tr:last').find('select').bindSelect();
+            tableTarget.find('tr:last').find('i.fa-trash-o').click(function (e) {
+                $(e.currentTarget).parent().parent().remove();
+            });
+        });
+    }
+
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        var arr = [];
+        $.each($("#table-partition").find('tr'), function (index, value) {
+            var inputs = $(value).find('input');
+            var lowerValue = $(inputs[1]).val();
+            var upperValue = $(inputs[2]).val();
+            if (!!lowerValue || !!upperValue) {
+                var orderNo = $(inputs[0]).val();
+                if (orderNo === '' || orderNo == null) orderNo = 99;
+                var selects = $(value).find('select');
+                arr.push({
+                    orderNo: orderNo,
+                    lowerCheck: $(selects[0]).val(),
+                    lowerValue: lowerValue,
+                    upperCheck: $(selects[1]).val(),
+                    upperValue: upperValue
+                });
+            }
+        });
+
+        var defaults = {
+            url: "/PatientManage/QualityItem/SubmitForm",
+            param: {
+                entity: $("#form1").formSerialize(),
+                keyValue: keyValue,
+                partitions: arr
+            },
+            loading: "正在提交数据...",
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            },
+            close: true
+        };
+        var options = $.extend(defaults, options);
+        $.loading(true, options.loading);
+        window.setTimeout(function () {
+            if ($('[name=__RequestVerificationToken]').length > 0) {
+                options.param["__RequestVerificationToken"] = $('[name=__RequestVerificationToken]').val();
+            }
+            $.ajax({
+                url: options.url,
+                data: JSON.stringify(options.param),
+                type: "post",
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data.state == "success") {
+                        options.success(data);
+                        $.modalMsg(data.message, data.state);
+                        if (options.close == true) {
+                            $.modalClose();
+                        }
+                    } else {
+                        $.modalAlert(data.message, data.state);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $.loading(false);
+                    $.modalMsg(errorThrown, "error");
+                },
+                beforeSend: function () {
+                    $.loading(true, options.loading);
+                },
+                complete: function () {
+                    $.loading(false);
+                }
+            });
+        }, 500);
+
+        //$.submitForm({
+        //    url: "/PatientManage/QualityItem/SubmitForm?keyValue=" + keyValue,
+        //    param: {
+        //        entity: $("#form1").formSerialize(),
+        //        partition: JSON.stringify(arr)
+        //    },
+        //    success: function () {
+        //        $.currentWindow().$("#gridList").trigger("reloadGrid");
+        //    }
+        //})
+        
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+            <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">统计分区</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">代码</th>
+                        <td class="formValue">
+                            <input id="F_ItemCode" name="F_ItemCode" type="text" class="form-control required" />
+                        </td>
+                        <th class="formTitle">名称</th>
+                        <td class="formValue">
+                            <input id="F_ItemName" name="F_ItemName" type="text" class="form-control required" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">对照码</th>
+                        <td class="formValue">
+                            <input id="F_HisItemCode" name="F_HisItemCode" type="text" class="form-control" placeholder="关联His结果对应码" />
+                        </td>
+                        <th class="formTitle">单位</th>
+                        <td class="formValue">
+                            <input id="F_Unit" name="F_Unit" type="text" class="form-control required" placeholder="" />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th class="formTitle">参考下限</th>
+                        <td class="formValue">
+                            <input id="F_LowerValue" name="F_LowerValue" type="number" class="form-control" placeholder="" />
+                        </td>
+                        <th class="formTitle">参考上限</th>
+                        <td class="formValue">
+                            <input id="F_UpperValue" name="F_UpperValue" type="number" class="form-control" placeholder="" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">危机值下限</th>
+                        <td class="formValue">
+                            <input id="F_LowerCriticalValue" name="F_LowerCriticalValue" type="number" class="form-control" placeholder="" />
+                        </td>
+                        <th class="formTitle">危急值上限</th>
+                        <td class="formValue">
+                            <input id="F_UpperCriticalValue" name="F_UpperCriticalValue" type="number" class="form-control" placeholder="" />
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">类别</th>
+                        <td class="formValue">
+                            <select id="F_ItemType" name="F_ItemType" type="text" class="form-control required">
+                                <option value="临检">临检</option>
+                                <option value="生化">生化</option>
+                                <option value="免疫">免疫</option>
+                                <option value="分子发光">分子发光</option>
+                                <option value="微生物">微生物</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">显示顺序</th>
+                        <td class="formValue">
+                            <input id="F_OrderNo" name="F_OrderNo" type="number" class="form-control" placeholder="" />
+                        </td>
+                        <th class="formTitle">结果类型</th>
+                        <td class="formValue">
+                            <select id="F_ResultType" name="F_ResultType" type="text" class="form-control">
+                                <option value=true>定量</option>
+                                <option value=false>定性</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            备注
+                        </th>
+                        <td class="formValue" colspan="3">
+                            <textarea id="F_Memo" name="F_Memo" class="form-control" style="height: 60px;" placeholder=""></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend">
+                <div style="position: absolute; bottom: 65px; right: 15px;">
+                    <i class="fa fa-plus" style="font-size: 30px;margin-right: 15px;"></i>
+                </div>
+                <table class="form" id="table-partition">
+                    <tr>
+                        <th class="formTitle">序号</th>
+                        <td class="formValue">
+                            <input type="number" class="form-control" placeholder="" />
+                        </td>
+                        <td class="formValue">
+                            <select type="text" class="form-control">
+                                <option value=true>包含</option>
+                                <option value=false>不包含</option>
+                            </select>
+                        </td>
+                        <td class="formValue">
+                            <input type="number" class="form-control" placeholder="下限" />
+                        </td>
+                        <td class="formValue">
+                            <select type="text" class="form-control">
+                                <option value=false>不包含</option>
+                                <option value=true>包含</option>
+                            </select>
+                        </td>
+                        <td class="formValue">
+                            <input type="number" class="form-control" placeholder="上限" />
+                        </td>
+                        <td class="formValue">
+                            <i class="fa fa-trash-o" style="font-size: 20px;margin-right: 12px;"></i>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</form>

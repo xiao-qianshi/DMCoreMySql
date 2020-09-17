@@ -1,0 +1,71 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyword = $.request("keyword");
+    var arr = keyword.split(',');
+    var instrumentId = arr[0];
+    var testDate = arr[1];
+    $(function () {
+        initControl();
+    });
+
+    function initControl() {
+        $("#txt_barcode").focus();
+        $("#txt_barcode").keyup(function (e) {
+            if (e.which == 13) {
+                //console.log(e.currentTarget.value);//
+                var txt_value = e.currentTarget.value;
+                if (!!txt_value) {
+                    if (txt_value.length > 8) {
+                         //保存条码号
+                        var params = {
+                            instrumentId: instrumentId,
+                            testDate: testDate,
+                            barcode: txt_value
+                        };
+                        if ($('[name=__RequestVerificationToken]').length > 0) {
+                            params["__RequestVerificationToken"] = $('[name=__RequestVerificationToken]').val();
+                        }
+                        $.ajax({
+                            url: '/LabLis/LabTest/AssignSample',
+                            data: JSON.stringify(params),
+                            dataType: "json",
+                            async: false,
+                            type: 'post',
+                            success: function (result) {
+                                if (result.state == 'success') {
+                                    $("#alertmsg").attr("style", "display:block;");
+                                    $("#alertmsg").removeClass('alert-danger').removeClass('alert-success').addClass('alert-success');
+                                    $("#s-msg").html('样本号：' + result.data);
+                                } else if (result.state == 'error') {
+                                    $("#alertmsg").attr("style", "display:block;");
+                                    $("#alertmsg").removeClass('alert-danger').removeClass('alert-success').addClass('alert-danger');
+                                    $("#s-msg").html(result.message);
+                                }
+                                $("#txt_barcode").val('');
+                                $("#txt_barcode").focus();
+                            }
+                        });
+                       
+                    }
+                }
+            }
+        });
+    }
+    function submitForm() {
+        $.currentWindow().$("#btn-search").trigger('click');
+        $.modalClose();
+    }
+
+</script>
+<div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+    <div class="input-group">
+        <input type="number" id="txt_barcode" placeholder="请扫描条码号..." style="font-size: 25px;font-weight: bold;" autocomplete="off" />
+    </div>
+    <div id="alertmsg" class="alert alert-danger" style="text-align: left; margin-bottom: 10px; margin-top: 10px;width:auto;display: none;">
+        <i class="fa fa-warning alert-dismissible" style="position: relative; top: 1px; font-size: 15px; padding-right: 5px;"></i>
+        <strong id="s-msg"></strong>
+    </div>
+</div>

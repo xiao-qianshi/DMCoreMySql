@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="12/18/2018 21:43:29" ReportInfo.Modified="11/28/2019 14:05:48" ReportInfo.CreatorVersion="1.6.17.0">
+  <ScriptText>using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Drawing;
+using System.Data;
+using System.IO;
+using FastReport;
+using FastReport.Data;
+using FastReport.Dialog;
+using FastReport.Barcode;
+using FastReport.Table;
+using FastReport.Utils;
+
+namespace FastReport
+{
+  public class ReportScript
+  {
+
+    private void ReportTitle1_BeforeLayout(object sender, EventArgs e)
+    {
+//      //在模板的DataPrintBefore事件中写下如下代码
+//      string imgStr = (string)Report.GetColumnValue(&quot;Hospital.Logo&quot;);
+//      MessageBox.Show(imgStr);
+//      byte[] imgData=Convert.FromBase64String(imgStr);
+//      MemoryStream ms = new MemoryStream(imgData);
+//      Image img = System.Drawing.Image.FromStream(ms);   
+//      //PictureObject pic=Report.FindObject('Picture1') as PictureObject;
+//      Picture1.Image=img;
+//        Picture1.Image=ReadImage(((Byte[])Report.GetColumnValue(&quot;Hospital.Logo&quot;)));
+      
+    }
+    
+    public Image ReadImage(byte[] bytes)
+    {
+      MemoryStream ms=new MemoryStream(bytes,0,bytes.Length);
+      Image image = System.Drawing.Image.FromStream(ms);
+      return image;  
+    }  
+  }
+}
+</ScriptText>
+  <Dictionary>
+    <BusinessObjectDataSource Name="DialysisPrepare" ReferenceName="DialysisPrepare" DataType="System.Int32" Enabled="true">
+      <Column Name="HospialName" DataType="System.String"/>
+      <Column Name="HospialLogo" DataType="System.Byte[]" BindableControl="Picture"/>
+      <BusinessObjectDataSource Name="PrepareRecords" DataType="System.Int32" Enabled="true">
+        <Column Name="VisitDate" DataType="System.String"/>
+        <Column Name="VisitNo" DataType="System.String"/>
+        <BusinessObjectDataSource Name="PrepareRecordDetails" DataType="System.Int32" Enabled="true">
+          <Column Name="Name" DataType="System.String"/>
+          <Column Name="DialysisNo" DataType="System.String"/>
+          <Column Name="GroupName" DataType="System.String"/>
+          <Column Name="DialysisBedNo" DataType="System.String"/>
+          <Column Name="DialysisType" DataType="System.String"/>
+          <Column Name="DialyzerType1" DataType="System.String"/>
+          <Column Name="DialyzerType2" DataType="System.String"/>
+          <Column Name="VascularAccess" DataType="System.String"/>
+          <Column Name="AccessName" DataType="System.String"/>
+          <Column Name="HeparinType" DataType="System.String"/>
+          <Column Name="HeparinAmount" DataType="System.String"/>
+          <Column Name="HeparinUnit" DataType="System.String"/>
+          <Column Name="HeparinAddAmount" DataType="System.String"/>
+          <Column Name="HeparinAddSpeedUnit" DataType="System.String"/>
+        </BusinessObjectDataSource>
+        <BusinessObjectDataSource Name="PrepareSumDetails" DataType="System.Int32" Enabled="true">
+          <Column Name="ItemClass" DataType="System.String"/>
+          <Column Name="ItemName" DataType="System.String"/>
+          <Column Name="Amount" DataType="System.String"/>
+        </BusinessObjectDataSource>
+      </BusinessObjectDataSource>
+      <BusinessObjectDataSource Name="Summations" DataType="System.Int32" Enabled="true">
+        <Column Name="ItemClass" DataType="System.String"/>
+        <Column Name="ItemName" DataType="System.String"/>
+        <Column Name="Amount" DataType="System.String"/>
+      </BusinessObjectDataSource>
+    </BusinessObjectDataSource>
+  </Dictionary>
+  <ReportPage Name="Page1" RawPaperSize="9" LeftMargin="0" TopMargin="0" RightMargin="0" BottomMargin="0" FirstPageSource="15" OtherPagesSource="15">
+    <ReportTitleBand Name="ReportTitle1" Width="793.8" Height="79.6" BeforeLayoutEvent="ReportTitle1_BeforeLayout">
+      <TextObject Name="Text1" Left="160.65" Top="2" Width="444.15" Height="47.25" Text="[DialysisPrepare.HospialName]" HorzAlign="Center" VertAlign="Center" Font="宋体, 16pt, style=Bold"/>
+      <PictureObject Name="Picture1" Width="151.2" Height="56.7" DataColumn="DialysisPrepare.HospialLogo"/>
+      <TextObject Name="Text2" Left="170.1" Top="51.25" Width="425.25" Height="28.35" Text="透析前药品、耗材准备清单（[DialysisPrepare.PrepareRecords.VisitDate]）" HorzAlign="Center" Font="宋体, 12pt"/>
+    </ReportTitleBand>
+    <DataBand Name="Data1" Top="83.6" Width="793.8" Height="49.59" DataSource="PrepareRecords">
+      <TextObject Name="Text5" Top="17.45" Width="122.85" Height="30.24" Text="第 [DialysisPrepare.PrepareRecords.VisitNo] 班" VertAlign="Center" Font="宋体, 14pt, style=Bold"/>
+      <ChildBand Name="Child1" Top="137.19" Width="793.8" Height="22.68">
+        <TextObject Name="Text10" Left="18.9" Width="85.05" Height="22.68" Border.Lines="Bottom" Text="床号" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+        <TextObject Name="Text22" Left="103.95" Width="75.6" Height="22.68" Border.Lines="Bottom" Text="姓名" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+        <TextObject Name="Text23" Left="179.55" Width="66.15" Height="22.68" Border.Lines="Bottom" Text="透析号" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+        <TextObject Name="Text24" Left="245.7" Width="75.6" Height="22.68" Border.Lines="Bottom" Text="透析模式" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+        <TextObject Name="Text25" Left="321.3" Width="132.3" Height="22.68" Border.Lines="Bottom" Text="抗凝剂" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+        <TextObject Name="Text26" Left="453.6" Width="56.7" Height="22.68" Border.Lines="Bottom" Text="首剂" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+        <TextObject Name="Text27" Left="510.3" Width="47.25" Height="22.68" Border.Lines="Bottom" Text="追加" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+        <TextObject Name="Text28" Left="557.55" Width="94.5" Height="22.68" Border.Lines="Bottom" Text="滤器" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+        <TextObject Name="Text29" Left="652.05" Width="94.5" Height="22.68" Border.Lines="Bottom" Text="灌流器" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+      </ChildBand>
+      <DataBand Name="Data2" Top="163.87" Width="793.8" Height="22.68" DataSource="PrepareRecordDetails">
+        <TextObject Name="Text6" Left="18.9" Width="85.05" Height="22.68" Border.Lines="Top, Bottom" Text="[DialysisPrepare.PrepareRecords.PrepareRecordDetails.GroupName] [DialysisPrepare.PrepareRecords.PrepareRecordDetails.DialysisBedNo]" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+        <TextObject Name="Text7" Left="103.95" Width="75.6" Height="22.68" Border.Lines="Top, Bottom" Text="[DialysisPrepare.PrepareRecords.PrepareRecordDetails.Name]" VertAlign="Center" Font="宋体, 10pt"/>
+        <TextObject Name="Text8" Left="179.55" Width="66.15" Height="22.68" Border.Lines="Top, Bottom" Text="[DialysisPrepare.PrepareRecords.PrepareRecordDetails.DialysisNo]" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+        <TextObject Name="Text9" Left="245.7" Width="75.6" Height="22.68" Border.Lines="Top, Bottom" Text="[DialysisPrepare.PrepareRecords.PrepareRecordDetails.DialysisType]" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+        <TextObject Name="Text11" Left="321.3" Width="132.3" Height="22.68" Border.Lines="Top, Bottom" Text="[DialysisPrepare.PrepareRecords.PrepareRecordDetails.HeparinType]" VertAlign="Center" Font="宋体, 10pt"/>
+        <TextObject Name="Text18" Left="453.6" Width="56.7" Height="22.68" Border.Lines="Top, Bottom" Text="[DialysisPrepare.PrepareRecords.PrepareRecordDetails.HeparinAmount]" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+        <TextObject Name="Text19" Left="510.3" Width="47.25" Height="22.68" Border.Lines="Top, Bottom" Text="[DialysisPrepare.PrepareRecords.PrepareRecordDetails.HeparinAddAmount]" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+        <TextObject Name="Text20" Left="557.55" Width="94.5" Height="22.68" Border.Lines="Top, Bottom" Text="[DialysisPrepare.PrepareRecords.PrepareRecordDetails.DialyzerType1]" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+        <TextObject Name="Text21" Left="652.05" Width="94.5" Height="22.68" Border.Lines="Top, Bottom" Text="[DialysisPrepare.PrepareRecords.PrepareRecordDetails.DialyzerType2]" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+      </DataBand>
+      <DataBand Name="Data5" Top="190.55" Width="793.8" Height="22.68">
+        <TextObject Name="Text30" Left="18.9" Top="1.45" Width="387.45" Height="18.9" Text="第 [DialysisPrepare.PrepareRecords.VisitNo] 班 汇总：" VertAlign="Bottom" Font="宋体, 9pt, style=Bold"/>
+      </DataBand>
+      <DataBand Name="Data3" Top="217.23" Width="264.6" Height="20.13" DataSource="PrepareSumDetails" Columns.Count="3">
+        <TextObject Name="Text12" Left="33.8" Top="1.45" Width="47.25" Height="18.68" Text="[DialysisPrepare.PrepareRecords.PrepareSumDetails.ItemClass]"/>
+        <TextObject Name="Text13" Left="81.05" Top="1.45" Width="132.3" Height="18.68" Text="[DialysisPrepare.PrepareRecords.PrepareSumDetails.ItemName]"/>
+        <TextObject Name="Text14" Left="213.35" Top="1.45" Width="37.8" Height="18.68" Text="[DialysisPrepare.PrepareRecords.PrepareSumDetails.Amount]"/>
+      </DataBand>
+    </DataBand>
+    <DataBand Name="Data6" Top="241.36" Width="793.8" Height="28.35">
+      <TextObject Name="Text3" Width="83.5" Height="27.9" Text="总计：" VertAlign="Center" Font="宋体, 14pt, style=Bold"/>
+    </DataBand>
+    <DataBand Name="Data4" Top="273.71" Width="396.9" Height="18.9" DataSource="Summations" Columns.Count="2">
+      <TextObject Name="Text15" Left="18.9" Width="66.15" Height="18.9" Text="[DialysisPrepare.Summations.ItemClass]" HorzAlign="Center" Font="宋体, 9pt, style=Bold"/>
+      <TextObject Name="Text16" Left="85.05" Width="217.35" Height="18.9" Text="[DialysisPrepare.Summations.ItemName]" Font="宋体, 9pt, style=Bold"/>
+      <TextObject Name="Text17" Left="302.4" Width="85.05" Height="18.9" Text="[DialysisPrepare.Summations.Amount]" Font="宋体, 9pt, style=Bold"/>
+    </DataBand>
+    <PageFooterBand Top="296.61" Width="793.8" Height="37.8"/>
+  </ReportPage>
+</Report>

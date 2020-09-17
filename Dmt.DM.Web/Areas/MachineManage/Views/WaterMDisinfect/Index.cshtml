@@ -1,0 +1,313 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+
+<script src="~/Content/js/datepicker/WdatePicker.js"></script>
+<script src="~/Content/js/validate/jquery.validate.min.js"></script>
+
+<script>
+    var selectID = "";
+    $(function () {
+        $("#F_DisinfectantUnit").bindSelect();
+        $("#F_DisinfectType").bindSelect();
+        $("div .mail-body").css({ "height": $(window).height() - 60 });  
+        gridList();
+    })
+    function gridList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            url: "/MachineManage/WaterMDisinfect/GetGridJson",
+            height: $(window).height() - 135,
+            colModel: [
+                { label: '主键', name: 'F_Id', hidden: true },
+                {
+                    label: '消毒日期', name: 'F_DisinfectDate', width: 100, align: "left",
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' } 
+                },
+                { label: '消毒方式', name: 'F_DisinfectantName', width: 100, align: 'left' },
+                { label: '操作者', name: 'F_OperatePerson', width: 80, align: 'left' },
+                { label: '核对者', name: 'F_CheckPerson', width: 80, align: 'left' }
+            ],
+            pager: "#gridPager",
+            sortname: 'F_DisinfectDate desc',
+            viewrecords: true,
+            onCellSelect: function (rowid, iCol, cellcontent, e) { //单击选择行 
+                var data = $gridList.jqGrid('getRowData', rowid);
+                selectID = data.F_Id;
+                resetForm();
+            }
+        });
+
+        $("#btn_search").click(function () {
+            var startDate = $("#txt_StartDate").val();
+            var endDate = $("#txt_EndDate").val();
+            $gridList.jqGrid('setGridParam', {
+                postData: {
+                    keyword:
+                        JSON.stringify({
+                            startDate: startDate,
+                            endDate: endDate
+                        })
+                },
+            }).trigger('reloadGrid');
+        });
+
+        $("#btn-save").click(function () {
+            if (!$('#form1').formValid()) {
+                return false;
+            }
+            $.submitForm({
+                url: "/MachineManage/WaterMDisinfect/SubmitForm",
+                param: {
+                    entity: $("#form1").formSerialize(),
+                    keyValue: selectID
+                },
+                success: function () {
+                    $("#btn_search").trigger('click');
+                    btn_add();
+                }
+            }); 
+        });
+    }
+
+    function resetForm() {
+        if (!!selectID) {
+            $.ajax({
+                url: "/MachineManage/WaterMDisinfect/GetFormJson",
+                data: { keyValue: selectID },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                }
+            });
+        }
+    }
+    function btn_add() {
+        selectID = "";
+        $('#form1').find("input[type='text']").each(function () {
+            $(this).val("");
+        });
+        $('#form1').find("input[type='number']").each(function () {
+            $(this).val("");
+        });
+        $('#form1').find("input[type='checkbox']").each(function () {
+            $(this).prop('checked', false);
+        });
+    }
+
+    function btn_delete() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.deleteForm({
+                url: "/MachineManage/WaterMDisinfect/DeleteForm",
+                param: { keyValue: keyValue },
+                success: function () {
+                    $.currentWindow().$("#gridList").trigger("reloadGrid");
+                }
+            })
+            selectID = "";
+        }
+    }
+
+    function btn_checked() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        var status = $("#gridList").jqGridRowValue().F_CheckPerson;
+        if (!!status) {
+            $.modalMsg("注：该项记录【已提交】！");
+            return;
+        }
+        $.modalConfirm("注：您确定要【提交】该项记录吗？", function (r) {
+            if (r) {
+                $.submitForm({
+                    url: "/MachineManage/WaterMDisinfect/SignForm",
+                    param: { keyValue: keyValue },
+                    success: function () {
+                        //$.currentWindow().$("#gridList").trigger("reloadGrid");
+                        $("#btn_search").trigger('click');
+                    }
+                })
+            }
+        });
+    }
+
+    function btn_print() {
+        //var keyValue = currentPID;
+        //if (!!keyValue) {
+        //    $.modalOpen({
+        //        id: "Form",
+        //        title: "打印记录",
+        //        url: "/PatientManage/MedicalRecord/Print?keyValue=" + keyValue,
+        //        width: "950px",
+        //        height: "800px",
+        //        btn: null
+        //    });
+        //}
+    }
+</script>
+
+<div class="rows" style="margin-bottom: 1%; overflow: hidden;">
+    <div style="float: left; width: 40%;">
+        <div class="topPanel">
+            <div class="toolbar">
+                <div class="btn-group">
+                    <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+                </div>
+                <div class="btn-group">
+                    <a id="NF-add" authorize="yes" class="btn btn-primary" onclick="btn_add()"><i class="fa fa-plus"></i>新建</a>
+                </div>
+                <div class="btn-group">
+                    <a id="NF-print" class="btn btn-primary" authorize="yes" onclick="btn_print()"><i class="fa fa-print"></i>预览</a>
+                </div>
+                <div class="operate">
+                    <ul class="nav nav-pills">
+                        <li class="first">已选中<span>1</span>项</li>
+                        <li><a id="NF-delete" authorize="yes" onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除记录</a></li>
+                        <li class="split"></li>
+                        <li><a id="NF-checked" authorize="yes" onclick="btn_checked()"><i class="fa fa-play-circle"></i>签名</a></li>
+                    </ul>
+                    <a href="javascript:;" class="close"></a>
+                </div>
+                <script>$('.toolbar').authorizeButton()</script>
+            </div>
+            <div class="search">
+                <table>
+                    <tr>
+                        <td style="padding-left: 2px;">
+                            <div class="input-group">
+                                <input id="txt_StartDate" autocomplete="off" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" placeholder="起始日期" style="width: 120px;">
+                                <input id="txt_EndDate" autocomplete="off" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" placeholder="截至日期" style="width: 120px;">
+                                <span class="input-group-btn">
+                                    <button id="btn_search" type="button" class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="gridPanel">
+            <table id="gridList"></table>
+            <div id="gridPager"></div>
+        </div>
+    </div>
+    <div style="float: right; width: 59%">
+        <form id="form1">
+            <div class="mail-box">
+                <div class="mail-body">
+                    <table class="form">
+                        <tr>
+                            <th class="formTitle">消毒日期</th>
+                            <td class="formValue">
+                                <input id="F_DisinfectDate" name="F_DisinfectDate" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off"/>
+                            </td>
+                            <th class="formTitle">消毒液名称</th>
+                            <td class="formValue">
+                                <input id="F_DisinfectantName" name="F_DisinfectantName" type="text" class="form-control required" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="formTitle">消毒液用量</th>
+                            <td class="formValue input-group">
+                                <input id="F_DisinfectantVolume" name="F_DisinfectantVolume" type="number" class="form-control" />
+                                <span class="input-group-addon">ml</span>
+                            </td>
+                            <th class="formTitle">消毒方式</th>
+                            <td class="formValue">
+                                <select id="F_DisinfectType" name="F_DisinfectType" type="text" class="form-control">
+                                    <option value="管路消毒">管路消毒</option>
+                                    <option value="主机消毒">主机消毒</option>
+                                    <option value="主机+管路消毒">主机+管路消毒</option>
+                                    <option value="主机+管路+透析机联机消毒">主机+管路+透析机联机消毒</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="form">
+                        <tr>
+                            <th class="formTitle"></th>
+                            <td class="formValue">
+                                <div class="ckbox">
+                                    <input id="F_Option1" name="F_Option1" type="checkbox">
+                                    <label for="F_Option1">管路末端消毒液是否达到有效浓度</label>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="form">
+                        <tr>
+                            <th class="formTitle">消毒液循环时间</th>
+                            <td class="formValue">
+                                <input id="F_RecyclingStartTime" name="F_RecyclingStartTime" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" placeholder="开始时间" autocomplete="off"/>
+                            </td>
+                            <td class="formValue">
+                                <input id="F_RecyclingEndTime" name="F_RecyclingEndTime" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" placeholder="结束时间" autocomplete="off"/>
+                            </td>
+                            <td class="formValue input-group">
+                                <input id="F_RecyclingMinutes" name="F_RecyclingMinutes" type="number" class="form-control" placeholder="持续时间" />
+                                <span class="input-group-addon">分钟</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="formTitle">浸泡时间</th>
+                            <td class="formValue">
+                                <input id="F_SoakStartTime" name="F_SoakStartTime" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" placeholder="开始时间" autocomplete="off"/>
+                            </td>
+                            <td class="formValue">
+                                <input id="F_SoakEndTime" name="F_SoakEndTime" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" placeholder="结束时间" autocomplete="off"/>
+                            </td>
+                            <td class="formValue input-group">
+                                <input id="F_SoakMinutes" name="F_SoakMinutes" type="number" class="form-control" placeholder="持续时间" />
+                                <span class="input-group-addon">分钟</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="formTitle">冲洗时间</th>
+                            <td class="formValue">
+                                <input id="F_RinseStartTime" name="F_RinseStartTime" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" placeholder="开始时间" autocomplete="off"/>
+                            </td>
+                            <td class="formValue">
+                                <input id="F_RinseEndTime" name="F_RinseEndTime" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" placeholder="结束时间" autocomplete="off"/>
+                            </td>
+                            <td class="formValue input-group">
+                                <input id="F_RinseMinutes" name="F_RinseMinutes" type="number" class="form-control" placeholder="持续时间" />
+                                <span class="input-group-addon">分钟</span>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="form">
+                        <tr>
+                            <th class="formTitle"></th>
+                            <td class="formValue">
+                                <div class="ckbox">
+                                    <input id="F_Option2" name="F_Option2" type="checkbox">
+                                    <label for="F_Option2">消毒后监测残余浓度是否合格</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="formTitle"></th>
+                            <td class="formValue">
+                                <div class="ckbox">
+                                    <input id="F_Option3" name="F_Option3" type="checkbox">
+                                    <label for="F_Option3">透析机联机消毒后监测透析机排水残余浓度是否合格</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="formValue">
+                                <button type="button" class="btn btn-primary" id="btn-save"><i class="fa fa-save"></i>保存</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+

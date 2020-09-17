@@ -1,0 +1,151 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>   
+    var keyValue = $.request("keyValue");
+    var keyword = $.request("keyword");
+   
+    $(function () {
+        initControl();       
+    });
+    function initControl() { 
+        if (!!keyValue) {
+            $.ajax({
+                url: "/PatientManage/Nurse/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                }
+            });
+        }
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize();
+        if (keyValue == null || keyValue === '') {
+            postData["F_Pid"] = keyword;
+        }
+        $.submitForm({
+            url: "/PatientManage/Nurse/SubmitForm",
+            param: {
+                entity: postData,
+                keyValue: keyValue
+            },
+            success: function() {
+                $.currentWindow().$("#btn_search").trigger("click");
+            }
+        });
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+            <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">扩展信息</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">录入时间</th>
+                        <td class="formValue">
+                            <input id="F_NurseOperatorTime" name="F_NurseOperatorTime" type="text"
+                                   class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt:'yyyy-M-d H:mm:ss'})" autocomplete="off"/>
+                        </td>
+                        <th class="formTitle">电导率</th>
+                        <td class="formValue input-group">
+                            <input id="F_C" name="F_C" type="number" class="form-control" />
+                            <span class="input-group-addon">ms/cm</span>
+                        </td>
+                        <th class="formTitle">机温</th>
+                        <td class="formValue input-group">
+                            <input id="F_T" name="F_T" type="number" class="form-control" />
+                            <span class="input-group-addon">℃</span>
+                        </td>
+
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">血压</th>
+                        <td class="formValue input-group">
+                            <input id="F_SSY" name="F_SSY" type="number" class="form-control required" placeholder="收缩压" />
+                            <span class="input-group-addon">L</span>
+                            <input id="F_SZY" name="F_SZY" type="number" class="form-control required" placeholder="舒张压" />
+                            <span class="input-group-addon">mmHg</span>
+                        </td>
+                        <td />
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">脉搏</th>
+                        <td class="formValue input-group">
+                            <input id="F_HR" name="F_HR" type="number" class="form-control required" />
+                            <span class="input-group-addon">次/分</span>
+                        </td>
+                        <th class="formTitle">血流速</th>
+                        <td class="formValue input-group">
+                            <input id="F_BF" name="F_BF" type="number" class="form-control" />
+                            <span class="input-group-addon">ml/min</span>
+                        </td>
+                        <th class="formTitle">动脉压</th>
+                        <td class="formValue input-group">
+                            <input id="F_A" name="F_A" type="number" class="form-control" />
+                            <span class="input-group-addon">mmHg</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">静脉压</th>
+                        <td class="formValue input-group">
+                            <input id="F_V" name="F_V" type="number" class="form-control" />
+                            <span class="input-group-addon">mmHg</span>
+                        </td>
+
+                        <th class="formTitle">TMP</th>
+                        <td class="formValue input-group">
+                            <input id="F_TMP" name="F_TMP" type="number" class="form-control" />
+                            <span class="input-group-addon">mmHg</span>
+                        </td>
+                        <th class="formTitle">超滤率</th>
+                        <td class="formValue input-group">
+                            <input id="F_UFV" name="F_UFV" type="number" class="form-control" />
+                            <span class="input-group-addon">ml/h</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">剩余肝素量</th>
+                        <td class="formValue input-group">
+                            <input id="F_GSL" name="F_GSL" type="number" class="form-control" />
+                            <span class="input-group-addon">ml</span>
+                        </td>
+                        <th class="formTitle">超滤量</th>
+                        <td class="formValue input-group">
+                            <input id="F_UFR" name="F_UFR" type="number" class="form-control" />
+                            <span class="input-group-addon">ml</span>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle" style="padding-top: 5px;">
+                            病情及处理措施
+                        </th>
+                        <td class="formValue">
+                            <textarea id="F_MEMO" name="F_MEMO" class="form-control" style="height: 60px;"></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend">
+
+            </div>
+        </div>
+    </div>
+</form>

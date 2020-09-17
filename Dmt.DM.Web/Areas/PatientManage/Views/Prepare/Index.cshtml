@@ -1,0 +1,144 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+<link media="print" href="~/Content/js/jqprint/common.css" rel="stylesheet" />
+<script>
+    var keyValue = $.request("keyValue");
+
+    $(function () {
+        var year = new Date().getFullYear();
+        var month = new Date().getMonth() + 1;
+        var day = new Date().getDate();
+        var today = year + '-' + month + '-' + day;
+        $("#visitDate").val(today);
+        $("#bcall").prop("checked", true);
+        initControl();
+        $("#btn_query").trigger("click");
+    });
+    function initControl() {
+        $("#bcall").on("change", function () {
+            if (this.checked == true) {
+                $("#bc1,#bc2,#bc3").prop("checked", false);
+            }
+        });
+        $("#bc1,#bc2,#bc3").on("change", function () {
+            if (this.checked == true) {
+                $("#bcall").prop("checked", false);
+            }
+        });
+
+        $("#groupName").bindSelect({
+            url: "/SystemManage/ItemsData/GetSelectJson?enCode=BedGroup",
+            id: "id",
+            text: "text",
+            change: function () {
+               
+            }
+        });
+
+        $("#btn_query").on("click", function () {
+            var date = $("#visitDate").val();
+            var bcall = $("#bcall")["0"].checked;
+            var bc1 = $("#bc1")["0"].checked;
+            var bc2 = $("#bc2")["0"].checked;
+            var bc3 = $("#bc3")["0"].checked;
+            var group = $("#groupName").val();
+            var vno = 0;
+            if (!!date) {
+                if (bcall) {
+                    vno = 8;
+                } else {
+                    vno = (bc1 ? 1 : 0) + (bc2 ? 2 : 0) + (bc3 ? 4 : 0);
+                }
+
+                if (vno > 0) {
+                    getReport(date, vno, group);
+                }
+            }
+        });
+        $("#btn_print").on("click", function () {
+            $("#content").jqprint();
+            //var arr = [];
+            //$("input:checkbox:checked").not(".bc").each(function () {
+            //    var j = {};
+            //    j.F_Id = $(this).val();
+            //    arr.push(j);
+            //});
+            //var keyValue = JSON.stringify(arr);
+            //if (!!keyValue) {
+            //    if (arr.length > 0) {
+            //        $.post("/PatientManage/PatVisit/SubmitCreatePrepare?keyValue=" + keyValue, {
+            //            postdata: { keyValue: keyValue }
+            //        }, function (result) {
+            //            $("#content").html(result);
+            //            $("#content").attr("style", "display:block;");//显示div
+            //            
+            //            $("#content").attr("style", "display:none;");//隐藏div
+            //        });
+            //    }
+            //}
+        });
+    }
+    function getReport(visitDate, visitNo, groupName) {
+        var json = {};
+        json.visitDate = visitDate;
+        json.visitNo = visitNo;
+        json.groupName = groupName;
+        $.ajax({
+            url: "/PatientManage/PatVisit/GetPreparePreViewJson",
+            data: json,
+            dataType: "html",
+            async: false,
+            success: function (result) {
+                $("#content").html(result);
+                //console.log("sfdsfs");
+                //console.log(result);
+            }
+        });
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">日期</th>
+                <td class="formValue" style="width: 140px;">
+                    <input id="visitDate" name="visitDate" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" />
+                </td>
+                <th class="formTitle" style="height: 35px;">班次</th>
+                <td class="formValue" style="padding-top: 1px;width: 300px;">
+                    <div class="ckbox">
+                        <input id="bcall" name="bcall" type="checkbox" checked="checked" class="bc"><label for="bcall">全部</label>
+                    </div>
+                    <div class="ckbox">
+                        <input id="bc1" name="bc1" type="checkbox" class="bc"><label for="bc1">第一班</label>
+                    </div>
+                    <div class="ckbox">
+                        <input id="bc2" name="bc2" type="checkbox" class="bc"><label for="bc2">第二班</label>
+                    </div>
+                    <div class="ckbox">
+                        <input id="bc3" name="bc3" type="checkbox" class="bc"><label for="bc3">第三班</label>
+                    </div>
+                </td>
+                <th class="formTitle" style="height: 35px;">分组</th>
+                <td class="formValue" style="padding-top: 1px;width: 120px;">
+                    <select id="groupName" name="groupName" type="text" class="form-control">
+                        <option value="">全部</option>
+                    </select>
+                </td>
+                <td class="formValue">
+                    <div class="btn-group">
+                        <a id="btn_query" class="btn btn-primary"><i class="fa fa-search"></i>查询</a>
+                        <a/>
+                        <a id="btn_print" class="btn btn-primary"><i class="fa fa-print"></i>打印</a>
+                    </div>
+                </td>
+   
+            </tr>
+        </table>
+    </div>
+    <div id="content" style="margin-top: 20px; margin-left: 30px; margin-right: 30px;" align="center">
+    </div>
+</form>

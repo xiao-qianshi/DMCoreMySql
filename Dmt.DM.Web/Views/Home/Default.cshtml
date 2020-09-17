@@ -1,0 +1,1882 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+<link href="~/Content/js/wizard/wizard.css" rel="stylesheet" />
+<script src="~/Content/js/wizard/wizard.js"></script>
+<script src="~/Content/js/validate/jquery.validate.min.js"></script>
+<script src="~/Content/js/datepicker/WdatePicker.js"></script>
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+<link media="print" href="~/Content/js/jqprint/Evaluation.css" rel="stylesheet" />
+
+
+<div id="app">
+    <div class="rows" style="margin-bottom: 1%; border: 1px solid #e6e6e6; overflow: hidden; padding-left: 1px;">
+        <div style="float:left;width:24%;margin-top: 0.5%;">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="rows">
+                        <div style="float:left;width:40%;">
+                            <input id="visitDate" name="visitDate" type="text" onfocus="WdatePicker({ onpicked:handleVisitDateChange })" style="height:23px;width:85%" autocomplete="off" />
+                        </div>
+                        <div style="float:right;width:24%;" class="input-group">
+                            <button type="button" class="btn btn-primary" id="btn-refresh"><i class="fa fa-search"></i></button>
+                        </div>
+                        <div style="float:right;width:30%;" class="input-group">
+                            <select id="visitNo" name="visitNo">
+                                <option value="1">第一班</option>
+                                <option value="2">第二班</option>
+                                <option value="3">第三班</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="rows">
+                        <div style="float:left;width:59%;margin-top:2%">
+                            <input id="filterkeyword" name="filterkeyword" type="text" style="height:23px;width:85%" placeholder="姓名/透析号/床号" autocomplete="off" />
+                        </div>
+                        <div style="float:right;width:40%;margin-top:2%">
+                            <select id="groupName" name="groupName">
+                                <option value="">全部</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="rows">
+                        <div style="float:left;width:98%;margin-top:1%">
+                            <div class="ckbox">
+                                <input id="statusinit" name="statusinit" type="checkbox" checked="checked"><label for="statusinit">未上机</label>
+                            </div>
+                            <div class="ckbox">
+                                <input id="statusuncomplete" name="statusuncomplete" type="checkbox"><label for="statusuncomplete">正在透析</label>
+                            </div>
+                            <div class="ckbox">
+                                <input id="statuscomplete" name="statuscomplete" type="checkbox"><label for="statuscomplete">已完成</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="border: 1px solid #e6e6e6; background-color: #fff;margin-top: 3%;">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-user" style="padding-right: 5px;"></i>患者列表
+                    </div>
+                    <div class="panel panel-body" style="padding-bottom: 5px; overflow-y: auto;height:400px;" id="patient-list">
+                        <ul class="list-group">
+                            @*<li class="list-group-item">
+                                    <span class="badge">item.GroupName + item.DialysisBedNo</span>
+                                    <h5 class="list-group-item-heading">dfsadfasdf</h5>
+                                    <p class="list-group-item-text">
+                                        item.DialysisType item.VascularAccess  item.HeparinType}}
+                                    </p>
+                                </li>*@
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="float:right ;width:75%;">
+            <div style="border: 1px solid #e6e6e6; background-color: #fff;margin-top: 1%;">
+                <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">透析参数</a></li>
+                        <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">透前评估</a></li>
+                        @*<li role="presentation"><a href="#extend2" role="tab" data-toggle="tab">透析用药</a></li>*@
+                        <li role="presentation"><a href="#extend3" role="tab" data-toggle="tab">穿刺记录</a></li>
+                        <li role="presentation"><a href="#extend4" role="tab" data-toggle="tab">观察记录</a></li>
+                        @*<li role="presentation"><a href="#extend8" role="tab" data-toggle="tab">医嘱执行</a></li>*@
+                        <li role="presentation"><a href="#extend7" role="tab" data-toggle="tab">过程监测</a></li>
+                        <li role="presentation"><a href="#extend5" role="tab" data-toggle="tab">疗效评价</a></li>
+                        <li role="presentation"><a href="#extend6" role="tab" data-toggle="tab">化验结果</a></li>
+                    </ul>
+                    <div class="tab-content" style="padding-top: 5px; margin-right: 10px;  overflow-y: auto;" id="main-content">
+                        <div role="tabpanel" class="tab-pane fade in active" id="basic">
+                            <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">透析方式</th>
+                                        <td class="formValue">
+                                            <select id="F_DialysisType" name="F_DialysisType" type="text" class="form-control"></select>
+                                        </td>
+                                        <th class="formTitle">稀释模式</th>
+                                        <td class="formValue">
+                                            <select id="F_DilutionType" name="F_DilutionType" type="text" class="form-control">
+                                                <option value="">无</option>
+                                                <option value="前稀释">前稀释</option>
+                                                <option value="后稀释">后稀释</option>
+                                            </select>
+                                        </td>
+                                        <th class="formTitle">置换液量</th>
+                                        <td class="formValue input-group">
+                                            <input id="F_ExchangeAmount" name="F_ExchangeAmount" type="number" class="form-control" />
+                                            <span class="input-group-addon">L</span>
+                                            <input id="F_ExchangeSpeed" name="F_ExchangeSpeed" type="number" class="form-control" />
+                                            <span class="input-group-addon">ml/min</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">滤器</th>
+                                        <td class="formValue">
+                                            <select id="F_DialyzerType1" name="F_DialyzerType1" type="text" class="form-control "></select>
+                                        </td>
+                                        <th class="formTitle">灌流器</th>
+                                        <td class="formValue">
+                                            <select id="F_DialyzerType2" name="F_DialyzerType2" type="text" class="form-control"></select>
+                                        </td>
+                                        <th class="formTitle">预估时间</th>
+                                        <td class="formValue input-group">
+                                            <input id="F_EstimateHours" name="F_EstimateHours" type="number" class="form-control" />
+                                            <span class="input-group-addon">h</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">
+                                            血流速
+                                        </th>
+                                        <td class="formValue input-group">
+                                            <input id="F_BloodSpeed" name="F_BloodSpeed" type="number" class="form-control" />
+                                            <span class="input-group-addon">ml/min</span>
+                                        </td>
+                                        <th class="formTitle">
+                                            透析液温度
+                                        </th>
+                                        <td class="formValue input-group">
+                                            <input id="F_DialysateTemperature" name="F_DialysateTemperature" type="number" class="form-control" />
+                                            <span class="input-group-addon">℃</span>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">血管通路</th>
+                                        <td class="formValue">
+                                            <select id="F_VascularAccess" name="F_VascularAccess" type="text" class="form-control">
+                                                <option value="自体内瘘">自体内瘘</option>
+                                                <option value="移植内瘘">移植内瘘</option>
+                                                <option value="深静脉置管">深静脉置管</option>
+                                                <option value="带隧道带涤纶套导管">带隧道带涤纶套导管</option>
+                                                <option value="无隧道无涤纶套导管">无隧道无涤纶套导管</option>
+                                                <option value="其他">其他</option>
+                                            </select>
+                                        </td>
+                                        <th class="formTitle">部位(名称)</th>
+                                        <td class="formValue">
+                                            <select id="F_AccessName" name="F_AccessName" type="text" class="form-control ">
+                                                <option value="左上肢(A/V)">左上肢(A/V)</option>
+                                                <option value="右上肢(A/V)">右上肢(A/V)</option>
+                                                <option value="颈内静脉">颈内静脉</option>
+                                                <option value="股静脉">股静脉</option>
+                                                <option value="锁骨下静脉">锁骨下静脉</option>
+                                                <option value="其他">其他</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">抗凝剂</th>
+                                        <td class="formValue">
+                                            <select id="F_HeparinType" name="F_HeparinType" class="form-control"></select>
+                                        </td>
+                                        <th class="formTitle">首次</th>
+                                        <td class="formValue input-group">
+                                            <input id="F_HeparinAmount" name="F_HeparinAmount" type="number" class="form-control" />
+                                            <span id="HeparinUnit" class="input-group-addon"></span>
+                                        </td>
+                                        <th class="formTitle">追加</th>
+                                        <td class="formValue input-group">
+                                            <input id="F_HeparinAddAmount" name="F_HeparinAddAmount" type="number" class="form-control" />
+                                            <span id="HeparinAddSpeedUnit" class="input-group-addon"></span>
+                                        </td>
+                                        <td class="formValue input-group" style="display:none">
+                                            <input id="F_HeparinUnit" />
+                                            <input id="F_HeparinAddSpeedUnit" />
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">透析液</th>
+                                        <td class="formValue input-group">
+                                            <span class="input-group-addon">Ca&nbsp;&nbsp;&nbsp;</span>
+                                            <input id="F_Ca" name="F_Ca" class="form-control" type="number" />
+                                            <span class="input-group-addon">mmol/L</span>
+                                        </td>
+                                        <th class="formTitle"></th>
+                                        <td class="formValue input-group">
+                                            <span class="input-group-addon">K&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                            <input id="F_K" name="F_K" class="form-control" type="number" />
+                                            <span class="input-group-addon">mmol/L</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle"></th>
+                                        <td class="formValue input-group">
+                                            <span class="input-group-addon">Na&nbsp;&nbsp;&nbsp;</span>
+                                            <input id="F_Na" name="F_Na" class="form-control" type="number" />
+                                            <span class="input-group-addon">mmol/L</span>
+                                        </td>
+                                        <th class="formTitle"></th>
+                                        <td class="formValue  input-group">
+                                            <span class="input-group-addon">HCO<sub>3</sub><sup>-</sup></span>
+                                            <input id="F_Hco3" name="F_Hco3" class="form-control" type="number" />
+                                            <span class="input-group-addon">mmol/L</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle"></th>
+                                        <td class="formValue">
+                                            <div class="ckbox"><input id="F_LowCa" name="F_LowCa" type="checkbox"><label for="F_LowCa">低钙</label></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">生命体征</th>
+                                        <td class="formValue input-group">
+                                            <input id="F_SystolicPressure" name="F_SystolicPressure" type="number" class="form-control" placeholder="收缩压" />
+                                            <span class="input-group-addon">/</span>
+                                            <input id="F_DiastolicPressure" name="F_DiastolicPressure" type="number" class="form-control" placeholder="舒张压" />
+                                            <span class="input-group-addon">mmHg</span>
+                                            <input id="F_Pulse" name="F_Pulse" type="number" class="form-control" placeholder="脉搏" />
+                                            <span class="input-group-addon">次/分</span>
+                                            <input id="F_Temperature" name="F_Temperature" type="number" class="form-control " placeholder="体温" />
+                                            <span class="input-group-addon">℃</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">干体重</th>
+                                        <td class="formValue input-group">
+                                            <input id="IdeaWeight" name="IdeaWeight" type="number" class="form-control" />
+                                            <span class="input-group-addon">Kg</span>
+                                        </td>
+
+                                        <th class="formTitle">上次透后</th>
+                                        <td class="formValue input-group">
+                                            <input id="F_WeightSXTH" name="F_WeightSXTH" type="number" class="form-control" />
+                                            <span class="input-group-addon">Kg</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">透前体重</th>
+                                        <td class="formValue input-group">
+                                            <input id="F_WeightTQ" name="F_WeightTQ" type="number" class="form-control" />
+                                            <span class="input-group-addon">Kg</span>
+                                        </td>
+                                        <th class="formTitle">预脱体重</th>
+                                        <td class="formValue input-group">
+                                            <input id="Custom_WeightYT" name="Custom_WeightYT" type="number" class="form-control" />
+                                            <span class="input-group-addon">Kg</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <td class="formValue">
+                                            <a id="btn-savesetting" class="btn btn-primary"><i class="fa fa-save"></i>保存治疗参数</a>
+                                        </td>
+                                        <td class="formValue">
+                                            <input id="operateTime" name="operateTime" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd H:mm:ss'})" placeholder="上机时间(默认为当前时间)" autocomplete="off" />
+                                        </td>
+                                        <td class="formValue">
+                                            <a id="btn-operator" class="btn btn-warning"><i class="fa fa-play"></i>上机</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="extend">
+                            <div style="margin-top: 10px; margin-left: 20px; margin-right: 20px;">
+                                <h5>一般护理评估</h5>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">入室方式</th>
+                                        <td class="formValue">
+                                            <div class="ckbox"><input id="Rsfs1" name="Rsfs1" type="checkbox"><label for="Rsfs1">自行步入</label></div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox"><input id="Rsfs2" name="Rsfs2" type="checkbox"><label for="Rsfs2">轮椅</label></div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox"><input id="Rsfs3" name="Rsfs3" type="checkbox"><label for="Rsfs3">推床</label></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">血压</th>
+                                        <td class="formValue">
+                                            <div class="ckbox"><input id="Xy1" name="Xy1" type="checkbox"><label for="Xy1">正常</label></div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Xy2" name="Xy2" type="checkbox">
+                                                <label for="Xy2">
+                                                    偏高&nbsp;<input id="Xyvalue1" name="Xyvalue1" type="text" style="width:40px;" />&nbsp;mmHg
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Xy3" name="Xy3" type="checkbox">
+                                                <label for="Xy3">
+                                                    偏低&nbsp;<input id="Xyvalue2" name="Xyvalue2" type="text" style="width:40px;" />&nbsp;mmHg
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox"><input id="Xy4" name="Xy4" type="checkbox"><label for="Xy4">未测</label></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">心率</th>
+                                        <td class="formValue">
+                                            <div class="ckbox"><input id="Xl1" name="Xl1" type="checkbox"><label for="Xl1">正常</label></div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Xl2" name="Xl2" type="checkbox">
+                                                <label for="Xl2">
+                                                    偏高&nbsp;<input id="Xlvalue1" name="Xlvalue1" type="text" style="width:40px;" />&nbsp;次/分
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Xl3" name="Xl3" type="checkbox">
+                                                <label for="Xl3">
+                                                    偏低&nbsp;<input id="Xlvalue2" name="Xlvalue2" type="text" style="width:40px;" />&nbsp;次/分
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox"><input id="Xl4" name="Xl4" type="checkbox"><label for="Xl4">未测</label></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">呼吸</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Hx1" name="Hx1" type="checkbox">
+                                                <label for="Hx1">正常</label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Hx2" name="Hx2" type="checkbox">
+                                                <label for="Hx2">不规则呼吸</label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Hx3" name="Hx3" type="checkbox">
+                                                <label for="Hx3">    无咳嗽    </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Hx4" name="Hx4" type="checkbox">
+                                                <label for="Hx4">有咳嗽    </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">&nbsp;</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Hx5" name="Hx5" type="checkbox">
+                                                <label for="Hx5">无痰液    </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Hx6" name="Hx6" type="checkbox">
+                                                <label for="Hx6">有痰液</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">体温</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Tw1" name="Tw1" type="checkbox">
+                                                <label for="Tw1">正常</label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Tw2" name="Tw2" type="checkbox">
+                                                <label for="Tw2">未测 </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Tw3" name="Tw3" type="checkbox">
+                                                <label for="Tw3">发热&nbsp;<input id="Twvalue1" name="Twvalue1" type="text" style="width:40px;" />&nbsp;℃</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">生活自理能力</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Shzlnl1" name="Shzlnl1" type="checkbox">
+                                                <label for="Shzlnl1">完全独立</label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Shzlnl2" name="Shzlnl2" type="checkbox">
+                                                <label for="Shzlnl2">辅助</label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Shzlnl3" name="Shzlnl3" type="checkbox">
+                                                <label for="Shzlnl3">依赖</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">体力</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Tl1" name="Tl1" type="checkbox">
+                                                <label for="Tl1">良好      </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Tl2" name="Tl2" type="checkbox">
+                                                <label for="Tl2">一般      </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Tl3" name="Tl3" type="checkbox">
+                                                <label for="Tl3">差</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">卧位</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Ww1" name="Ww1" type="checkbox">
+                                                <label for="Ww1">平卧位</label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Ww2" name="Ww2" type="checkbox">
+                                                <label for="Ww2">半卧位</label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Ww3" name="Ww3" type="checkbox">
+                                                <label for="Ww3">坐位</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">食欲</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Sy1" name="Sy1" type="checkbox">
+                                                <label for="Sy1">良好    </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Sy2" name="Sy2" type="checkbox">
+                                                <label for="Sy2">  一般      </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Sy3" name="Sy3" type="checkbox">
+                                                <label for="Sy3">差</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">饮水量控制</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Yslkz1" name="Yslkz1" type="checkbox">
+                                                <label for="Yslkz1">好    </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Yslkz2" name="Yslkz2" type="checkbox">
+                                                <label for="Yslkz2">    较好  </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Yslkz3" name="Yslkz3" type="checkbox">
+                                                <label for="Yslkz3">    困难</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">睡眠</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Sm1" name="Sm1" type="checkbox">
+                                                <label for="Sm1"> 良好 </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Sm2" name="Sm2" type="checkbox">
+                                                <label for="Sm2">     一般 </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Sm3" name="Sm3" type="checkbox">
+                                                <label for="Sm3">     差</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">尿量</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Nl1" name="Nl1" type="checkbox">
+                                                <label for="Nl1">无</label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Nl2" name="Nl2" type="checkbox">
+                                                <label for="Nl2">有&nbsp;<input id="Nlvalue1" name="Nlvalue1" type="text" style="width:40px;" />&nbsp;ml/d</label>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">大便</th>
+                                        <td class="formValue">
+                                            <label for="Dd1"><input id="Ddvalue1" name="Ddvalue1" type="text" style="width:40px;" />&nbsp;次/日</label>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Dd1" name="Dd1" type="checkbox">
+                                                <label for="Dd1">便秘</label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Dd2" name="Dd2" type="checkbox">
+                                                <label for="Dd2">腹泻性状</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">出血</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Cx1" name="Cx1" type="checkbox">
+                                                <label for="Cx1">无</label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Cx2" name="Cx2" type="checkbox">
+                                                <label for="Cx2">有&nbsp;&nbsp;部位<input id="Cxvalue1" name="Cxvalue1" type="text" style="width:80px;" /></label>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">用药情况</th>
+                                        <td class="formValue">
+                                            <div class="ckbox"><input id="Yyqk1" name="Yyqk1" type="checkbox"><label for="Yyqk1">降压药 </label></div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Yyqk2" name="Yyqk2" type="checkbox">
+                                                <label for="Yyqk2">    降糖药  </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Yyqk3" name="Yyqk3" type="checkbox">
+                                                <label for="Yyqk3">  抗凝药物  </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">&nbsp;</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Yyqk4" name="Yyqk4" type="checkbox">
+                                                <label for="Yyqk4">
+                                                    其他&nbsp;&nbsp;药名<input id="Yyqkvalue1" name="Yyqkvalue1" type="text" style="width:400px;" />
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <h5>前次治疗后专科评估</h5>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">前次透析后情况</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Qctxhqk1" name="Qctxhqk1" type="checkbox">
+                                                <label for="Qctxhqk1">无不适</label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Qctxhqk2" name="Qctxhqk2" type="checkbox">
+                                                <label for="Qctxhqk2">恶心、呕吐 </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Qctxhqk3" name="Qctxhqk3" type="checkbox">
+                                                <label for="Qctxhqk3">头痛</label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Qctxhqk4" name="Qctxhqk4" type="checkbox">
+                                                <label for="Qctxhqk4">头晕</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">&nbsp;</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Qctxhqk5" name="Qctxhqk5" type="checkbox">
+                                                <label for="Qctxhqk5">低血压</label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Qctxhqk6" name="Qctxhqk6" type="checkbox">
+                                                <label for="Qctxhqk6">其他 </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">脱水情况</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Tsqk1" name="Tsqk1" type="checkbox">
+                                                <label for="Tsqk1">达到干体重 </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Tsqk2" name="Tsqk2" type="checkbox">
+                                                <label for="Tsqk2">
+                                                    少脱&nbsp;<input id="Tsqkvalue1" name="Tsqkvalue1" type="text" style="width:50px;" />&nbsp;kg
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Tsqk3" name="Tsqk3" type="checkbox">
+                                                <label for="Tsqk3">
+                                                    多脱&nbsp;<input id="Tsqkvalue2" name="Tsqkvalue2" type="text" style="width:50px;" />&nbsp;kg
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Tsqk4" name="Tsqk4" type="checkbox">
+                                                <label for="Tsqk4"> 调整干体重</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">内瘘穿刺点情况</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Nlccdqk1" name="Nlccdqk1" type="checkbox">
+                                                <label for="Nlccdqk1">正常     </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Nlccdqk2" name="Nlccdqk2" type="checkbox">
+                                                <label for="Nlccdqk2">
+                                                    出血
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Nlccdqk3" name="Nlccdqk3" type="checkbox">
+                                                <label for="Nlccdqk3">
+                                                    淤血
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Nlccdqk4" name="Nlccdqk4" type="checkbox">
+                                                <label for="Nlccdqk4">  血肿  </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">&nbsp;</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Nlccdqk5" name="Nlccdqk5" type="checkbox">
+                                                <label for="Nlccdqk5">   绳梯    </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Nlccdqk6" name="Nlccdqk6" type="checkbox">
+                                                <label for="Nlccdqk6">
+                                                    定点
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Nlccdqk7" name="Nlccdqk7" type="checkbox">
+                                                <label for="Nlccdqk7">
+                                                    区域
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <h5>新患者情况</h5>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">是否首次透析</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Sfsctx1" name="Sfsctx1" type="checkbox">
+                                                <label for="Sfsctx1">
+                                                    是
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Sfsctx2" name="Sfsctx2" type="checkbox">
+                                                <label for="Sfsctx2">
+                                                    否
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            @*<input id="Sctxdate" name="Sctxdate" type="text" class="form-control"/>*@
+                                        </td>
+                                        <td class="formValue"></td>
+                                        <td class="formValue"></td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">外院透析处方</th>
+                                        <td class="formValue">
+                                            <label>
+                                                <input id="Wytxcfvalue1" name="Wytxcfvalue1" type="text" style="width:50px;" />&nbsp;次/周&nbsp;&nbsp;
+                                                <input id="Wytxcfvalue2" name="Wytxcfvalue2" type="text" style="width:50px;" />&nbsp;小时/次&nbsp;，&nbsp;
+                                                抗凝剂及用量&nbsp;<input id="Wytxcfvalue3" name="Wytxcfvalue3" type="text" style="width:450px;" />&nbsp;
+                                            </label>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">外院透析有无不适</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Wytxywbs1" name="Wytxywbs1" type="checkbox">
+                                                <label for="Wytxywbs1">
+                                                    无
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Wytxywbs2" name="Wytxywbs2" type="checkbox">
+                                                <label for="Wytxywbs2">
+                                                    有
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue"></td>
+                                        <td class="formValue"></td>
+                                    </tr>
+                                </table>
+                                <h5>单针双腔导管置管术后</h5>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">位置</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Wz1" name="Wz1" type="checkbox">
+                                                <label for="Wz1">临时性</label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Wz2" name="Wz2" type="checkbox">
+                                                <label for="Wz2">
+                                                    永久性
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Wz3" name="Wz3" type="checkbox">
+                                                <label for="Wz3">
+                                                    颈内静脉（左、右）
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Wz4" name="Wz4" type="checkbox">
+                                                <label for="Wz4">
+                                                    股静脉（左、右）
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <label>术后 &nbsp;<input id="Wzvalue1" name="Wzvalue1" type="text" style="width:50px;" />&nbsp;天</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">伤口外观</th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Skwg1" name="Skwg1" type="checkbox">
+                                                <label for="Skwg1">       清洁  </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Skwg2" name="Skwg2" type="checkbox">
+                                                <label for="Skwg2">
+                                                    渗血
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Skwg3" name="Skwg3" type="checkbox">
+                                                <label for="Skwg3">
+                                                    红
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Skwg4" name="Skwg4" type="checkbox">
+                                                <label for="Skwg4">
+                                                    热
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Skwg5" name="Skwg5" type="checkbox">
+                                                <label for="Skwg5">
+                                                    痛
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle"></th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Skwg6" name="Skwg6" type="checkbox">
+                                                <label for="Skwg6">
+                                                    血肿 &nbsp; &nbsp;大小  &nbsp;<input id="Skwgvalue1" name="Skwgvalue1" type="text" style="width:50px;" />&nbsp;   cm
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">
+                                            换药
+                                        </th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Hy1" name="Hy1" type="checkbox">
+                                                <label for="Hy1">
+                                                    1次/日
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Hy2" name="Hy2" type="checkbox">
+                                                <label for="Hy2">
+                                                    1次/隔日
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">
+                                            导管流量
+                                        </th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Dgll1" name="Dgll1" type="checkbox">
+                                                <label for="Dgll1">
+                                                    充足
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Dgll2" name="Dgll2" type="checkbox">
+                                                <label for="Dgll2">
+                                                    不足
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Dgll3" name="Dgll3" type="checkbox">
+                                                <label for="Dgll3">
+                                                    A-V反接
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">
+                                            有无发热
+                                        </th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Ywfr1" name="Ywfr1" type="checkbox">
+                                                <label for="Ywfr1">
+                                                    无
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Ywfr2" name="Ywfr2" type="checkbox">
+                                                <label for="Ywfr2">
+                                                    有    &nbsp; &nbsp;<input id="Ywfrvalue1" name="Ywfrvalue1" type="text" style="width:50px;" />&nbsp;   ℃
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                                <h5>动静脉内瘘吻合术后</h5>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">
+                                            位置
+                                        </th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Place1" name="Place1" type="checkbox">
+                                                <label for="Place1">
+                                                    自体（上、下、左、右）肢
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Place2" name="Place2" type="checkbox">
+                                                <label for="Place2">
+                                                    人工血管（上、下、左、右）肢
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <label>
+                                                术后 &nbsp; &nbsp;<input id="Placevalue1" name="Placevalue1" type="text" style="width:50px;" />&nbsp;      天
+                                                &nbsp; &nbsp;<input id="Placevalue2" name="Placevalue2" type="text" style="width:50px;" />&nbsp;   周
+                                            </label>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">
+                                            上次透析穿刺状况
+                                        </th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Sctxcczz1" name="Sctxcczz1" type="checkbox">
+                                                <label for="Sctxcczz1">
+                                                    顺利
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Sctxcczz2" name="Sctxcczz2" type="checkbox">
+                                                <label for="Sctxcczz2">
+                                                    二次穿刺
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Sctxcczz3" name="Sctxcczz3" type="checkbox">
+                                                <label for="Sctxcczz3">
+                                                    穿刺处外观正常
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Sctxcczz4" name="Sctxcczz4" type="checkbox">
+                                                <label for="Sctxcczz4">
+                                                    淤血
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Sctxcczz5" name="Sctxcczz5" type="checkbox">
+                                                <label for="Sctxcczz5">
+                                                    肿胀
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">
+                                            触、听诊血管杂音
+                                        </th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Xgzy1" name="Xgzy1" type="checkbox">
+                                                <label for="Xgzy1">
+                                                    正常
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Xgzy2" name="Xgzy2" type="checkbox">
+                                                <label for="Xgzy2">
+                                                    弱
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Xgzy3" name="Xgzy3" type="checkbox">
+                                                <label for="Xgzy3">
+                                                    无
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th class="formTitle">
+                                            内瘘成熟训练
+                                        </th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Nlcsxl1" name="Nlcsxl1" type="checkbox">
+                                                <label for="Nlcsxl1">
+                                                    无
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Nlcsxl2" name="Nlcsxl2" type="checkbox">
+                                                <label for="Nlcsxl2">
+                                                    有   &nbsp;<input id="Nlcsxlvalue1" name="Nlcsxlvalue1" type="text" style="width:50px;" />&nbsp;次/日
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">
+                                            内瘘使用年限
+                                        </th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Nlsynx1" name="Nlsynx1" type="checkbox">
+                                                <label for="Nlsynx1">
+                                                    一个月内
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Nlsynx2" name="Nlsynx2" type="checkbox">
+                                                <label for="Nlsynx2">
+                                                    六个月内
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Nlsynx3" name="Nlsynx3" type="checkbox">
+                                                <label for="Nlsynx3">
+                                                    一年内
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Nlsynx4" name="Nlsynx4" type="checkbox">
+                                                <label for="Nlsynx4">
+                                                    一年以上
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <h5>健康教育指导</h5>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">
+                                            健康教育方式
+                                        </th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Jkjyfs1" name="Jkjyfs1" type="checkbox">
+                                                <label for="Jkjyfs1">
+                                                    口头宣教
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Jkjyfs2" name="Jkjyfs2" type="checkbox">
+                                                <label for="Jkjyfs2">
+                                                    健教单张
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Jkjyfs3" name="Jkjyfs3" type="checkbox">
+                                                <label for="Jkjyfs3">
+                                                    PPT讲解
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Jkjyfs4" name="Jkjyfs4" type="checkbox">
+                                                <label for="Jkjyfs4">
+                                                    视频
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">
+                                            饮食指导
+                                        </th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Yszd1" name="Yszd1" type="checkbox">
+                                                <label for="Yszd1">
+                                                    饮水控制
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Yszd2" name="Yszd2" type="checkbox">
+                                                <label for="Yszd2">
+                                                    蛋白质摄入
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Yszd3" name="Yszd3" type="checkbox">
+                                                <label for="Yszd3">
+                                                    高钾食物
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Yszd4" name="Yszd4" type="checkbox">
+                                                <label for="Yszd4">
+                                                    高磷食物
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Yszd5" name="Yszd5" type="checkbox">
+                                                <label for="Yszd5">
+                                                    怎样吃盐
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">
+                                            运动指导
+                                        </th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Ydzd1" name="Ydzd1" type="checkbox">
+                                                <label for="Ydzd1">
+                                                    哪些运动可以做
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Ydzd2" name="Ydzd2" type="checkbox">
+                                                <label for="Ydzd2">
+                                                    预防跌倒的方法
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Ydzd3" name="Ydzd3" type="checkbox">
+                                                <label for="Ydzd3">
+                                                    立即停止运动的时刻
+                                                </label>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">
+                                            血管通路指导
+                                        </th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Xgtlzd1" name="Xgtlzd1" type="checkbox">
+                                                <label for="Xgtlzd1">
+                                                    日常护理
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Xgtlzd2" name="Xgtlzd2" type="checkbox">
+                                                <label for="Xgtlzd2">
+                                                    内瘘闭塞处理
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Xgtlzd3" name="Xgtlzd3" type="checkbox">
+                                                <label for="Xgtlzd3">
+                                                    止血带的使用
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Xgtlzd4" name="Xgtlzd4" type="checkbox">
+                                                <label for="Xgtlzd4">
+                                                    内瘘成熟训练
+                                                </label>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">
+                                            体重管理
+                                        </th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Tzgl1" name="Tzgl1" type="checkbox">
+                                                <label for="Tzgl1">
+                                                    何谓干体重
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Tzgl2" name="Tzgl2" type="checkbox">
+                                                <label for="Tzgl2">
+                                                    体重增加的标准
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Tzgl3" name="Tzgl3" type="checkbox">
+                                                <label for="Tzgl3">
+                                                    干体重的调整
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">
+                                            受教者
+                                        </th>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Sjz1" name="Sjz1" type="checkbox">
+                                                <label for="Sjz1">
+                                                    患者本人
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="ckbox">
+                                                <input id="Sjz2" name="Sjz2" type="checkbox">
+                                                <label for="Sjz2">
+                                                    照顾者&nbsp;（&nbsp;配偶、父母、子女、护工、其它 &nbsp;姓名 <input id="Sjzvalue1" name="Sjzvalue1" type="text" style="width:50px;" />&nbsp;)
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <td class="formValue">
+                                            <a class="btn btn-primary" id="btn-savepgd"><i class="fa fa-save"></i>保存评估单</a>
+                                        </td>
+                                        <td class="formValue">
+                                            <a class="btn btn-info" id="btn-pgdmodel"><i class="fa fa-copy"></i>评估单模板</a>
+                                        </td>
+                                        <td class="formValue">
+                                            <a class="btn btn-danger" id="btn-pgdclear"><i class="fa fa-eraser"></i>重置评估单</a>
+                                        </td>
+                                        <td class="formValue">
+                                            <a class="btn btn-warning" id="btn-pgdprint"><i class="fa fa-print"></i>打印评估单</a>
+                                        </td>
+                                        <td />
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="extend2">
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="extend3">
+                            <div class="rows">
+                                <div style="float:left;width:39.9%">
+                                    <div class="card card-info">
+                                        <div class="card-body">
+                                            <button type="button" class="btn btn-primary" id="btn-upload"><i class="fa fa-cloud-upload"></i>上传图片</button>
+                                            <br />
+                                            @*<img src="" class="img-responsive" alt="" width="500" height="600">*@
+                                            <img src="" class="img-thumbnail" id="img-puncture" alt="" width="400" height="450" style="margin-top:3%">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="float:right;width:60%">
+                                    <div class="card card-info">
+                                        <table class="form">
+                                            <tr>
+                                                <td class="formValue">
+                                                    <button type="button" class="btn btn-primary" id="btn-addpuncture" style="width:50px"><i class="fa fa-plus"></i>添加</button>
+                                                </td>
+                                                <th class="formTitle" id="title-punctureA" style="display:none">A区</th>
+                                                <td class="formValue" id="value-punctureA" style="display:none">
+                                                    <input id="punctureA" name="punctureA" class="form-control" placeholder="动脉穿刺点" />
+                                                </td>
+                                                <th class="formTitle" id="title-punctureB" style="display:none">B区</th>
+                                                <td class="formValue" id="value-punctureB" style="display:none">
+                                                    <input id="punctureB" name="punctureB" class="form-control" placeholder="静脉穿刺点" />
+                                                </td>
+                                                <td class="formValue" id="ck-punctureSuccess" style="display:none">
+                                                    <div class="ckbox" style="width:100px">
+                                                        <input id="punctureSuccess" name="punctureSuccess" type="checkbox" checked><label for="punctureSuccess">&nbsp;&nbsp;&nbsp;成功</label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table class="form" id="table-punctureMemo" style="display:none">
+                                            <tr>
+                                                <td class="formValue">
+                                                    <textarea id="punctureMemo" name="punctureMemo" class="form-control" style="width:85%;height: 40px;" placeholder="穿刺失败详细原因"></textarea>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-bordered table-hover table-condensed">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width:20%">日期</th>
+                                                        <th style="width:20%">穿刺点</th>
+                                                        <th style="width:15%">穿刺者</th>
+                                                        <th style="width:45%">备注</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="punctureItems"></tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="extend4">
+                            <div class="rows">
+                                <div style="float:left;width:29%">
+                                    <form id="formObservation">
+                                        <table class="form">
+                                            <tr>
+                                                <td class="formValue">
+                                                    <input id="Ob_NurseOperatorTime" name="Ob_NurseOperatorTime" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt:'H:mm:ss'})" placeholder="记录时间" autocomplete="off" />
+                                                </td>
+                                                <td class="formValue input-group">
+                                                    @*<button class="btn btn-primary" id="btn-obsave"><i class="fa fa-save"></i>保存</button>*@
+                                                    @*<a id="btn-obsave" class="btn btn-primary dropdown-text"><i class="fa fa-save"></i>保存</a>*@
+                                                    @*<a id="btn-obcopy" class="btn btn-primary dropdown-text"><i class="fa fa-copy"></i></a>*@
+                                                    <div class="btn-group">
+                                                        <a id="btn-obsave" class="btn btn-primary dropdown-text"><i class="fa fa-save"></i>保存</a>
+                                                        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                                                        <ul class="dropdown-menu pull-right">
+                                                            <li><a id="btn-obcopy"><i class="fa fa-copy"></i>复制</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table class="form">
+                                            <tr>
+                                                <td class="formValue input-group">
+                                                    <input id="Ob_C" name="Ob_C" type="number" class="form-control" placeholder="电导率" />
+                                                    <span class="input-group-addon">ms/cm</span>
+                                                    <input id="Ob_T" name="Ob_T" type="number" class="form-control" placeholder="机温" />
+                                                    <span class="input-group-addon">℃</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="formValue input-group">
+                                                    <input id="Ob_SSY" name="Ob_SSY" type="number" class="form-control required" placeholder="收缩压" />
+                                                    <span class="input-group-addon">/</span>
+                                                    <input id="Ob_SZY" name="Ob_SZY" type="number" class="form-control required" placeholder="舒张压" />
+                                                    <span class="input-group-addon">mmHg</span>
+
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="formValue input-group">
+                                                    <input id="Ob_HR" name="Ob_HR" type="number" class="form-control required" placeholder="脉搏" />
+                                                    <span class="input-group-addon">次/分</span>
+                                                    <input id="Ob_BF" name="Ob_BF" type="number" class="form-control" placeholder="血流速" />
+                                                    <span class="input-group-addon">ml/min</span>
+
+
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="formValue input-group">
+                                                    <input id="Ob_A" name="Ob_A" type="number" class="form-control" placeholder="动脉压" />
+                                                    <span class="input-group-addon">mmHg</span>
+                                                    <input id="Ob_V" name="Ob_V" type="number" class="form-control" placeholder="静脉压" />
+                                                    <span class="input-group-addon">mmHg</span>
+
+
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="formValue input-group">
+                                                    <input id="Ob_TMP" name="Ob_TMP" type="number" class="form-control" placeholder="TMP" />
+                                                    <span class="input-group-addon">mmHg</span>
+                                                    <input id="Ob_UFV" name="Ob_UFV" type="number" class="form-control" placeholder="超滤率" />
+                                                    <span class="input-group-addon">ml/h</span>
+
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="formValue input-group">
+
+                                                    <input id="Ob_GSL" name="Ob_GSL" type="number" class="form-control" placeholder="剩余肝素量" />
+                                                    <span class="input-group-addon">ml</span>
+                                                    <input id="Ob_UFR" name="Ob_UFR" type="number" class="form-control" placeholder="超滤量" />
+                                                    <span class="input-group-addon">ml</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="formValue">
+                                                    <textarea id="Ob_MEMO" name="Ob_MEMO" class="form-control" style="height: 80px;width: 95%" placeholder="病情及处理措施"></textarea>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </form>
+                                </div>
+                                <div style="float:right;width:70%">
+                                    <table id="ob-gridList"></table>
+                                    <div id="ob-gridPager"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="extend8">
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="extend7">
+                            <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">开始时间</th>
+                                        <td class="formValue">
+                                            <input id="F_DialysisStartTime" name="F_DialysisStartTime" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" autocomplete="off" />
+                                        </td>
+                                        <th class="formTitle">穿刺者</th>
+                                        <td class="formValue">
+                                            <select id="F_PuncturePerson" name="F_PuncturePerson" class="form-control" />
+                                        </td>
+                                        <th class="formTitle">上机者</th>
+                                        <td class="formValue">
+                                            <select id="F_StartPerson" name="F_StartPerson" class="form-control" />
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">结束时间</th>
+                                        <td class="formValue">
+                                            <input id="F_DialysisEndTime" name="F_DialysisEndTime" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" autocomplete="off" />
+                                        </td>
+                                        <th class="formTitle">核对者</th>
+                                        <td class="formValue">
+                                            <select id="F_CheckPerson" name="F_CheckPerson" class="form-control" />
+                                        </td>
+                                        <th class="formTitle">下机者</th>
+                                        <td class="formValue">
+                                            <select id="F_EndPerson" name="F_EndPerson" class="form-control" />
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">透后体重</th>
+                                        <td class="formValue input-group">
+                                            <input id="F_WeightTH" name="F_WeightTH" class="form-control" />
+                                            <span class="input-group-addon">Kg</span>
+                                        </td>
+                                        <th class="formTitle">实脱体重</th>
+                                        <td class="formValue  input-group">
+                                            <input id="F_WeightST" name="F_WeightST" class="form-control" />
+                                            <span class="input-group-addon">Kg</span>
+                                        </td>
+                                        <th class="formTitle">机显脱水</th>
+                                        <td class="formValue  input-group">
+                                            <input id="F_MachineShowAmount" name="F_MachineShowAmount" class="form-control" />
+                                            <span class="input-group-addon">ml</span>
+                                        </td>
+                                        <th class="formTitle">实际置换量</th>
+                                        <td class="formValue  input-group">
+                                            <input id="F_RealExchangeAmount" name="F_RealExchangeAmount" class="form-control" />
+                                            <span class="input-group-addon">L</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">透后体外循环凝血</th>
+                                        <td class="formValue">
+                                            <div>
+                                                <label>
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;动静脉壶&nbsp;
+                                                    <label class="radio-inline">
+                                                        <input type="radio" value="0级" name="F_DJMH">0级
+                                                    </label>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" value="1级" name="F_DJMH">1级
+                                                    </label>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" value="2级" name="F_DJMH">2级
+                                                    </label>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" value="3级" name="F_DJMH">3级
+                                                    </label>
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;透析器&nbsp;
+                                                    <label class="radio-inline">
+                                                        <input type="radio" value="0级" name="F_DialyzerStatus">0级
+                                                    </label>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" value="1级" name="F_DialyzerStatus">1级
+                                                    </label>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" value="2级" name="F_DialyzerStatus">2级
+                                                    </label>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" value="3级" name="F_DialyzerStatus">3级
+                                                    </label>
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">透后内瘘情况</th>
+                                        <td class="formValue">
+                                            <div>
+                                                <label class="radio-inline">
+                                                    <input type="radio" value="正常" name="F_FistulaStatus">正常
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input type="radio" value="渗血" name="F_FistulaStatus">渗血
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input type="radio" value="肿胀" name="F_FistulaStatus">肿胀
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input type="radio" value="其他" name="F_FistulaStatus">其他
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th class="formTitle">导管口情况</th>
+                                        <td class="formValue">
+                                            <div>
+                                                <label class="radio-inline">
+                                                    <input type="radio" value="渗血" name="F_DuctOpeningStatus">渗血
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input type="radio" value="红肿" name="F_DuctOpeningStatus">红肿
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input type="radio" value="化脓" name="F_DuctOpeningStatus">化脓
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input type="radio" value="其他" name="F_DuctOpeningStatus">其他
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                                            不适症状及原因
+                                        </th>
+                                        <td class="formValue">
+                                            <textarea id="F_Reason" name="F_Reason" class="form-control" style="height: 100px;width: 90%;"></textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="formValue">
+                                            <a id="btn-savegcjc" class="btn btn-primary"><i class="fa fa-save"></i>保存</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="extend5">
+                            <div class="rows">
+                                <div style="float:left;width:60%">
+                                    <div class="mail-box">
+                                        <div class="mail-body" style="padding: 0px;">
+                                            <textarea id="summaryContent" name="summaryContent" style="width:98%;font-size:15px;height:300px;"></textarea>
+                                        </div>
+                                        <div class="mail-body" style="text-align: right;">
+                                            <a class="btn btn-primary" style="margin-right: 5px;"><i class="fa fa-save"></i>保存</a>
+                                            <a class="btn btn-warning"><i class="fa fa-pencil"></i>存为模板</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="float:right;width:38%">
+                                    <div style="border: 1px solid #e6e6e6; background-color: #fff;">
+                                        <div style="padding-bottom: 5px;overflow-y: auto;" id="fileModel-list">
+                                            <ul class="list-group">
+                                                <li class="list-group-item">
+                                                    <h5 class="list-group-item-heading">一般描述</h5>
+                                                    <p class="list-group-item-text">
+                                                        透析过程顺利，无不适。
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade" id="extend6">
+                            <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px; min-width: 310px; height: 50px;">
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">起始日期</th>
+                                        <td class="formValue">
+                                            <input id="startDate" name="startDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({maxDate: '%y-%M-%d'})" autocomplete="off" />
+                                        </td>
+                                        <th class="formTitle">截至日期</th>
+                                        <td class="formValue">
+                                            <input id="endDate" name="endDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({maxDate: '%y-%M-%d'})" autocomplete="off" />
+                                        </td>
+                                        <th class="formTitle">项目</th>
+                                        <td class="formValue">
+                                            <select id="itemCode" name="itemCode" type="text" class="form-control" placeholder="选择检验子项"></select>
+                                        </td>
+                                        <td class="formValue">
+                                            <div class="btn-group">
+                                                <a class="btn btn-primary dropdown-text" style="width: 60px"><i class="fa fa-search"></i>查询</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="gridPanel">
+                                <table id="gridListResult"></table>
+                                <div id="gridPagerResult"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="print" style="visibility:hidden;display:none">
+</div>
+
+<environment include="Development">
+    <script src="~/view-js/home/default.js" asp-append-version="true"></script>
+</environment>
+<environment exclude="Development">
+    <script src="~/view-js/home/default.min.js" asp-append-version="true"></script>
+</environment>
+
+<style>
+    #copyrightcontent {
+        height: 80px;
+        line-height: 29px;
+        overflow: hidden;
+        position: absolute;
+        top: 100%;
+        margin-top: -30px;
+        width: 100%;
+        background-color: #fff;
+        border: 0px solid #e6e6e6;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .dashboard-stats {
+        float: left;
+        width: 20%;
+    }
+
+    .dashboard-stats-item {
+        position: relative;
+        overflow: hidden;
+        color: #fff;
+        cursor: pointer;
+        height: 105px;
+        margin-right: 25px;
+        margin-bottom: 10px;
+        padding: 20px 20px;
+    }
+
+        .dashboard-stats-item .m-top-none {
+            margin-top: 2px;
+        }
+
+        .dashboard-stats-item h2 {
+            font-size: 35px;
+            font-family: inherit;
+            line-height: 1.1;
+            font-weight: 500;
+        }
+
+        .dashboard-stats-item h5 {
+            font-size: 14px;
+            font-family: inherit;
+            margin-top: 3px;
+            line-height: 1.1;
+        }
+
+
+        .dashboard-stats-item .stat-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 30px;
+            opacity: .3;
+        }
+
+    .dashboard-stats i.fa.stats-icon {
+        width: 50px;
+        padding: 20px;
+        font-size: 50px;
+        text-align: center;
+        color: #fff;
+        height: 50px;
+        border-radius: 10px;
+    }
+
+    .panel-default {
+        border: none;
+        border-radius: 0px;
+        margin-bottom: 0px;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+
+        .panel-default > .panel-heading {
+            color: #777;
+            background-color: #fff;
+            border-color: #e6e6e6;
+            padding: 10px 10px;
+        }
+
+        .panel-default > .panel-body {
+            padding: 10px;
+            padding-bottom: 0px;
+        }
+
+            .panel-default > .panel-body ul {
+                overflow: hidden;
+                padding: 0;
+                margin: 0px;
+                margin-top: -5px;
+            }
+
+                .panel-default > .panel-body ul li {
+                    line-height: 27px;
+                    list-style-type: none;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
+
+                    .panel-default > .panel-body ul li .time {
+                        color: #a1a1a1;
+                        float: right;
+                        padding-right: 5px;
+                    }
+</style>
+
+
+

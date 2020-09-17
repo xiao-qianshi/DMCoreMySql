@@ -1,0 +1,106 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/PatientManage/DoseGuide/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                    //$("#F_UserPassword").val("******").attr('disabled', 'disabled');
+                }
+            });
+        }
+    });
+    function initControl() {
+        $("#F_Method").bindSelect()
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        $.submitForm({
+            url: "/PatientManage/DoseGuide/SubmitForm",
+            param: {
+                entity: $("#form1").formSerialize(),
+                keyValue: keyValue
+            },
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <div role="tabpanel" class="tab-pane active" id="basic">
+            <table class="form">
+                <tr>
+                    <th class="formTitle">英文名</th>
+                    <td class="formValue">
+                        <input id="F_DrugEnName" name="F_DrugEnName" type="text" class="form-control required" placeholder="请输入英文名" />
+                    </td>
+                    <th class="formTitle">中文名</th>
+                    <td class="formValue">
+                        <input id="F_DrugName" name="F_DrugName" type="text" class="form-control required" placeholder="请输入中文名" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">调药法</th>
+                    <td class="formValue">
+                        <select id="F_Method" name="F_Method" type="text" class="form-control required">
+                            <option value="D">调整用药剂量</option>
+                            <option value="I">调整用药间期</option>
+                            <option value="D,I">二者同时使用</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <table class="form">
+                <tr>
+                    <th class="formTitle">GFR&gt;50</th>
+                    <td class="formValue">
+                        <input id="F_Range1" name="F_Range1" type="text" class="form-control" placeholder="肾小球滤过率>50ml/min用量" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">GFR10-50</th>
+                    <td class="formValue">
+                        <input id="F_Range2" name="F_Range2" type="text" class="form-control" placeholder="肾小球滤过率10 - 50ml/min用量" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">GFR&lt;10</th>
+                    <td class="formValue">
+                        <input id="F_Range3" name="F_Range3" type="text" class="form-control" placeholder="肾小球滤过率<10ml/min用量" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">HD后补充剂量</th>
+                    <td class="formValue">
+                        <input id="F_Symptom1" name="F_Symptom1" type="text" class="form-control" placeholder="血液透析后补充剂量" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">CAPD</th>
+                    <td class="formValue">
+                        <input id="F_Symptom2" name="F_Symptom2" type="text" class="form-control" placeholder="持续不卧床腹膜透析用量" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">CRRT</th>
+                    <td class="formValue">
+                        <input id="F_Symptom3" name="F_Symptom3" type="text" class="form-control" placeholder="连续肾脏替代治疗用量" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</form>

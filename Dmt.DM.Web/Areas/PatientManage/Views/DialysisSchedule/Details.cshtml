@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        $.ajax({
+            url: "/PatientManage/DialysisSchedule/GetFormJson",
+            data: { keyValue: keyValue },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                $("#form1").formSerialize(data);
+                $("#form1").find('.form-control,select,input').attr('readonly', 'readonly');
+                $("#form1").find('div.ckbox label').attr('for', '');
+            }
+        });
+    });
+    function initControl() {
+        $("#F_GroupName").bindSelect({
+            url: "/SystemManage/ItemsData/GetSelectJson?enCode=BedGroup",
+            id: "id",
+            text: "text"
+        });
+
+        $("#F_DialysisType").bindSelect({
+            url: "/SystemManage/ItemsData/GetSelectJson?enCode=DialysisType",
+            id: "id",
+            text: "text"
+        }
+        );
+        $("#F_EnabledMark").bindSelect(); 
+    }
+
+    function GroupChange() {
+        var groupName = $("#F_GroupName").val();
+        if (!!groupName) {
+            $.ajax({
+                url: "/PatientManage/DialysisMachine/GetSelectJson",
+                data: { enCode: groupName },
+                dataType: "json",
+                async: true,
+                success: function (data) {
+                    $("#F_DialysisBedNo").empty();
+                    $("#F_DialysisBedNo").html("");
+                    var $target = $("#F_DialysisBedNo");
+                    if (data == null || data.length == 0) {
+                        $target.bindSelect();
+                        return;
+                    }
+                    var json = eval(data); //数组 
+
+                    $.each(json, function (index) {
+                        //循环获取数据    
+                        var Id = json[index].id;
+                        var Name = Id + "(" + json[index].text + ")";
+                        $target.append('<option value="' + Id + '">' + Name + '</option>');
+                        $target.bindSelect();
+                    });
+                }
+            });
+        }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+            <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">扩展信息</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">组别</th>
+                        <td class="formValue">
+                            <select id="F_GroupName" name="F_GroupName" type="text" class="form-control required"  onchange="GroupChange()"></select>
+                        </td>
+                        <th class="formTitle">床号</th>
+                        <td class="formValue">
+                            <select id="F_DialysisBedNo" name="F_DialysisBedNo" type="text" class="form-control required"></select>
+                            @*<input id="F_DialysisBedNo" name="F_DialysisBedNo" type="text" class="form-control required" placeholder="请输入床号" />*@
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">日期</th>
+                        <td class="formValue">
+                            <input id="F_VisitDate" name="F_VisitDate" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker()" autocomplete="off"/>
+                        </td>
+                        <th class="formTitle">班次</th>
+                        <td class="formValue">
+                            <input id="F_VisitNo" name="F_VisitNo" type="text" class="form-control required" placeholder="请输入仪器名称" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">透析方式</th>
+                        <td class="formValue">
+                            <select id="F_DialysisType" name="F_DialysisType" class="form-control required"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">透析号</th>
+                        <td class="formValue">
+                            <input id="F_DialysisNo" name="F_DialysisNo" type="text" class="form-control" placeholder="" />
+                        </td>
+                        <th class="formTitle">患者姓名</th>
+                        <td class="formValue">
+                            <input id="F_Name" name="F_Name" type="text" class="form-control" placeholder="" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">是否启用</th>
+                        <td class="formValue">
+                            <select id="F_EnabledMark" name="F_EnabledMark" class="form-control">
+                                <option value="true">是</option>
+                                <option value="false">否</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend">
+
+            </div>
+        </div>
+    </div>
+</form>

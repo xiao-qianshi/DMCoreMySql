@@ -1,0 +1,118 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/LabLis/LabRequest/GetSampleInfo",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#baseTable").formSerialize(data);
+                    refreshTable(data.rows);
+                }
+            });
+        }
+    });
+    function refreshTable(data) {
+        if (data instanceof Array) {
+            if (data.length === 0) {
+                return false;
+            }
+            var $table = $("#selectTable");
+            $table.html();
+            var htmlstr = "";
+            $.each(data, function (index, item) {
+                if (index % 3 == 0) {
+                    if (index == 0) {
+                        htmlstr = htmlstr + "<tr>";
+                    }
+                    else {
+                        htmlstr = htmlstr + "</tr><tr>";
+                    }
+                }
+                htmlstr = htmlstr + "<td class=\"formValue\" style=\"padding-top: 1px;\"><div class=\"ckbox\"><input id=\"check" + item.id + "\" name=\"check" + item.id + "\" type=\"checkbox\"  value=\"" + item.id + "\"><label for=\"check" + item.id + "\">" + item.shortName +"</label></div></td>";
+            });
+            htmlstr = htmlstr + "</tr>";
+            $table.html(htmlstr);
+            $table.find("input[type=checkbox]").on('click', function (e) {
+                //$table.find("input[type=checkbox]:checked").prop('checked', false);
+                //$(this).prop('checked', true);
+                //$("#patient").val($(this).val()).trigger('change');
+            })
+        }
+    }
+
+    function initControl() {
+        $("#status").bindSelect();
+    }
+    function submitForm() {
+        //if (!$('#form1').formValid()) {
+        //    return false;
+        //}
+        var findrows = $("#selectTable").find("input[type=checkbox]:checked");
+        if (findrows.length == 0) {
+            return false;
+        }
+        var items = [];
+        $.each(findrows, function (i, v) {
+            items.push({ id: $(v).val() });
+        });
+        $.submitForm({
+            url: "/LabLis/LabRequest/SampleSpit",
+            param: {
+                keyValue: keyValue,
+                items: JSON.stringify(items)
+            },
+            success: function () {
+                //$.currentWindow().$("#gridList").trigger("reloadGrid");
+                $.currentWindow().$("#btn_search").trigger('click');
+            }
+        })
+    }
+
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <table id="baseTable" class="form">
+            <tr>
+                <th class="formTitle">姓名</th>
+                <td class="formValue">
+                    <input id="name" name="name" type="text" class="form-control" />
+                </td>
+                <th class="formTitle">申请日期</th>
+                <td class="formValue">
+                    <input id="requestDate" name="requestDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off" />
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle">条码号</th>
+                <td class="formValue">
+                    <input id="barcode" name="barcode" type="text" class="form-control" />
+                </td>
+                <th class="formTitle">样本状态</th>
+                <td class="formValue">
+                    <select id="status" name="status" class="form-control">
+                        <option value="1">新申请</option>
+                        <option value="2">已提交</option>
+                        <option value="3">已采样</option>
+                        <option value="4">正在检验</option>
+                        <option value="5">已审核</option>
+                        <option value="6">已打印</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <h5>项目明细</h5>
+        <table id="selectTable" class="form"></table>
+    </div>
+    <div class="alert alert-danger" style="text-align: left; margin-bottom: 10px;width:auto;">
+        <i class="fa fa-warning alert-dismissible" style="position: relative; top: 1px; font-size: 15px; padding-right: 5px;"></i>
+        请勾选需要保留的项目，其他项目将创建新申请单！
+    </div>
+</form>

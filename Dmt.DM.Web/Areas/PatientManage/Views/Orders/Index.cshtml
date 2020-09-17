@@ -1,0 +1,262 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+
+<script>
+    var currentPID = null;
+    $(function () {
+        gridList();    
+        $.ajax({
+            url: "/PatientManage/Patient/GetSelectJson",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                var tags = [];
+                var first = {};
+                first.id = "";
+                first.text = "";
+                tags.push(first);
+                $.each(data, function (index, item) {
+                    var obj = {};
+                    obj.id = item.id;
+                    obj.text = item.name + "(No." + item.recordNo + ")" + item.py;
+                    tags.push(obj);
+                }
+                );
+
+                $("#F_ParentId").bindSelect({
+                    search: true,
+                    data: tags,
+                    change: function (e) {
+                        currentPID = e.id;
+                        $("#gridList").jqGrid('setGridParam', {
+                            postData: { keyword: currentPID + "^" + $("#txt_keyword").val() },
+                        }).trigger('reloadGrid');
+                    }
+                });
+            }
+        });
+    
+    })
+    function gridList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            url: "/PatientManage/Orders/GetGridJson",
+            height: $(window).height() - 128,
+            colModel: [
+                { label: '主键', name: 'F_Id', hidden: true },
+                { label: '类别', name: 'F_OrderType', width: 40, align: 'left' },
+                {
+                    label: "类型", name: "F_IsTemporary", width: 40, align: "center",
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == 1) {
+                            return '<span class=\"label label-success\">长期</span>';
+                        } else if (cellvalue == 0) {
+                            return '<span class=\"label label-danger\">临时</span>';
+                        }
+                    }
+                },
+                {
+                    label: "类型", name: "F_OrderStatus", width: 40, align: "center",
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == 0) {
+                            return '<span class=\"label label-default\">新申请</span>';
+                        } else if (cellvalue == 1) {
+                            return '<span class=\"label label-primary\">已提交</span>';
+                        } else if (cellvalue == 2) {
+                            return '<span class=\"label label-success\">已执行</span>';
+                        }
+                    }
+                },
+                { label: '开单时间', name: 'F_DoctorOrderTime', width: 120, align: 'center' },
+                { label: '提交时间', name: 'F_DoctorAuditTime', width: 120, align: 'center' },
+                { label: '代码', name: 'F_OrderCode', hidden: true },
+                { label: '名称', name: 'F_OrderText', width: 120, align: 'left' },
+                { label: '规格', name: 'F_OrderSpec', width: 50, align: 'center' },
+                { label: '开始时间', name: 'F_OrderStartTime', width: 120, align: 'left' },
+                { label: '结束时间', name: 'F_OrderStopTime', width: 120, align: 'left' },
+                { label: '剂量', name: 'F_OrderAmount', width: 40, align: 'center' },
+                { label: '频次', name: 'F_OrderFrequency', width: 40, align: 'center' },
+                { label: '途径', name: 'F_OrderAdministration', width: 60, align: 'center' },
+                { label: '开单医生', name: 'F_Doctor', width: 60, align: 'center' },
+                { label: '执行护士', name: 'F_Nurse', width: 60, align: 'center' },
+                { label: '执行时间', name: 'F_NurseOperatorTime', width: 60, align: 'center' }
+            ],
+            pager: "#gridPager",
+            sortname: 'F_CreatorTime desc',
+            viewrecords: true
+            //multiselect: true
+        });
+
+        $("#btn_search").click(function () {
+            $gridList.jqGrid('setGridParam', {
+                postData: { keyword: currentPID + "^" + $("#txt_keyword").val() },
+            }).trigger('reloadGrid');
+        });
+    }
+    function btn_add() {
+        var keyValue = currentPID;
+        if (!!keyValue) {
+            $.modalOpen({
+                id: "Form",
+                title: "新增医嘱",
+                url: "/PatientManage/Orders/Form?keyword=" + keyValue,
+                width: "800px",
+                height: "600px",
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
+            });
+        }
+    }
+
+    function btn_addl() {
+        var keyValue = currentPID;
+        if (!!keyValue) {
+            $.modalOpen({
+                id: "Form",
+                title: "新增医嘱",
+                url: "/PatientManage/Orders/Form1?keyword=" + keyValue,
+                width: "800px",
+                height: "600px",
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
+            });
+        }
+    }
+
+
+    function btn_edit() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        var ordertype = $("#gridList").jqGridRowValue().F_OrderType;
+        $.modalOpen({
+            id: "Form",
+            title: "修改医嘱",
+            url: (ordertype == "治疗" ? "/PatientManage/Orders/Form1?keyValue=" : "/PatientManage/Orders/Form?keyValue=") + keyValue,
+            width: "800px",
+            height: "600px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+    function btn_delete() {
+        $.deleteForm({
+            url: "/PatientManage/Orders/DeleteForm",
+            param: { keyValue: $("#gridList").jqGridRowValue().F_Id },
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+
+    function btn_disabled() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        var orderType = $("#gridList").jqGridRowValue().F_IsTemporary;
+
+        if (orderType.indexOf("长期") < 0) {
+            $.modalMsg("注：该项医嘱非长期医嘱！");
+            return;
+        }
+
+        $.modalConfirm("注：您确定要【停止】该项医嘱吗？", function (r) {
+            if (r) {
+                $.submitForm({
+                    url: "/PatientManage/Orders/StopOrder",
+                    param: { keyValue: keyValue },
+                    success: function () {
+                        $.currentWindow().$("#gridList").trigger("reloadGrid");
+                    }
+                })
+            }
+        });
+    }
+
+    function btn_checked() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        var status = $("#gridList").jqGridRowValue().F_OrderStatus;
+        if (status.indexOf("新申请") < 0) {
+            $.modalMsg("注：该项医嘱【已提交】！");
+            return;
+        }
+        $.modalConfirm("注：您确定要【提交】该项医嘱吗？", function (r) {
+            if (r) {
+                $.submitForm({
+                    url: "/PatientManage/Orders/CheckOrder",
+                    param: { keyValue: keyValue },
+                    success: function () {
+                        $.currentWindow().$("#gridList").trigger("reloadGrid");
+                    }
+                })
+            }
+        });
+    }
+
+</script>
+
+<div class="topPanel">
+    <div class="toolbar">
+        <div class="btn-group">
+            <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
+        <div class="btn-group">
+            <a id="NF-add" authorize="yes" class="btn btn-primary dropdown-text" onclick="btn_add()"><i class="fa fa-plus"></i>新建药品医嘱</a>
+            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+            <ul class="dropdown-menu pull-right">
+                <li><a id="NF-addl" authorize="yes" onclick="btn_addl()">新建治疗医嘱</a></li>
+            </ul>
+        </div>
+ 
+        <div class="operate">
+            <ul class="nav nav-pills">
+                <li class="first">已选中<span>1</span>项</li>
+                <li><a id="NF-edit" authorize="yes" onclick="btn_edit()"><i class="fa fa-pencil-square-o"></i>修改医嘱</a></li>
+                <li><a id="NF-delete" authorize="yes" onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除医嘱</a></li>
+                <li class="split"></li>
+                <li><a id="NF-checked" authorize="yes" onclick="btn_checked()"><i class="fa fa-play-circle"></i>提交医嘱</a></li>
+                <li class="split"></li>
+                <li><a id="NF-disabled" authorize="yes" onclick="btn_disabled()"><i class="fa fa-stop-circle"></i>停长期医嘱</a></li>
+            </ul>
+            <a href="javascript:;" class="close"></a>
+        </div>
+        <script>$('.toolbar').authorizeButton()</script>
+    </div>
+    <div class="search">
+        <table>
+            <tr>
+                <td>
+                    <div class="input-group" style="width: 200px;">
+                        <select id="F_ParentId" name="F_ParentId" class="form-control" placeholder="选择患者" ></select>
+                    </div>
+                </td>
+                @*<td>
+                    <div id="txt_condition" class="btn-group">
+                        <a class="btn btn-default dropdown-text" data-toggle="dropdown" style="width: 120px;">选择患者</a>
+                        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                        <ul class="dropdown-menu"></ul>
+                    </div>
+                </td>*@
+                <td style="padding-left: 2px;">
+                    <div class="input-group">
+                        <input id="txt_keyword" type="text" class="form-control" placeholder="医嘱名/医嘱代码/拼音码" style="width: 200px;">
+                        <span class="input-group-btn">
+                            <button id="btn_search" type="button" class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </td>
+
+
+
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridList"></table>
+    <div id="gridPager"></div>
+</div>

@@ -1,0 +1,79 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    var parms = '';
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/PatientManage/ConclusionTemplate/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                    //$("#F_UserPassword").val("******").attr('disabled', 'disabled');
+                }
+            });
+        } else {
+            parms = $.request("keyword");
+            if (!!parms) {
+                $("#F_Content").val(decodeURI(parms));
+            }
+        }
+    });
+    function initControl() {
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        $.submitForm({
+            url: "/PatientManage/ConclusionTemplate/SubmitForm",
+            param: {
+                entity: $("#form1").formSerialize(),
+                keyValue: keyValue
+            },
+            success: function () {
+                if (parms === '') {
+                    $.currentWindow().$("#gridList").trigger("reloadGrid");
+                } else {
+                    $.loading(false);
+                }
+            }
+        })
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">标题</th>
+                <td class="formValue">
+                    <input id="F_Title" name="F_Title" type="text" class="form-control required" placeholder="请输入标题" />
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle" style="height: 35px;">选项</th>
+                <td class="formValue" style="padding-top: 1px;">
+                    <div class="ckbox">
+                        <input id="F_IsPrivate" name="F_IsPrivate" type="checkbox"><label for="F_IsPrivate">是否私有</label>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <table class="form">
+            <tr>
+                <th class="formTitle" valign="top" style="padding-top: 5px;">
+                    模板内容
+                </th>
+                <td class="formValue" colspan="9">
+                    <textarea id="F_Content" name="F_Content" class="form-control required" style="height: 320px;"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>

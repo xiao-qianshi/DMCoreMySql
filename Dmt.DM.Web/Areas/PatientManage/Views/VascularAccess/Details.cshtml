@@ -1,0 +1,162 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/PatientManage/VascularAccess/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                    $("#form1").find('.form-control,select,input').attr('readonly', 'readonly');
+                    $("#form1").find('div.ckbox label').attr('for', '');
+                    //$("#F_UserPassword").val("******").attr('disabled', 'disabled');
+                }
+            });
+        }
+    });
+    function initControl() {
+        $("#F_Type").bindSelect();
+        $("#F_VascularAccess").bindSelect();
+        $("#F_BodyPart").bindSelect();
+        $("#F_BloodVessel").bindSelect();
+
+        $("#F_Type").on("change", function (e) {
+            //console.log("change " + JSON.stringify({ val: e.val, added: e.added, removed: e.removed }));
+            //$("#F_Type")
+            //console.log($("#F_Type").select2("data")[0])
+            var typeselected = $("#F_Type").val()
+            if (!!typeselected) {
+                $("#F_VascularAccess").empty()
+                var selectstr = ""
+                if (typeselected === '永久性') {
+                    selectstr = selectstr + "<option value=\"自体内瘘\">自体内瘘</option>"
+                    selectstr = selectstr + "<option value=\"移植内瘘\">移植内瘘</option>"
+                } else if (typeselected === '半永久性') {
+                    selectstr = selectstr + "<option value=\"带隧道带涤纶套导管\">带隧道带涤纶套导管</option>"
+                    selectstr = selectstr + "<option value=\"无隧道无涤纶套导管\">无隧道无涤纶套导管</option>"
+                } else if (typeselected === '暂时性') {
+                    selectstr = selectstr + "<option value=\"直接动静脉穿刺\">直接动静脉穿刺</option>"
+                    selectstr = selectstr + "<option value=\"中心静脉穿刺\">中心静脉穿刺</option>"
+                }
+                $("#F_VascularAccess").html(selectstr)
+                //$("#F_VascularAccess").bindSelect();
+                $("#F_VascularAccess").select2("val", " ")
+            }
+        })  // 改变事件
+
+        $("#F_VascularAccess").on("change", function (e) {
+            var accessselected = $("#F_VascularAccess").val()
+            if (!!accessselected) {
+                $("#F_VascularAccess").empty()
+                var selectstr = ""
+                if (accessselected === '自体内瘘' || accessselected === '移植内瘘') {
+                    selectstr = selectstr + "<option value=\"腕部\">腕部</option>"
+                    selectstr = selectstr + "<option value=\"肘部\">肘部</option>"
+                    selectstr = selectstr + "<option value=\"鼻咽窝\">鼻咽窝</option>"
+                } else if (accessselected === '带隧道带涤纶套导管' || accessselected === '无隧道无涤纶套导管') {
+                    selectstr = selectstr + "<option value=\"颈内静脉\">颈内静脉</option>"
+                    selectstr = selectstr + "<option value=\"锁骨下静脉\">锁骨下静脉</option>"
+                } else if (accessselected === '直接动静脉穿刺' || accessselected === '中心静脉穿刺') {
+                    selectstr = selectstr + "<option value=\"颈内静脉\">颈内静脉</option>"
+                    selectstr = selectstr + "<option value=\"锁骨下静脉\">锁骨下静脉</option>"
+                }
+                $("#F_BodyPart").html(selectstr)
+                $("#F_BodyPart").select2("val", " ")
+            }
+        })
+
+
+    }
+
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        $.submitForm({
+            url: "/PatientManage/VascularAccess/SubmitForm?keyValue=" + keyValue.id,
+            param: $("#form1").formSerialize(),
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+            <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">扩展信息</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">手术日期</th>
+                        <td class="formValue">
+                            <input id="F_OperateTime" name="F_OperateTime" type="text" class="form-control required input-wdatepicker" onfocus="WdatePicker()" autocomplete="off"/>
+                        </td>
+                        <th class="formTitle">启用日期</th>
+                        <td class="formValue">
+                            <input id="F_FirstUseTime" name="F_FirstUseTime" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker()" autocomplete="off"/>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th class="formTitle">通路类型</th>
+                        <td class="formValue">
+                            <select id="F_Type" name="F_Type" type="text" class="form-control required">
+                                <option value="永久性">永久性</option>
+                                <option value="半永久性">半永久性</option>
+                                <option value="暂时性">暂时性</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">通路类别</th>
+                        <td class="formValue">
+                            <select id="F_VascularAccess" name="F_VascularAccess" type="text" class="form-control required">
+                                <option value="自体内瘘">自体内瘘</option>
+                                <option value="移植内瘘">移植内瘘</option>
+                            </select>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th class="formTitle">通路位置</th>
+                        <td class="formValue">
+                            <select id="F_BodyPart" name="F_BodyPart" type="text" class="form-control required">
+                                <option value="腕部">腕部</option>
+                                <option value="肘部">肘部</option>
+                                <option value="鼻咽窝">鼻咽窝</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">血流速</th>
+                        <td class="formValue input-group">
+                            <input id="F_BloodSpeed" name="F_BloodSpeed" type="text" class="form-control" />
+                            <span class="input-group-addon">ml/min</span>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            备注
+                        </th>
+                        <td class="formValue" colspan="3">
+                            <textarea id="F_Memo" name="F_Memo" class="form-control" style="height: 60px;" placeholder="注明连接点：eg.桡动脉-头静脉"></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend">
+
+            </div>
+        </div>
+    </div>
+</form>

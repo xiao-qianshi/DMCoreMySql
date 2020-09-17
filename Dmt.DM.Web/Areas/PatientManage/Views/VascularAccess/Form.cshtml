@@ -1,0 +1,165 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="~/Content/js/fileinput/fileinput.min.css">
+<script src="~/Content/js/fileinput/fileinput.min.js"></script>
+<script src="~/Content/js/fileinput/zh.js"></script>
+
+<script>
+    var keyValue = $.request("keyValue");
+    //var keyValue = $.parseJSON(decodeURI($.request("keyValue")));
+    //var pid = keyValue.pid
+    $(function () {
+        //initControl();
+        //if (!!keyValue.id) {
+        //    $.ajax({
+        //        url: "/PatientManage/VascularAccess/GetFormJson",
+        //        data: { keyValue: keyValue.id },
+        //        dataType: "json",
+        //        async: false,
+        //        success: function (data) {
+        //            $("#form1").formSerialize(data);
+        //            //$("#F_UserPassword").val("******").attr('disabled', 'disabled');
+        //        }
+        //    });
+        //}
+        //else {
+        //    $("#F_Pid").val(keyValue.pid);
+        //}
+
+        initFileInput("reportFile", "/PatientManage/VascularAccess/SavePics");
+    });
+
+
+    //初始化fileinput控件（第一次初始化）
+    function initFileInput(ctrlName, uploadUrl) {
+
+        //var initialPreview = []
+        //var initialPreviewConfig = []
+        //$.ajax({
+        //    url: "/PatientManage/VascularAccess/GetPics?keyValue=" + "c5d4b373-0b9c-4e9e-a0b0-4f9d8302789b",//currentId,
+        //    dataType: "json",
+        //    async: false,
+        //    success: function (data) {
+        //        initialPreview = data.initialPreview;
+        //        initialPreviewConfig = data.initialPreviewConfig;
+        //    }
+        //});
+        //if (!!currentId) {
+        //    $.ajax({
+        //        url: "/PatientManage/VascularAccess/GetPics?keyValue=" + "c5d4b373-0b9c-4e9e-a0b0-4f9d8302789b",//currentId,
+        //        dataType: "json",
+        //        async: false,
+        //        success: function (data) {
+        //            initialPreview = data.initialPreview;
+        //            initialPreviewConfig = data.initialPreviewConfig;
+        //        }
+        //    });
+        //}
+
+        var control = $('#' + ctrlName);
+        //control.fileinput('clear');
+        //初始化上传控件的样式
+        control.fileinput({
+            language: 'zh',                                         //设置语言
+            uploadUrl: uploadUrl,                                   //上传的地址
+            allowedFileExtensions: ['jpg', 'gif', 'png', 'pdf'],    //接收的文件后缀
+            showUpload: true,                                       //是否显示上传按钮
+            showRemove: true,                                      //显示移除按钮
+            showPreview: true,                                     //是否显示预览
+            showCaption: false,                                     //是否显示标题
+            browseClass: "btn btn-primary",                         //按钮样式
+            uploadAsync: true,                                      //默认异步上传
+            //dropZoneEnabled: false,                               //是否显示拖拽区域
+            //minImageWidth: 50,                                    //图片的最小宽度
+            //minImageHeight: 50,                                   //图片的最小高度
+            //maxImageWidth: 1000,                                  //图片的最大宽度
+            //maxImageHeight: 1000,                                 //图片的最大高度
+            //maxFileSize: 0,                                       //单位为kb，如果为0表示不限制文件大小
+            //minFileCount: 0,
+            maxFileCount: 3,                                       //表示允许同时上传的最大文件个数
+            enctype: 'multipart/form-data',
+            validateInitialCount: true,
+            previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+            //initialPreviewAsData: true,
+            //initialPreview: initialPreview,
+            //initialPreviewConfig: initialPreviewConfig,
+            uploadExtraData: function (previewId, index) {           //传参
+                var data = {
+                    //"reportGroupId": $('#lbl_groupId').html(),      //此处自定义传参
+                    id: keyValue
+                    //pid: currentPID
+                };
+                return data;
+            }
+        });
+
+        //导入文件上传完成之后的事件
+        control.on('fileuploaded', function (event, data, previewId, index) {
+            var response = data.response;
+            if (response.state === "success") {
+                //$.each(response, function (id, path) {//上传完毕，将文件名返回
+                //    console.log("path:" + path.pathUrl);
+                //    $("#form").append("<input class='imgClass' name='filePath' type='hidden' value='" + path.pathUrl + "'>");
+                //});
+                var msg = JSON.parse(response.message)
+                $("#extend").append("<input class='imgClass' name='filePath' value='" + msg.pathUrl + "'>");
+            }
+        });
+
+        control.on('filepredelete', function (event, key, jqXHR, data) {
+            console.log(key);
+            console.log(jqXHR);
+            console.log(data);
+        });
+        control.on('filedeleted', function (event, key, jqXHR, data) {
+            console.log(key);
+            console.log(jqXHR);
+            console.log(data);
+        });
+        control.on('filebeforedelete', function (event, key, data) {
+            console.log(key);
+            console.log(data);
+        });
+        control.on('filesuccessremove', function (event, previewId, extra) {
+            //在移除事件里取出所需数据，并执行相应的删除指令
+            deletepic($("#" + previewId)[0].innerText);
+        });
+    }
+
+    function submitForm() {
+        
+        //$.submitForm({
+        //    url: "/PatientManage/VascularAccess/GetVascularAccessPicPath",
+        //    param: { keyValue: keyValue} ,
+        //    success: function (data) {
+        //        //$.currentWindow().$("#gridList").trigger("reloadGrid");
+        //        console.log(data)
+        //    }
+        //})
+
+        $.ajax({
+            url: "/PatientManage/VascularAccess/GetVascularAccessPicPath",
+            data: { keyValue: keyValue },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                //$("#form1").formSerialize(data);
+                //$("#F_UserPassword").val("******").attr('disabled', 'disabled');
+                if (!!data.fileName) {
+                    $.currentWindow().$("img").attr('src', '\\' + data.filePath + '\\' + data.fileName);
+                    $.currentWindow().$("img").attr('alt', data.fileName);
+                }
+                $.modalClose();
+            }
+        });   
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <input type="file" name="reportFile" id="reportFile" class="file-loading" />
+    </div>
+</form>

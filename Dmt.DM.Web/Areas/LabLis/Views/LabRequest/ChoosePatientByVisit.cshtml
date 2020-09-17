@@ -1,0 +1,159 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    var patientOptions = [];
+    var selectedIds = [];
+    $(function () {
+        initControl();
+    });
+    function initControl() {    
+        $.ajax({
+            url: "/SystemManage/ItemsData/GetSelectJson?enCode=BedGroup",
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                var targs = [];
+                targs.push({ id: '', text: '全部' });              
+                if ($.isArray(data)) {
+                    $.each(data, function (i, v) {
+                        targs.push({ id: v.id, text: v.text });
+                    });
+                }
+                $("#group-condition").bindSelect({
+                    data: targs,
+                    change: function (e) {
+                        var visitno = $("#time_horizon a.active").attr('data-value');
+                        var groupname = e.id;
+                        resetData(visitno, groupname);
+                    }
+                });
+            }
+        });
+        $.ajax({
+            url: "/PatientManage/Patient/GetSelectByVisitRecordJson",
+            data: {
+                visitDate: keyValue,
+                groupName: '',
+                visitNo: 0
+            },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                patientOptions = data;
+                //var tags = [];
+                refreshTable(data);
+            }
+        });
+        $("#btn-selectall").on('click', function () {
+            $("#selectTable").find("input[type=checkbox]").prop('checked', true);
+        });
+        $("#btn-clearall").on('click', function () {
+            $("#selectTable").find("input[type=checkbox]").prop('checked', false);
+        });
+        $("#time_horizon a.btn-default").on('click', function (e) {
+            $("#time_horizon a.btn-default").removeClass("active");
+            $(this).addClass("active");
+            var visitno = $(this).attr('data-value');
+            var groupname = $("#group-condition").val();
+            resetData(visitno, groupname);
+        });
+    }
+
+    function resetData(visitno, groupname) {
+        var filterData = []
+        if (visitno == '0') {
+            filterData = patientOptions;
+        } else if (visitno == '1') {
+            filterData = $.grep(patientOptions, function (el) {
+                return el.visitNo == 1;
+            });
+        } else if (visitno == '2') {
+            filterData = $.grep(patientOptions, function (el) {
+                return el.visitNo == 2;
+            });
+        } else if (visitno == '3') {
+            filterData = $.grep(patientOptions, function (el) {
+                return el.visitNo == 3;
+            });
+        }
+        if (!!groupname) {
+            filterData = $.grep(filterData, function (el) {
+                return el.groupName == groupname;
+            });
+        }
+        refreshTable(filterData);
+    }
+
+    function refreshTable(data) {
+        if (data instanceof Array) {
+            if (data.length === 0) {
+                //return false;
+            }
+            var $table = $("#selectTable");
+            $table.html();
+            var htmlstr = "";
+            $.each(data, function (index, item) {
+                if (index % 5 == 0) {
+                    if (index == 0) {
+                        htmlstr = htmlstr + "<tr>";
+                    }
+                    else {
+                        htmlstr = htmlstr + "</tr><tr>";
+                    }
+                }
+                htmlstr = htmlstr + "<td class=\"formValue\" style=\"padding-top: 1px;\"><div class=\"ckbox\"><input id=\"check" + item.id + "\" name=\"check" + item.id + "\" type=\"checkbox\"  value=\"" + item.id + "\"><label for=\"check" + item.id + "\">" + item.name + "  No." + item.recordNo + "</label></div></td>";
+            });
+            htmlstr = htmlstr + "</tr>";
+            $table.html(htmlstr);
+        }
+    }
+
+    function submitForm() {
+        selectedIds = [];
+        var arrtemp = [];
+        $.each($("#selectTable").find('input[type=checkbox]:checked'), function (i, v) {
+            //var id = v.val();
+            //$.inArray(id,)
+            arrtemp.push(v.defaultValue);
+        });
+        if (arrtemp.length === 0) {
+            $.modalMsg("请勾选患者!", 'warning');
+            return false;
+        } else {
+            $.each(patientOptions, function (index, value) {
+                if ($.inArray(value.id, arrtemp) >= 0) {
+                    selectedIds.push(value);
+                }
+            });
+        }
+        $.currentWindow().setpatients(selectedIds);
+        $.modalClose();
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 5px; margin-left: 10px; margin-right: 10px;">
+        <div style="float: left;margin-left: 10px;">
+            <div id="time_horizon" class="btn-group">
+                <a class="btn btn-default active" data-value="0">全部</a>
+                <a class="btn btn-default" data-value="1">早班</a>
+                <a class="btn btn-default" data-value="2">中班</a>
+                <a class="btn btn-default" data-value="3">晚班</a>
+            </div>
+        </div>
+        <div style="float: left;margin-left: 10px;">
+            <select id="group-condition" class="form-control" style="width: auto;">
+            </select>
+        </div>
+        <div style="float: right;">
+            <a class="btn btn-primary" id="btn-selectall">全选</a>
+            <a class="btn btn-primary" style="margin-right: 20px;" id="btn-clearall">反选</a>
+        </div>
+    </div>
+    <div style="margin-top: 10px;">
+        <table id="selectTable" class="form" style="margin-top: 10px;"></table>
+    </div>
+</form>
+

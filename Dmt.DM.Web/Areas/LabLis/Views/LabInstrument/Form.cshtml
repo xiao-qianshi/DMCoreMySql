@@ -1,0 +1,130 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/LabLis/LabInstrument/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                }
+            });
+        }
+    });
+    function initControl() {
+        $("#F_TestType").bindSelect();
+        $("#F_CommunicateMode").bindSelect();
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        $.submitForm({
+            url: "/LabLis/LabInstrument/SubmitForm",
+            param: {
+                entity: $("#form1").formSerialize(),
+                keyValue: keyValue
+            },
+            success: function() {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        });
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+            <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">扩展信息</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">编号</th>
+                        <td class="formValue">
+                            <input id="F_Code" name="F_Code" type="text" class="form-control required" placeholder="请输入项目代码" autocomplete="off" />
+                        </td>
+                        <th class="formTitle">名称</th>
+                        <td class="formValue">
+                            <input id="F_Name" name="F_Name" type="text" class="form-control required" placeholder="请输入项目名称" autocomplete="off" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">简称</th>
+                        <td class="formValue">
+                            <input id="F_ShortName" name="F_ShortName" type="text" class="form-control required" placeholder="请输入项目简称" autocomplete="off" />
+                        </td>
+                        <th class="formTitle">序列号</th>
+                        <td class="formValue">
+                            <input id="F_SerialNo" name="F_SerialNo" type="text" class="form-control" placeholder="请输入项目序列号" autocomplete="off" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">类别</th>
+                        <td class="formValue">
+                            <select id="F_TestType" name="F_TestType" type="text" class="form-control required">
+                                <option value="临检">临检</option>
+                                <option value="生化">生化</option>
+                                <option value="免疫">免疫</option>
+                                <option value="分子发光">分子发光</option>
+                                <option value="微生物">微生物</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </td>
+                        <th class="formTitle" style="height: 35px;">选项</th>
+                        <td class="formValue" style="padding-top: 10px;">
+                            <div class="ckbox">
+                                <input id="F_IsExternal" name="F_IsExternal" type="checkbox"><label for="F_IsExternal">是否外部仪器</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">通讯方式</th>
+                        <td class="formValue">
+                            <select id="F_CommunicateMode" name="F_CommunicateMode" type="text" class="form-control">
+                                <option value="">无</option>
+                                <option value="Com">串口</option>
+                                <option value="Socket">网口</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">通讯模式</th>
+                        <td class="formValue">
+                            <div class="ckbox">
+                                <input id="F_IsDuplex" name="F_IsDuplex" type="checkbox"><label for="F_IsDuplex">双向通讯</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">工作站IP</th>
+                        <td class="formValue">
+                            <input id="F_WorkStationIp" name="F_WorkStationIp" type="text" class="form-control required" placeholder="eg:192.168.1.1" autocomplete="off" />
+                        </td>
+                        <th class="formTitle">端口号</th>
+                        <td class="formValue">
+                            <input id="F_WorkStationPort" name="F_WorkStationPort" type="text" class="form-control" placeholder="eg:8801" autocomplete="off" />
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">备注</th>
+                        <td class="formValue" colspan="2">
+                            <textarea id="F_Supplier" name="F_Supplier" class="form-control" style="height: 80px; width :95%" placeholder="填写设备厂商" autocomplete="off"></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend">
+
+            </div>
+        </div>
+    </div>
+</form>

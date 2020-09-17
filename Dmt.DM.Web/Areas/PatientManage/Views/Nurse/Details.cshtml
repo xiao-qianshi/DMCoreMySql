@@ -1,0 +1,117 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+    });
+    function initControl() {
+        $.ajax({
+            url: "/PatientManage/Nurse/GetFormJson",
+            data: { keyValue: keyValue },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                $("#form1").formSerialize(data);
+            }
+        });
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+            <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">扩展信息</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">录入时间</th>
+                        <td class="formValue">
+                            <input id="F_NurseOperatorTime" name="F_NurseOperatorTime" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt:'yyyy-M-d H:mm:ss',minDate:'%y-%M-%d'})" autocomplete="off"/>
+                        </td>
+                        <th class="formTitle">收缩压(mmHg)</th>
+                        <td class="formValue">
+                            <input id="F_SSY" name="F_SSY" type="text" class="form-control required" />
+                        </td>
+                        <th class="formTitle">舒张压(mmHg)</th>
+                        <td class="formValue">
+                            <input id="F_SZY" name="F_SZY" type="text" class="form-control required" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">心率(次/分)</th>
+                        <td class="formValue">
+                            <input id="F_HR" name="F_HR" type="text" class="form-control required" />
+                        </td>
+                        <th class="formTitle">动脉压(mmHg)</th>
+                        <td class="formValue">
+                            <input id="F_A" name="F_A" type="text" class="form-control required" />
+                        </td>
+                        <th class="formTitle">静脉压(mmHg)</th>
+                        <td class="formValue">
+                            <input id="F_V" name="F_V" type="text" class="form-control required" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">流量(ml/min)</th>
+                        <td class="formValue">
+                            <input id="F_BF" name="F_BF" type="text" class="form-control required" />
+                        </td>
+                        <th class="formTitle">超滤率(ml/h)</th>
+                        <td class="formValue">
+                            <input id="F_UFV" name="F_UFV" type="text" class="form-control required" />
+                        </td>
+                        <th class="formTitle">电导率(ms/cm)</th>
+                        <td class="formValue">
+                            <input id="F_C" name="F_C" type="text" class="form-control required" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">机温(℃)</th>
+                        <td class="formValue">
+                            <input id="F_T" name="F_T" type="text" class="form-control required" />
+                        </td>
+                        <th class="formTitle">超滤量(ml)</th>
+                        <td class="formValue">
+                            <input id="F_UFR" name="F_UFR" type="text" class="form-control required" />
+                        </td>
+                        <th class="formTitle">TMP(mmHg)</th>
+                        <td class="formValue">
+                            <input id="F_TMP" name="F_TMP" type="text" class="form-control required" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">剩余肝素量(ml)</th>
+                        <td class="formValue">
+                            <input id="F_GSL" name="F_GSL" type="text" class="form-control required" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            病情及处理措施
+                        </th>
+                        <td class="formValue" colspan="3">
+                            <textarea id="F_MEMO" name="F_MEMO" class="form-control" style="height: 60px; width :630px"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        @*<th class="formTitle">主键</th>*@
+                        <td class="formValue">
+                            <input id="F_Id" name="F_Id" type="text" class="form-control" style="visibility:hidden" />
+                        </td>
+                        <td class="formValue">
+                            <input id="F_RecordNo" name="F_RecordNo" type="text" class="form-control" style="visibility:hidden" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend">
+
+            </div>
+        </div>
+    </div>
+</form>

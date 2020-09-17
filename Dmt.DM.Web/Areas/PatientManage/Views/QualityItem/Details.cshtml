@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/PatientManage/QualityItem/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                    $("#form1").find('.form-control,select,input').attr('readonly', 'readonly');
+                    $("#form1").find('div.ckbox label').attr('for', '');
+                }
+            });
+        }
+
+    });
+    function initControl() {
+        $("#F_ItemType").bindSelect(); 
+    }
+
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+            <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">扩展信息</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">代码</th>
+                        <td class="formValue">
+                            <input id="F_ItemCode" name="F_ItemCode" type="text" class="form-control required" />
+                        </td>
+                        <th class="formTitle">名称</th>
+                        <td class="formValue">
+                            <input id="F_ItemName" name="F_ItemName" type="text" class="form-control required" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">对照码</th>
+                        <td class="formValue">
+                            <input id="F_HisItemCode" name="F_HisItemCode" type="text" class="form-control" placeholder="关联His结果对应码" />
+                        </td>
+                        <th class="formTitle">单位</th>
+                        <td class="formValue">
+                            <input id="F_Unit" name="F_Unit" type="text" class="form-control required" placeholder="" />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th class="formTitle">参考下限</th>
+                        <td class="formValue">
+                            <input id="F_LowerValue" name="F_LowerValue" type="text" class="form-control" placeholder="" />
+                        </td>
+                        <th class="formTitle">参考上限</th>
+                        <td class="formValue">
+                            <input id="F_UpperValue" name="F_UpperValue" type="text" class="form-control" placeholder="" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">类别</th>
+                        <td class="formValue">
+                            <select id="F_ItemType" name="F_ItemType" type="text" class="form-control required">
+                                <option value="临检">临检</option>
+                                <option value="生化">生化</option>
+                                <option value="免疫">免疫</option>
+                                <option value="分子发光">分子发光</option>
+                                <option value="微生物">微生物</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            备注
+                        </th>
+                        <td class="formValue" colspan="3">
+                            <textarea id="F_Memo" name="F_Memo" class="form-control" style="height: 60px;" placeholder=""></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend">
+
+            </div>
+        </div>
+    </div>
+</form>

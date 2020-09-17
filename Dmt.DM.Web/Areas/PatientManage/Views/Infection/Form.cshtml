@@ -1,0 +1,112 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/PatientManage/Infection/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                    //$("#F_UserPassword").val("******").attr('disabled', 'disabled');
+                }
+            });
+        }
+    });
+    function initControl() {
+        //$("#F_EnabledMark").bindSelect()
+        //$("#F_DefaultType").bindSelect()
+        //$("#F_EnabledMark").bindSelect()   
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        $.submitForm({
+            url: "/PatientManage/Infection/SubmitForm",
+            param: {
+                entity: $("#form1").formSerialize(),
+                keyValue: keyValue
+            },
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">报告日期</th>
+                        <td class="formValue">
+                            <input id="F_ReportDate" name="F_ReportDate" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" style="width: 230px;">空气细菌培养</th>
+                        <td class="formValue input-group">
+                            <input id="F_Item1" name="F_Item1" type="number" class="form-control" placeholder="" />
+                            <span class="input-group-addon">CFU/皿</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" style="width: 230px;">物表细菌培养</th>
+                        <td class="formValue input-group">
+                            <input id="F_Item2" name="F_Item2" type="number" class="form-control" placeholder="" />
+                            <span class="input-group-addon">cfu/cm²</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" style="width: 230px;">手卫生细菌培养</th>
+                        <td class="formValue input-group">
+                            <input id="F_Item3" name="F_Item3" type="number" class="form-control" placeholder="" />
+                            <span class="input-group-addon">cfu/cm²</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" style="width: 230px;">透析用水细菌培养</th>
+                        <td class="formValue input-group">
+                            <input id="F_Item4" name="F_Item4" type="number" class="form-control" placeholder="" />
+                            <span class="input-group-addon">cfu/ml</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" style="width: 230px;">透析用水内毒素检测</th>
+                        <td class="formValue input-group">
+                            <input id="F_Item5" name="F_Item5" type="number" class="form-control" placeholder="" />
+                            <span class="input-group-addon">EU/ml</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" style="width: 230px;">透析液细菌培养</th>
+                        <td class="formValue input-group">
+                            <input id="F_Item6" name="F_Item6" type="number" class="form-control" placeholder="" />
+                            <span class="input-group-addon">cfu/ml</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="formTitle" style="width: 230px;">透析液内毒素检测</th>
+                        <td class="formValue input-group">
+                            <input id="F_Item7" name="F_Item7" type="number" class="form-control" placeholder="" />
+                            <span class="input-group-addon">EU/ml</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+ 
+        </div>
+    </div>
+</form>

@@ -1,0 +1,173 @@
+[
+  {
+    "outputFileName": "wwwroot/Content/css/framework-theme.min.css",
+    "inputFiles": [
+      "wwwroot/Content/css/framework-theme.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Content/js/index.min.js",
+    "inputFiles": [
+      "wwwroot/Content/js/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/Content/js/indextab.min.js",
+    "inputFiles": [
+      "wwwroot/Content/js/indextab.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/Content/js/framework-ui.min.js",
+    "inputFiles": [
+      "wwwroot/Content/js/framework-ui.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/Content/js/framework-clientdata.min.js",
+    "inputFiles": [
+      "wwwroot/Content/js/framework-clientdata.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/Content/js/ajax-setup.min.js",
+    "inputFiles": [
+      "wwwroot/Content/js/ajax-setup.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/view-js/home/default.min.js",
+    "inputFiles": [
+      "wwwroot/view-js/home/default.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/view-js/patvisit/Index.min.js",
+    "inputFiles": [
+      "wwwroot/view-js/patvisit/Index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/view-js/patvisit/Summery.min.js",
+    "inputFiles": [
+      "wwwroot/view-js/patvisit/Summery.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/view-js/patient/Index.min.js",
+    "inputFiles": [
+      "wwwroot/view-js/patient/Index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/view-js/patient/Summery.min.js",
+    "inputFiles": [
+      "wwwroot/view-js/patient/Summery.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/view-js/lablis/DaLabReport/Index.min.js",
+    "inputFiles": [
+      "wwwroot/view-js/lablis/DaLabReport/Index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/view-js/lablis/LabRequest/Index.min.js",
+    "inputFiles": [
+      "wwwroot/view-js/lablis/LabRequest/Index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/view-js/lablis/LabRequest/Sample.min.js",
+    "inputFiles": [
+      "wwwroot/view-js/lablis/LabRequest/Sample.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/view-js/lablis/LabTest/Index.min.js",
+    "inputFiles": [
+      "wwwroot/view-js/lablis/LabTest/Index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/view-js/datastatistics/jsreport/Index.min.js",
+    "inputFiles": [
+      "wwwroot/view-js/datastatistics/jsreport/Index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  }
+]

@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.parseJSON(decodeURI($.request("keyValue")));
+    //var filterValues = {};
+    //filterValues.startDate = keyValue.startDate;// year + '-' + month + '-' + day;
+    //filterValues.endDate = keyValue.endDate;//year + '-' + month + '-' + day;
+    //filterValues.all = keyValue.all;// true; //全部类别
+    //filterValues.drug = keyValue.drug;//false; //西药
+    //filterValues.treatment = keyValue.treatment;// false;//治疗
+    //filterValues.marital = keyValue.marital;// false;//耗材
+    //filterValues.statusall = keyValue.statusall;// true;  //不设置状态
+    //filterValues.statusacct = keyValue.statusacct;// false; //已结账
+    //filterValues.statusunacct = keyValue.statusunacct;//false; //未结账
+    //filterValues.keyword = keyValue.keyword;//"";
+    //filterValues.pid = keyValue.pid;// "";
+
+    $(function () {
+        initControl();      
+    });
+    function initControl() {
+        $("#form1").formSerialize(keyValue);
+        $("#all").on("change", function () {
+            if (this.checked == true) {
+                $("#drug,#treatment,#marital").prop("checked", false);
+            }
+        });
+        $("#drug,#treatment,#marital").on("change", function () {
+            if (this.checked == true) {
+                $("#all").prop("checked", false);
+            }
+        });
+
+        $("#statusall").on("change", function () {
+            if (this.checked == true) {
+                $("#statusacct,#statusunacct").prop("checked", false);
+            }
+        });
+        $("#statusacct").on("change", function () {
+            if (this.checked == true) {
+                $("#statusall").prop("checked", false);
+                $("#statusunacct").prop("checked", false);
+            }
+        });
+
+        $("#statusunacct").on("change", function () {
+            if (this.checked == true) {
+                $("#statusall").prop("checked", false);
+                $("#statusacct").prop("checked", false);
+            }
+        });
+
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        var postdata = $('#form1').formSerialize();
+        $.currentWindow().$("#filterstr").attr("value", encodeURI(JSON.stringify(postdata)));
+        //$.currentWindow().$("#gridList").trigger("reloadGrid");
+        $.modalClose();
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">起始日期</th>
+                <td class="formValue">
+                    <input id="startDate" name="startDate" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off"/>
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle">截至日期</th>
+                <td class="formValue">
+                    <input id="endDate" name="endDate" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})"  autocomplete="off"/>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="formTitle" style="height: 35px;">费用类别</th>
+                <td class="formValue" style="padding-top: 1px;">
+                    <div class="ckbox">
+                        <input id="all" name="all" type="checkbox" checked="checked"><label for="all">全部</label>
+                    </div>
+                    <div class="ckbox">
+                        <input id="drug" name="drug" type="checkbox"><label for="drug">药品</label>
+                    </div>
+                    <div class="ckbox">
+                        <input id="treatment" name="treatment" type="checkbox"><label for="treatment">耗材</label>
+                    </div>
+                    <div class="ckbox">
+                        <input id="marital" name="marital" type="checkbox"><label for="marital">治疗</label>
+                    </div>
+
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle" style="height: 35px;">状态</th>
+                <td class="formValue" style="padding-top: 1px;">
+                    <div class="ckbox">
+                        <input id="statusall" name="statusall" type="checkbox" checked="checked"><label for="statusall">全部</label>
+                    </div>
+
+                    <div class="ckbox">
+                        <input id="statusunacct" name="statusunacct" type="checkbox"><label for="statusunacct">未结账</label>
+                    </div>
+
+                    <div class="ckbox">
+                        <input id="statusacct" name="statusacct" type="checkbox"><label for="statusacct">已结账</label>
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>

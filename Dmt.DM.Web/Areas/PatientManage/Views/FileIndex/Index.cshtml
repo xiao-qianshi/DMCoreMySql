@@ -1,0 +1,150 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+<link media="print" href="~/Content/js/jqprint/Evaluation.css" rel="stylesheet" />
+<script>
+    $(function () {
+        gridList();
+    })
+    function gridList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            url: "/PatientManage/FileIndex/GetGridJson",
+            height: $(window).height() - 128,
+            colModel: [
+                { label: '主键', name: 'F_Id', hidden: true },
+                { label: '患者ID', name: 'F_Pid', hidden: true },
+                { label: '类型', name: 'F_FileType', width: 200, align: 'left' },
+                { label: '姓名', name: 'F_Name', width: 80, align: 'left' },
+                { label: '性别', name: 'F_Gender', width: 80, align: 'left' },
+                { label: '透析号', name: 'F_DialysisNo', width: 80, align: 'left' },
+                {
+                    label: '文件创建日期', name: 'F_CreatorTime', width: 160, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d h:m' } 
+                },
+                { label: '创建者', name: 'F_RealName', width: 80, align: 'left' },
+                { label: '创建者ID', name: 'F_CreatorUserId', hidden: true },
+                {
+                    label: '最后修改日期', name: 'F_LastModifyTime', width: 160, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d h:m' } 
+                }
+            ],
+            pager: "#gridPager",
+            sortname: 'F_CreatorTime desc',
+            viewrecords: true
+        });
+        $("#btn_search").click(function () {
+            $gridList.jqGrid('setGridParam', {
+                postData: { keyword: $("#txt_keyword").val() },
+            }).trigger('reloadGrid');
+        });
+    }
+    function btn_add() {
+        $.modalOpen({
+            id: "Form",
+            title: "新增评估单",
+            url: "/PatientManage/FileIndex/Form",
+            width: "950px",
+            height: "800px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+    function btn_edit() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.modalOpen({
+                id: "Form",
+                title: "修改评估单",
+                url: "/PatientManage/FileIndex/Form?keyValue=" + keyValue,
+                width: "950px",
+                height: "800px",
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
+            });
+        }
+    }
+    function btn_delete() {
+        $.deleteForm({
+            url: "/PatientManage/FileIndex/DeleteForm",
+            param: { keyValue: $("#gridList").jqGridRowValue().F_Id },
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+    function btn_details() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        $.modalOpen({
+            id: "Details",
+            title: "查看评估单",
+            url: "/PatientManage/FileIndex/Details?keyValue=" + keyValue,
+            width: "950px",
+            height: "800px",
+            btn: null
+        });
+    }
+
+    function btn_print() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        $.post("/PatientManage/FileIndex/GetEvaluationImage?keyValue=" + keyValue, {
+            postdata: {
+                keyValue: keyValue
+            }
+        }, function (result) {
+            $("#print").html(result);
+            $("#print").attr("style", "display:block;");//显示div
+            $("#print").jqprint();
+            $("#print").attr("style", "display:none;");//隐藏div
+        })
+    }
+
+</script>
+
+<div class="topPanel">
+    <div class="toolbar">
+        <div class="btn-group">
+            <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
+        <div class="btn-group">
+            <a id="NF-add" authorize="yes" class="btn btn-primary dropdown-text" onclick="btn_add()"><i class="fa fa-plus"></i>新建评估单</a>
+        </div>
+        <div class="operate">
+            <ul class="nav nav-pills">
+                <li class="first">已选中<span>1</span>项</li>
+                <li><a id="NF-edit" authorize="yes" onclick="btn_edit()"><i class="fa fa-pencil-square-o"></i>修改</a></li>
+                <li><a id="NF-Details" authorize="yes" onclick="btn_details()"><i class="fa fa-search-plus"></i>查看</a></li>
+                <li class="split"></li>
+                <li><a id="NF-delete" authorize="yes" onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除</a></li>
+                <li class="split"></li>
+                <li><a id="NF-Print" authorize="yes" onclick="btn_print()"><i class="fa fa-print"></i>打印</a></li>
+            </ul>
+            <a href="javascript:;" class="close"></a>
+        </div>
+        <script>$('.toolbar').authorizeButton()</script>
+    </div>
+    <div class="search">
+        <table>
+            <tr>
+                <td>
+                    <div class="input-group">
+                        <input id="txt_keyword" type="text" class="form-control" placeholder="透析号/姓名/卡号/就诊号.." style="width: 200px;">
+                        <span class="input-group-btn">
+                            <button id="btn_search" type="button" class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridList"></table>
+    <div id="gridPager"></div>
+</div>
+<div id="print" style="visibility:hidden;display:none">
+</div>

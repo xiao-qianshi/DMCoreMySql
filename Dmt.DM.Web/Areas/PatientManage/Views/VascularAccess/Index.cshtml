@@ -1,0 +1,489 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@*<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+    <script src="~/Content/js/select2/select2.min.js"></script>*@
+
+
+<script>
+    var currentPID = ""
+    var currentId = ""
+    $(function () {
+        $("#access-list").css({ "height": $(window).height() - 60 })
+
+        $("#access-right").css({ "height": $(window).height() - 60 })
+        $("#access-right-child").css({ "height": $(window).height() - 65 })
+        $("#form1").css({ "height": $(window).height() - 70 })
+        $("img").css({ "height": $(window).height() - 185 })
+        
+        //
+        initControl()
+
+        //initFileInput("reportFile","/PatientManage/VascularAccess/SavePics")
+
+        $("#F_EnabledMark").on("change", function (e) {
+            console.log(e)
+            if (e.target.checked) {
+                $("#F_DisabledRemark").attr("style", "display: none;")
+            } else {
+                $("#F_DisabledRemark").attr("style", "display: block;")
+            }
+        })
+
+        $.ajax({
+            url: "/PatientManage/Patient/GetSelectJson",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                var tags = [];
+                var first = {};
+                first.id = "";
+                first.text = "";
+                tags.push(first);
+                $.each(data, function (index, item) {
+                    var obj = {};
+                    obj.id = item.id;
+                    obj.text = item.name + "(No." + item.recordNo + ")" + item.py;
+                    tags.push(obj);
+                }
+                );
+
+                $("#F_ParentId").bindSelect({
+                    search: true,
+                    data: tags,
+                    change: function (e) {
+                        currentPID = e.id;
+                        $("#F_Pid").val(e.id);
+                        resetData();
+                    }
+                });
+            }
+        });
+
+    })
+
+    function resetData() {
+        //currentId = ""
+        $.ajax({
+            url: "/PatientManage/VascularAccess/GetListJson",
+            data: { keyword: currentPID },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.length > 0) {
+                    var listgroup = $("div .list-group");
+                    listgroup.html("")
+                    var strtemp = ""
+                    data.forEach(function (ele, index) {
+                        strtemp = strtemp + "<a class=\"list-group-item\" id=\"" + ele.F_Id + "\"> " + (ele.F_EnabledMark === true ? "<span class=\"badge badge-success\">启</span>" : "<span class=\"badge\">停</span>") + "<h6 class=\"list-group-item-heading\">" + new Date(ele.F_OperateTime).Format("yyyy-MM-dd") + "</h6><p class=\"list-group-item-text\">" + ele.F_Type + "&nbsp;&nbsp;&nbsp;" + ele.F_VascularAccess + "&nbsp;&nbsp;&nbsp;" + ele.F_BodyPart + "</p></a>";
+                    })
+                    listgroup.html(strtemp)
+                } else {
+                    //清空
+                }
+
+                var listitems = $("div .list-group-item").on("click", function (e) {
+                    //resetData(e.currentTarget.id)
+                    if (!!e.currentTarget.id) {
+                        currentId = e.currentTarget.id
+                        $.ajax({
+                            url: "/PatientManage/VascularAccess/GetFormJson",
+                            data: { keyValue: currentId },
+                            dataType: "json",
+                            async: false,
+                            success: function (data) {
+                                $("#form1").formSerialize(data);
+                                //initFileInput("reportFile", "/PatientManage/VascularAccess/SavePics");
+                                $.ajax({
+                                    url: "/PatientManage/VascularAccess/GetVascularAccessPicPath",
+                                    data: { keyValue: currentId },
+                                    dataType: "json",
+                                    async: false,
+                                    success: function (data) {
+                                        if (!!data.fileName) {
+                                            $("img").attr('src', '\\' + data.filePath + '\\' + data.fileName);
+                                            $("img").attr('alt', data.fileName);
+                                        }
+                                    }
+                                }); 
+                            }
+                        });
+                    }
+                })
+            }
+        });
+    }
+
+    function btn_add() {
+        if (!!currentPID) {
+            var formdata = {}
+            formdata.F_Id = ""
+            formdata.F_OperateTime = ""
+            formdata.F_FirstUseTime = ""
+            formdata.F_Type = ""
+            formdata.F_VascularAccess = ""
+            formdata.F_BloodSpeed = null
+            formdata.F_BloodSpeed_Idea = null
+            formdata.F_BodyPart = ""
+            formdata.F_DisabledRemark = true
+            formdata.F_DisabledRemark = ""
+            $("#form1").formSerialize(formdata)
+        } else {
+            $.modalMsg('请选择患者！', 'warning');
+        }
+    }
+    function btn_upload() {
+        if (!!currentId) {
+            $.modalOpen({
+                id: "Form",
+                title: "上传图片",
+                url: "/PatientManage/VascularAccess/Form?keyValue=" + currentId,
+                width: "800px",
+                height: "600px",
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
+            });
+        } else {
+            $.modalMsg("请先选择手术记录！","warning")
+        }
+        
+    }
+    function btn_delete() {
+        $.deleteForm({
+            url: "/PatientManage/VascularAccess/DeleteForm",
+            param: { keyValue: $("#gridList").jqGridRowValue().F_Id },
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+    function btn_details() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        $.modalOpen({
+            id: "Details",
+            title: "查看",
+            url: "/PatientManage/VascularAccess/Details?keyValue=" + keyValue,
+            width: "800px",
+            height: "600px",
+            btn: null,
+        });
+    }
+    function btn_disabled() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        $.modalConfirm("注：您确定要【停用】该项吗？", function (r) {
+            if (r) {
+                $.submitForm({
+                    url: "/PatientManage/VascularAccess/DisableForm",
+                    param: { keyValue: keyValue },
+                    success: function () {
+                        $.currentWindow().$("#gridList").trigger("reloadGrid");
+                    }
+                })
+            }
+        });
+    }
+    function btn_enabled() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        $.modalConfirm("注：您确定要【启用】该项吗？", function (r) {
+            if (r) {
+                $.submitForm({
+                    url: "/PatientManage/VascularAccess/EnabledForm",
+                    param: { keyValue: keyValue },
+                    success: function () {
+                        $.currentWindow().$("#gridList").trigger("reloadGrid");
+                    }
+                })
+            }
+        });
+    }
+    function initControl() {
+        $("#F_Type").bindSelect();
+        $("#F_VascularAccess").bindSelect();
+        $("#F_BodyPart").bindSelect();
+        //$("#F_BloodVessel").bindSelect();
+
+        //$("#F_Type").on("change", function (e) {
+        //    var typeselected = $("#F_Type").val()
+        //    if (!!typeselected) {
+        //        $("#F_VascularAccess").empty()
+        //        var selectstr = ""
+        //        if (typeselected === '永久性') {
+        //            selectstr = selectstr + "<option value=\"自体内瘘\">自体内瘘</option>"
+        //            selectstr = selectstr + "<option value=\"移植内瘘\">移植内瘘</option>"
+        //        } else if (typeselected === '半永久性') {
+        //            selectstr = selectstr + "<option value=\"带隧道带涤纶套导管\">带隧道带涤纶套导管</option>"
+        //            selectstr = selectstr + "<option value=\"无隧道无涤纶套导管\">无隧道无涤纶套导管</option>"
+        //        } else if (typeselected === '暂时性') {
+        //            selectstr = selectstr + "<option value=\"直接动静脉穿刺\">直接动静脉穿刺</option>"
+        //            selectstr = selectstr + "<option value=\"中心静脉穿刺\">中心静脉穿刺</option>"
+        //        }
+        //        $("#F_VascularAccess").html(selectstr)
+        //        //$("#F_VascularAccess").bindSelect();
+        //        $("#F_VascularAccess").select2("val", "")
+        //    }
+        //})  // 改变事件
+
+        //$("#F_VascularAccess").on("change", function (e) {
+        //    var accessselected = $("#F_VascularAccess").val()
+        //    if (!!accessselected) {
+        //        $("#F_VascularAccess").empty()
+        //        var selectstr = ""
+        //        if (accessselected === '自体内瘘' || accessselected === '移植内瘘') {
+        //            selectstr = selectstr + "<option value=\"腕部\">腕部</option>"
+        //            selectstr = selectstr + "<option value=\"肘部\">肘部</option>"
+        //            selectstr = selectstr + "<option value=\"鼻咽窝\">鼻咽窝</option>"
+        //        } else if (accessselected === '带隧道带涤纶套导管' || accessselected === '无隧道无涤纶套导管') {
+        //            selectstr = selectstr + "<option value=\"颈内静脉\">颈内静脉</option>"
+        //            selectstr = selectstr + "<option value=\"锁骨下静脉\">锁骨下静脉</option>"
+        //        } else if (accessselected === '直接动静脉穿刺' || accessselected === '中心静脉穿刺') {
+        //            selectstr = selectstr + "<option value=\"颈内静脉\">颈内静脉</option>"
+        //            selectstr = selectstr + "<option value=\"锁骨下静脉\">锁骨下静脉</option>"
+        //        }
+        //        $("#F_BodyPart").html(selectstr)
+        //        $("#F_BodyPart").select2("val", "")
+        //    }
+        //})
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        $.submitForm({
+            url: "/PatientManage/VascularAccess/SubmitForm?keyValue=" + currentId,
+            param: $("#form1").formSerialize(),
+            success: function () {
+                resetData()
+            }
+        })
+    }
+    Date.prototype.Format = function (fmt) { //author: meizz
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+</script>
+
+<div class="rows" style="margin-bottom: 1%; border: 1px solid #e6e6e6; overflow: hidden; padding-left: 1px;">
+    <div style="float: left;width: 100%">
+        <table class="form">
+            <tr>
+                <th class="formTitle">选择患者</th>
+                <td class="formValue">
+                    <div class="input-group" style="width: 150px;">
+                        <select id="F_ParentId" name="F_ParentId" class="form-control" placeholder="选择患者"></select>
+                    </div>
+                </td>
+                <td class="formValue">
+                    <button type="button" class="btn btn-primary" onclick="btn_add()"><i class="fa fa-plus"></i>新增</button>
+                    <button type="button" class="btn btn-primary" onclick="submitForm()"><i class="fa fa-save"></i>保存</button>
+                    <button type="button" class="btn btn-primary" onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除</button>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+    <div style="float: left; width: 20%;">
+        <div style="border: 1px solid #e6e6e6; background-color: #fff;" id="access-list">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    血管通路记录
+                </div>
+            </div>
+            <div class="panel panel-body pre-scrollable">
+                <div class="list-group">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="float: right; width: 79%;">
+        <div style="border: 1px solid #e6e6e6; background-color: #fff;" id="access-right">
+            <div class="panel panel-body">
+                <form id="form1">
+                    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+                            <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">图片信息</a></li>
+                        </ul>
+                        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; min-height:350px">
+                            <div role="tabpanel" class="tab-pane active" id="basic">
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle">手术日期</th>
+                                        <td class="formValue">
+                                            <input id="F_OperateTime" name="F_OperateTime" type="text" class="form-control required input-wdatepicker" onfocus="WdatePicker()" autocomplete="off"/>
+                                        </td>
+                                        <th class="formTitle">启用日期</th>
+                                        <td class="formValue">
+                                            <input id="F_FirstUseTime" name="F_FirstUseTime" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker()" autocomplete="off"/>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">通路类型</th>
+                                        <td class="formValue">
+                                            <select id="F_Type" name="F_Type" type="text" class="form-control required">
+                                                <option value="永久性">永久性</option>
+                                                <option value="半永久性">半永久性</option>
+                                                <option value="暂时性">暂时性</option>
+                                            </select>
+                                        </td>
+                                        <th class="formTitle">通路类别</th>
+                                        <td class="formValue">
+                                            <select id="F_VascularAccess" name="F_VascularAccess" type="text" class="form-control required">
+                                                <option value="自体内瘘">自体内瘘</option>
+                                                <option value="移植内瘘">移植内瘘</option>
+                                                <option value="带隧道带涤纶套导管">带隧道带涤纶套导管</option>
+                                                <option value="无隧道无涤纶套导管">无隧道无涤纶套导管</option>
+                                                <option value="直接动静脉穿刺">直接动静脉穿刺</option>
+                                                <option value="中心静脉穿刺">中心静脉穿刺</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">期望血流速</th>
+                                        <td class="formValue input-group">
+                                            <input id="F_BloodSpeed_Idea" name="F_BloodSpeed_Idea" type="text" class="form-control" />
+                                            <span class="input-group-addon">ml/min</span>
+                                        </td>
+                                        <th class="formTitle">实际血流速</th>
+                                        <td class="formValue input-group">
+                                            <input id="F_BloodSpeed" name="F_BloodSpeed" type="text" class="form-control" />
+                                            <span class="input-group-addon">ml/min</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="formTitle">通路位置</th>
+                                        <td class="formValue">
+                                            <select id="F_BodyPart" name="F_BodyPart" type="text" class="form-control required">
+                                                <option value="腕部">腕部</option>
+                                                <option value="肘部">肘部</option>
+                                                <option value="鼻咽窝">鼻咽窝</option>
+                                                <option value="颈内静脉">颈内静脉</option>
+                                                <option value="锁骨下静脉">锁骨下静脉</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                                            通路详细描述
+                                        </th>
+                                        <td class="formValue" colspan="3">
+                                            <textarea id="F_Memo" name="F_Memo" class="form-control" style="height: 60px;" placeholder="注明连接点：eg.桡动脉-头静脉"></textarea>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                                            并发症历史记录
+                                        </th>
+                                        <td class="formValue" colspan="8">
+                                            <textarea id="F_Complication" name="F_Complication" class="form-control" style="height: 120px;"
+                                                      placeholder="注明产生并发症时间、症状及处理措施：
+                                                      eg.2019-01-01 血栓  溶栓 "></textarea>
+                                        </td>
+                                    </tr>
+                                    <tr style="display:none">
+                                        <td class="form-formValue">
+                                            <input id="F_Pid" name="F_Pid" type="text" class="form-control required" />
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle" style="height: 35px;">选项</th>
+                                        <td class="formValue" style="padding-top: 1px;">
+                                            <div class="ckbox">
+                                                <input id="F_EnabledMark" name="F_EnabledMark" type="checkbox"><label for="F_EnabledMark">是否启用</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="form">
+                                    <tr>
+                                        <th class="formTitle" valign="top" style="padding-top: 5px;"></th>
+                                        <td class="formValue">
+                                            <textarea id="F_DisabledRemark" name="F_DisabledRemark" class="form-control" style="height: 60px;"
+                                                      placeholder="停用原因"></textarea>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="extend">
+                                <div class="card card-info"> 
+                                    <div class="card-body">
+                                        <button type="button" class="btn btn-primary" onclick="btn_upload()"><i class="fa fa-cloud-upload"></i>上传图片</button>
+                                        <h5 />
+                                        @*<img src="" class="img-responsive" alt="" width="500" height="600">*@
+                                        <img src="" class="img-thumbnail" alt="" height="450">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .panel-default {
+        border: none;
+        border-radius: 0px;
+        margin-bottom: 0px;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+
+        .panel-default > .panel-heading {
+            color: #777;
+            background-color: #fff;
+            border-color: #e6e6e6;
+            padding: 10px 10px;
+        }
+
+        .panel-default > .panel-body {
+            padding: 10px;
+            padding-bottom: 0px;
+        }
+
+            .panel-default > .panel-body ul {
+                overflow: hidden;
+                padding: 0;
+                margin: 0px;
+                margin-top: -5px;
+            }
+
+                .panel-default > .panel-body ul li {
+                    line-height: 27px;
+                    list-style-type: none;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
+
+                    .panel-default > .panel-body ul li .time {
+                        color: #a1a1a1;
+                        float: right;
+                        padding-right: 5px;
+                    }
+</style>

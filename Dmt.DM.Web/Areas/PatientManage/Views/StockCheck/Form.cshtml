@@ -1,0 +1,87 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/PatientManage/StockCheck/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                }
+            });
+        }
+        $("#baseinfo").find('.form-control,input').attr('readonly', 'readonly');
+    });
+    function initControl() {
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        var postData = {};
+        postData.keyValue = keyValue;
+        var minAmount = $("#F_MinAmount").val();
+        if (!!minAmount) {
+            postData.minAmount = minAmount;
+        }
+        var maxAmount = $("#F_MaxAmount").val();
+        if (!!maxAmount) {
+            postData.maxAmount = maxAmount;
+        }
+        $.submitForm({
+            url: "/PatientManage/StockCheck/SetBalance",
+            param: postData,
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <div role="tabpanel" class="tab-pane active" id="basic">
+            <table class="form" id="baseinfo">
+                <tr>
+                    <th class="formTitle">代码</th>
+                    <td class="formValue">
+                        <input id="F_Code" name="F_Code" type="text" class="form-control" />
+                    </td>
+                    <th class="formTitle">名称</th>
+                    <td class="formValue">
+                        <input id="F_Name" name="F_Name" type="text" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <th class="formTitle">规格</th>
+                    <td class="formValue">
+                        <input id="F_Spec" name="F_Spec" type="text" class="form-control" />
+                    </td>
+                    <th class="formTitle">单位</th>
+                    <td class="formValue">
+                        <input id="F_Unit" name="F_Unit" type="text" class="form-control" />
+                    </td>
+                </tr>
+            </table>
+            <table class="form">
+                <tr>
+                    <th class="formTitle">库存下限</th>
+                    <td class="formValue">
+                        <input id="F_MinAmount" name="F_MinAmount" type="number" class="form-control" />
+                    </td>
+                    <th class="formTitle">库存上限</th>
+                    <td class="formValue">
+                        <input id="F_MaxAmount" name="F_MaxAmount" type="number" class="form-control" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</form>

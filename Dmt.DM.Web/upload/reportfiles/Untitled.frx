@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="10/13/2019 01:14:31" ReportInfo.Modified="10/13/2019 01:14:54" ReportInfo.CreatorVersion="2019.2.0.0">
+  <Dictionary>
+    <BusinessObjectDataSource Name="WaterMLog" ReferenceName="WaterMLog" DataType="null" Enabled="true">
+      <Column Name="HospialName" DataType="System.String"/>
+      <Column Name="HospialLogo" DataType="System.Byte[]" BindableControl="Picture"/>
+      <Column Name="PrintDate" DataType="System.String"/>
+      <Column Name="StartDate" DataType="System.String"/>
+      <Column Name="EndDate" DataType="System.String"/>
+      <BusinessObjectDataSource Name="Items" DataType="null" Enabled="true">
+        <Column Name="Id" DataType="System.String"/>
+        <Column Name="LogDate" DataType="System.String"/>
+        <Column Name="Value1" DataType="System.String"/>
+        <Column Name="Value2" DataType="System.String"/>
+        <Column Name="Value3" DataType="System.String"/>
+        <Column Name="Value4" DataType="System.String"/>
+        <Column Name="Value5" DataType="System.String"/>
+        <Column Name="Value6" DataType="System.String"/>
+        <Column Name="Value7" DataType="System.String"/>
+        <Column Name="Value8" DataType="System.String"/>
+        <Column Name="Option1" DataType="System.String"/>
+        <Column Name="Option2" DataType="System.String"/>
+        <Column Name="Option3" DataType="System.String"/>
+        <Column Name="Option4" DataType="System.String"/>
+        <Column Name="Option5" DataType="System.String"/>
+        <Column Name="Option6" DataType="System.String"/>
+        <Column Name="Memo" DataType="System.String"/>
+        <Column Name="OperatePerson" DataType="System.String"/>
+        <Column Name="CheckPerson" DataType="System.String"/>
+      </BusinessObjectDataSource>
+    </BusinessObjectDataSource>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="宋体, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="37.8"/>
+    <PageHeaderBand Name="PageHeader1" Top="40.92" Width="718.2" Height="28.35"/>
+    <DataBand Name="Data1" Top="72.4" Width="718.2" Height="75.6"/>
+    <PageFooterBand Name="PageFooter1" Top="151.12" Width="718.2" Height="18.9"/>
+  </ReportPage>
+</Report>

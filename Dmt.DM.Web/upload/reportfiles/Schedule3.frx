@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="12/27/2018 15:10:41" ReportInfo.Modified="03/11/2019 18:07:15" ReportInfo.CreatorVersion="2018.3.47.0">
+  <Dictionary>
+    <TableDataSource Name="ScheduleTitle" ReferenceName="HSDataSet.ScheduleTitle" DataType="System.Int32" Enabled="true">
+      <Column Name="VisitDate1" DataType="System.String"/>
+      <Column Name="VisitDate2" DataType="System.String"/>
+      <Column Name="VisitDate3" DataType="System.String"/>
+      <Column Name="VisitDate4" DataType="System.String"/>
+      <Column Name="VisitDate5" DataType="System.String"/>
+      <Column Name="VisitDate6" DataType="System.String"/>
+      <Column Name="VisitDate7" DataType="System.String"/>
+      <Column Name="VisitNo1" DataType="System.String"/>
+      <Column Name="VisitNo2" DataType="System.String"/>
+      <Column Name="VisitNo3" DataType="System.String"/>
+    </TableDataSource>
+    <TableDataSource Name="ScheduleDetail" ReferenceName="HSDataSet.ScheduleDetail" DataType="System.Int32" Enabled="true">
+      <Column Name="BId" DataType="System.String"/>
+      <Column Name="Name1" DataType="System.String"/>
+      <Column Name="Name2" DataType="System.String"/>
+      <Column Name="Name3" DataType="System.String"/>
+      <Column Name="Name4" DataType="System.String"/>
+      <Column Name="Name5" DataType="System.String"/>
+      <Column Name="Name6" DataType="System.String"/>
+      <Column Name="Name7" DataType="System.String"/>
+      <Column Name="Name8" DataType="System.String"/>
+      <Column Name="Name9" DataType="System.String"/>
+      <Column Name="Name10" DataType="System.String"/>
+      <Column Name="Name11" DataType="System.String"/>
+      <Column Name="Name12" DataType="System.String"/>
+      <Column Name="Name13" DataType="System.String"/>
+      <Column Name="Name14" DataType="System.String"/>
+      <Column Name="Name15" DataType="System.String"/>
+      <Column Name="Name16" DataType="System.String"/>
+      <Column Name="Name17" DataType="System.String"/>
+      <Column Name="Name18" DataType="System.String"/>
+      <Column Name="Name19" DataType="System.String"/>
+      <Column Name="Name20" DataType="System.String"/>
+      <Column Name="Name21" DataType="System.String"/>
+    </TableDataSource>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="280" PaperHeight="190" LeftMargin="0" TopMargin="5" RightMargin="5" BottomMargin="5" MirrorMargins="true" FirstPageSource="15" OtherPagesSource="15">
+    <ReportTitleBand Name="ReportTitle1" Width="1039.5" Height="56.7">
+      <TextObject Name="Text1" Width="1039.5" Height="47.25" Text="透  析  排  班" HorzAlign="Center" VertAlign="Center" Font="宋体, 21.75pt"/>
+    </ReportTitleBand>
+    <ColumnHeaderBand Name="ColumnHeader1" Top="59.31" Width="1039.5" Height="66.15">
+      <TextObject Name="Text2" Width="56.7" Height="66.15" Border.Lines="All" Text="床号" HorzAlign="Center" VertAlign="Center" Font="黑体, 12pt, style=Bold"/>
+      <TextObject Name="Text3" Left="57.8" Width="139.86" Height="37.8" Border.Lines="Right, Top" Text="[ScheduleTitle.VisitDate1]" HorzAlign="Center" VertAlign="Center" Font="黑体, 12pt, style=Bold"/>
+      <TextObject Name="Text4" Left="56.7" Top="37.8" Width="46.87" Height="28.35" Border.Lines="All" Text="第一班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text11" Left="103.5" Top="37.8" Width="46.87" Height="28.35" Border.Lines="All" Text="第二班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text12" Left="150.75" Top="37.8" Width="46.87" Height="28.35" Border.Lines="All" Text="第三班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text13" Left="199.55" Width="139.86" Height="37.8" Border.Lines="Right, Top" Text="[ScheduleTitle.VisitDate2]" HorzAlign="Center" VertAlign="Center" Font="黑体, 12pt, style=Bold"/>
+      <TextObject Name="Text14" Left="198.45" Top="37.8" Width="46.87" Height="28.35" Border.Lines="Right, Top, Bottom" Text="第一班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text15" Left="245.25" Top="37.8" Width="46.87" Height="28.35" Border.Lines="All" Text="第二班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text16" Left="292.5" Top="37.8" Width="46.87" Height="28.35" Border.Lines="All" Text="第三班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text17" Left="341.3" Width="139.86" Height="37.8" Border.Lines="Right, Top" Text="[ScheduleTitle.VisitDate3]" HorzAlign="Center" VertAlign="Center" Font="黑体, 12pt, style=Bold"/>
+      <TextObject Name="Text18" Left="340.2" Top="37.8" Width="46.87" Height="28.35" Border.Lines="Right, Top, Bottom" Text="第一班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text19" Left="387" Top="37.8" Width="46.87" Height="28.35" Border.Lines="All" Text="第二班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text20" Left="434.25" Top="37.8" Width="46.87" Height="28.35" Border.Lines="All" Text="第三班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text21" Left="483.05" Width="139.86" Height="37.8" Border.Lines="Right, Top" Text="[ScheduleTitle.VisitDate4]" HorzAlign="Center" VertAlign="Center" Font="黑体, 12pt, style=Bold"/>
+      <TextObject Name="Text22" Left="481.95" Top="37.8" Width="46.87" Height="28.35" Border.Lines="Right, Top, Bottom" Text="第一班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text23" Left="528.75" Top="37.8" Width="46.87" Height="28.35" Border.Lines="All" Text="第二班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text24" Left="576" Top="37.8" Width="46.87" Height="28.35" Border.Lines="All" Text="第三班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text25" Left="624.8" Width="139.86" Height="37.8" Border.Lines="Right, Top" Text="[ScheduleTitle.VisitDate5]" HorzAlign="Center" VertAlign="Center" Font="黑体, 12pt, style=Bold"/>
+      <TextObject Name="Text26" Left="623.7" Top="37.8" Width="46.87" Height="28.35" Border.Lines="Right, Top, Bottom" Text="第一班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text27" Left="670.5" Top="37.8" Width="46.87" Height="28.35" Border.Lines="All" Text="第二班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text28" Left="717.75" Top="37.8" Width="46.87" Height="28.35" Border.Lines="All" Text="第三班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text29" Left="766.55" Width="139.86" Height="37.8" Border.Lines="Right, Top" Text="[ScheduleTitle.VisitDate6]" HorzAlign="Center" VertAlign="Center" Font="黑体, 12pt, style=Bold"/>
+      <TextObject Name="Text30" Left="765.45" Top="37.8" Width="46.87" Height="28.35" Border.Lines="Right, Top, Bottom" Text="第一班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text31" Left="812.25" Top="37.8" Width="46.87" Height="28.35" Border.Lines="All" Text="第二班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text32" Left="859.5" Top="37.8" Width="46.87" Height="28.35" Border.Lines="All" Text="第三班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text33" Left="908.3" Width="139.86" Height="37.8" Border.Lines="Right, Top" Text="[ScheduleTitle.VisitDate7]" HorzAlign="Center" VertAlign="Center" Font="黑体, 12pt, style=Bold"/>
+      <TextObject Name="Text34" Left="907.2" Top="37.8" Width="46.87" Height="28.35" Border.Lines="Right, Top, Bottom" Text="第一班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text35" Left="954" Top="37.8" Width="46.87" Height="28.35" Border.Lines="All" Text="第二班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+      <TextObject Name="Text36" Left="1001.25" Top="37.8" Width="46.87" Height="28.35" Border.Lines="All" Text="第三班" HorzAlign="Center" VertAlign="Center" Font="仿宋, 9pt"/>
+    </ColumnHeaderBand>
+    <DataBand Name="Data1" Top="128.08" Width="1039.5" Height="28.35" DataSource="ScheduleDetail">
+      <TextObject Name="Text37" Width="56.7" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.BId]" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+      <TextObject Name="Text38" Left="56.7" Width="46.87" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.Name1]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text39" Left="103.5" Width="46.87" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.Name2]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text40" Left="150.75" Width="46.87" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.Name3]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text41" Left="198.45" Width="46.87" Height="28.35" Border.Lines="Right, Top, Bottom" Text="[ScheduleDetail.Name4]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text42" Left="245.25" Width="46.87" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.Name5]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text43" Left="292.5" Width="46.87" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.Name6]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text44" Left="340.2" Width="46.87" Height="28.35" Border.Lines="Right, Top, Bottom" Text="[ScheduleDetail.Name7]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text45" Left="387" Width="46.87" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.Name8]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text46" Left="434.25" Width="46.87" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.Name9]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text47" Left="481.95" Width="46.87" Height="28.35" Border.Lines="Right, Top, Bottom" Text="[ScheduleDetail.Name10]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text48" Left="528.75" Width="46.87" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.Name11]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text49" Left="576" Width="46.87" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.Name12]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text50" Left="623.7" Width="46.87" Height="28.35" Border.Lines="Right, Top, Bottom" Text="[ScheduleDetail.Name13]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text51" Left="670.5" Width="46.87" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.Name14]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text52" Left="717.75" Width="46.87" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.Name15]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text53" Left="765.45" Width="46.87" Height="28.35" Border.Lines="Right, Top, Bottom" Text="[ScheduleDetail.Name16]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text54" Left="812.25" Width="46.87" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.Name17]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text55" Left="859.5" Width="46.87" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.Name18]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text56" Left="907.2" Width="46.87" Height="28.35" Border.Lines="Right, Top, Bottom" Text="[ScheduleDetail.Name19]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text57" Left="954" Width="46.87" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.Name20]" HorzAlign="Center" VertAlign="Center"/>
+      <TextObject Name="Text58" Left="1001.25" Width="46.87" Height="28.35" Border.Lines="All" Text="[ScheduleDetail.Name21]" HorzAlign="Center" VertAlign="Center"/>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="159.04" Width="1039.5" Height="28.35">
+      <TextObject Name="Text6" Left="396.9" Top="4" Width="179.55" Height="18.9" Text="[Page#]/[TotalPages#]" HorzAlign="Center" VertAlign="Center"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

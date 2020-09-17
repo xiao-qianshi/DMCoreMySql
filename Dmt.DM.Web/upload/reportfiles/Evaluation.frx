@@ -1,0 +1,1053 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="03/23/2019 13:42:36" ReportInfo.Modified="03/23/2019 23:16:54" ReportInfo.CreatorVersion="2017.1.16.0">
+  <Dictionary>
+    <BusinessObjectDataSource Name="Categories" ReferenceName="Categories" DataType="null" Enabled="true">
+      <Column Name="Name" DataType="System.String"/>
+      <Column Name="Gender" DataType="System.String"/>
+      <Column Name="Age" DataType="System.String"/>
+      <Column Name="Dept" DataType="System.String"/>
+      <Column Name="No" DataType="System.String"/>
+      <Column Name="CreateDate" DataType="System.DateTime"/>
+      <BusinessObjectDataSource Name="Evaluations" DataType="null" Enabled="true">
+        <Column Name="Rsfs1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Rsfs2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Rsfs3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xy1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xy2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xy3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xy4" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xyvalue1" DataType="System.String"/>
+        <Column Name="Xyvalue2" DataType="System.String"/>
+        <Column Name="Xl1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xl2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xl3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xl4" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xlvalue1" DataType="System.String"/>
+        <Column Name="Xlvalue2" DataType="System.String"/>
+        <Column Name="Hx1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Hx2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Hx3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Hx4" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Hx5" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Hx6" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Tw1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Tw2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Tw3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Twvalue1" DataType="System.String"/>
+        <Column Name="Shzlnl1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Shzlnl2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Shzlnl3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Tl1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Tl2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Tl3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Ww1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Ww2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Ww3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sy1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sy2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sy3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Yslkz11" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Yslkz12" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Yslkz13" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sm1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sm2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sm3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Nl1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Nl2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Nlvalue1" DataType="System.String"/>
+        <Column Name="Dd1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Dd2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Ddvalue1" DataType="System.String"/>
+        <Column Name="Cx1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Cx2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Cxvalue1" DataType="System.String"/>
+        <Column Name="Yyqk1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Yyqk2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Yyqk3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Yyqk4" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Yyqkvalue1" DataType="System.String"/>
+        <Column Name="Qctxhqk1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Qctxhqk2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Qctxhqk3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Qctxhqk4" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Qctxhqk5" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Qctxhqk6" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Qctxhqkvalue1" DataType="System.String"/>
+        <Column Name="Tsqk1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Tsqk2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Tsqk3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Tsqk4" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Tsqkvalue1" DataType="System.String"/>
+        <Column Name="Tsqkvalue2" DataType="System.String"/>
+        <Column Name="Nlccdqk1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Nlccdqk2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Nlccdqk3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Nlccdqk4" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Nlccdqk5" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Nlccdqk6" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Nlccdqk7" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sfsctx1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sfsctx2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sfsctxvalue1" DataType="System.String"/>
+        <Column Name="Sfsctxvalue2" DataType="System.String"/>
+        <Column Name="Sfsctxvalue3" DataType="System.String"/>
+        <Column Name="Wytxcfvalue1" DataType="System.String"/>
+        <Column Name="Wytxcfvalue2" DataType="System.String"/>
+        <Column Name="Wytxcfvalue3" DataType="System.String"/>
+        <Column Name="Wytxywbs1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Wytxywbs2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Wz1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Wz2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Wz3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Wz4" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Wzvalue1" DataType="System.String"/>
+        <Column Name="Skwg1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Skwg2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Skwg3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Skwg4" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Skwg5" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Skwg6" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Skwgvalue1" DataType="System.String"/>
+        <Column Name="Hy1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Hy2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Dgll1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Dgll2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Dgll3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Ywfr1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Ywfr2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Ywfrvalue1" DataType="System.String"/>
+        <Column Name="Place1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Place2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Placevalue1" DataType="System.String"/>
+        <Column Name="Placevalue2" DataType="System.String"/>
+        <Column Name="Sctxcczz1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sctxcczz2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sctxcczz3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sctxcczz4" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sctxcczz5" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xgzy1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xgzy2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xgzy3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Nlcsxl1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Nlcsxl2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Nlcsxlvalue1" DataType="System.String"/>
+        <Column Name="Nlsynx1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Nlsynx2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Nlsynx3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Nlsynx4" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Jkjyfs1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Jkjyfs2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Jkjyfs3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Jkjyfs4" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Yszd1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Yszd2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Yszd3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Yszd4" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Yszd5" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Ydzd1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Ydzd2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Ydzd3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xgtlzd1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xgtlzd2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xgtlzd3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Xgtlzd4" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Tzgl1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Tzgl2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Tzgl3" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sjz1" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sjz2" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Sjzvalue1" DataType="System.String"/>
+        <Column Name="Checkperson" DataType="System.String"/>
+        <Column Name="Checknurse" DataType="System.String"/>
+      </BusinessObjectDataSource>
+    </BusinessObjectDataSource>
+  </Dictionary>
+  <ReportPage Name="Page1" RawPaperSize="9" LeftMargin="5" RightMargin="5" BottomMargin="0" FirstPageSource="15" OtherPagesSource="15">
+    <ReportTitleBand Name="ReportTitle1" Width="756" Height="50.25">
+      <TextObject Name="Text2" Left="198.45" Top="20" Width="311.85" Height="28.35" Text="血液透析患者评估表" HorzAlign="Center" VertAlign="Center" Font="宋体, 16pt, style=Bold"/>
+    </ReportTitleBand>
+    <DataBand Name="Data1" Top="53.38" Width="756" Height="31.8" DataSource="Categories">
+      <TextObject Name="Text25" Left="10.45" Top="0.45" Width="113.4" Height="18.9" Text="姓名：[Categories.Name]" VertAlign="Center"/>
+      <TextObject Name="Text26" Left="129.85" Top="0.45" Width="113.4" Height="18.9" Text="性别：[Categories.Gender]" VertAlign="Center"/>
+      <TextObject Name="Text27" Left="252.7" Top="0.45" Width="132.3" Height="18.9" Text="年龄：[Categories.Age]" VertAlign="Center"/>
+      <TextObject Name="Text28" Left="403.9" Top="0.45" Width="141.75" Height="18.9" Text="病历号：[Categories.No]" VertAlign="Center"/>
+      <TextObject Name="Text29" Left="550.1" Top="0.45" Width="47.25" Height="18.9" Text="日期：" VertAlign="Center"/>
+      <TextObject Name="Text30" Left="592.9" Width="113.4" Height="18.9" Text="[Categories.CreateDate]" Format="Date" Format.Format="D" VertAlign="Center"/>
+      <LineObject Name="Line1" Left="3.45" Top="22.35" Width="709.2"/>
+      <DataBand Name="Data2" Top="88.3" Width="756" Height="953.67" DataSource="Evaluations">
+        <TableObject Name="Table1" Left="2.45" Top="3" Width="711.2" Height="945.12">
+          <TableColumn Name="Column1" Width="71.12"/>
+          <TableColumn Name="Column2" Width="71.12"/>
+          <TableColumn Name="Column3" Width="71.12"/>
+          <TableColumn Name="Column4" Width="71.12"/>
+          <TableColumn Name="Column5" Width="71.12"/>
+          <TableColumn Name="Column6" Width="71.12"/>
+          <TableColumn Name="Column7" Width="71.12"/>
+          <TableColumn Name="Column8" Width="71.12"/>
+          <TableColumn Name="Column9" Width="71.12"/>
+          <TableColumn Name="Column10" Width="71.12"/>
+          <TableRow Name="Row2" Height="21.48">
+            <TableCell Name="Cell6" Border.Lines="All" Text="一般护理评估" VertAlign="Center" Font="宋体, 10pt, style=Bold" ColSpan="10"/>
+            <TableCell Name="Cell7" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell8" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell9" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell10" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell31" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell32" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell33" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell34" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell35" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+          </TableRow>
+          <TableRow Name="Row3" Height="21.48">
+            <TableCell Name="Cell11" Border.Lines="All" Text="入室方式" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell12" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell13" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox2" Left="28.35" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Rsfs1"/>
+              <CheckBoxObject Name="CheckBox3" Left="151.2" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Rsfs2"/>
+              <CheckBoxObject Name="CheckBox4" Left="264.6" Top="3" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Rsfs3"/>
+              <TextObject Name="Text31" Left="47.25" Top="3" Width="94.5" Height="18.9" Text="自行步入" VertAlign="Center"/>
+              <TextObject Name="Text32" Left="170.1" Top="3" Width="85.05" Height="18.9" Text="轮椅" VertAlign="Center"/>
+              <TextObject Name="Text33" Left="283.5" Top="3" Width="94.5" Height="18.9" Text="推床" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell14" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell15" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell36" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell37" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell38" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell39" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell40" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row4" Height="21.48">
+            <TableCell Name="Cell16" Border.Lines="All" Text="血压" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell17" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell18" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox5" Left="28.35" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Xy1"/>
+              <CheckBoxObject Name="CheckBox6" Left="96.05" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Xy2"/>
+              <CheckBoxObject Name="CheckBox7" Left="235.9" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Xy3"/>
+              <CheckBoxObject Name="CheckBox8" Left="413.45" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Xy4"/>
+              <TextObject Name="Text1" Left="151.2" Top="1" Width="37.8" Height="18.9" Text="[Categories.Evaluations.Xyvalue1]" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text3" Left="292.95" Top="1" Width="56.7" Height="18.9" Text="[Categories.Evaluations.Xyvalue2]" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text34" Left="47.25" Top="1" Width="37.8" Height="18.9" Text="正常" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text35" Left="113.4" Top="1" Width="37.8" Height="18.9" Text="偏高" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text36" Left="189" Top="1" Width="47.25" Height="18.9" Text="mmHg" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text37" Left="255.15" Top="1" Width="37.8" Height="18.9" Text="偏低" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text38" Left="349.65" Top="1" Width="56.7" Height="18.9" Text="mmHg" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text39" Left="434.7" Top="1" Width="37.8" Height="18.9" Text="未测" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text46" Left="189" Top="19.9" Width="47.25" Height="18.9" Text="次/分" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text47" Left="255.15" Top="19.9" Width="37.8" Height="18.9" Text="偏慢" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell19" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell20" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell41" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell42" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell43" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell44" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell45" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row5" Height="21.48">
+            <TableCell Name="Cell21" Border.Lines="All" Text="心率" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell22" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell23" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox9" Left="28.35" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Xl1"/>
+              <CheckBoxObject Name="CheckBox10" Left="96.05" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Xl2"/>
+              <CheckBoxObject Name="CheckBox11" Left="236.25" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Xl3"/>
+              <CheckBoxObject Name="CheckBox12" Left="413.9" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Xl4"/>
+              <TextObject Name="Text4" Left="151.2" Top="1" Width="37.8" Height="18.9" Text="[Categories.Evaluations.Xlvalue1]" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text5" Left="292.95" Top="1" Width="56.7" Height="18.9" Text="[Categories.Evaluations.Xlvalue2]" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text44" Left="47.25" Top="1" Width="37.8" Height="18.9" Text="正常" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text45" Left="113.4" Top="1" Width="37.8" Height="18.9" Text="偏快" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text48" Left="349.65" Top="1" Width="56.7" Height="18.9" Text="次/分" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text49" Left="434.7" Top="3" Width="37.8" Height="18.9" Text="未测" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell24" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell25" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell46" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell47" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell48" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell49" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell50" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row6" Height="21.48">
+            <TableCell Name="Cell51" Border.Lines="All" Text="呼吸" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell52" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell53" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox19" Left="430.8" Top="3" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Hx6"/>
+              <CheckBoxObject Name="CheckBox20" Left="344.65" Top="3" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Hx5"/>
+              <CheckBoxObject Name="CheckBox17" Left="270.05" Top="3" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Hx4"/>
+              <CheckBoxObject Name="CheckBox15" Left="192.55" Top="3" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Hx3"/>
+              <CheckBoxObject Name="CheckBox21" Left="96.05" Top="3" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Hx2"/>
+              <CheckBoxObject Name="CheckBox13" Left="28.35" Top="3" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Hx1"/>
+              <TextObject Name="Text50" Left="47.25" Top="1" Width="37.8" Height="18.9" Text="正常" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text51" Left="113.4" Top="1" Width="75.6" Height="18.9" Text="不规则呼吸" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text52" Left="207.9" Top="1" Width="56.7" Height="18.9" Text="无咳嗽" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text55" Left="448.15" Top="2" Width="47.25" Height="18.9" Text="有痰液" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text53" Left="285.95" Top="2" Width="56.7" Height="18.9" Text="有咳嗽" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text54" Left="361.55" Top="2" Width="56.7" Height="18.9" Text="无痰液" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell54" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell55" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell56" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell57" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell58" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell59" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell60" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row7" Height="21.48">
+            <TableCell Name="Cell61" Border.Lines="All" Text="体温" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell62" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell63" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox22" Left="28.35" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Tw1"/>
+              <CheckBoxObject Name="CheckBox23" Left="96.05" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Tw2"/>
+              <CheckBoxObject Name="CheckBox24" Left="161.2" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Tw3"/>
+              <TextObject Name="Text6" Left="217.35" Top="2" Width="47.25" Height="18.9" Text="[Categories.Evaluations.Twvalue1]" HorzAlign="Center"/>
+              <TextObject Name="Text56" Left="47.25" Top="2" Width="37.8" Height="18.9" Text="正常" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text57" Left="113.4" Top="2" Width="37.8" Height="18.9" Text="未测" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text58" Left="179.55" Top="2" Width="37.8" Height="18.9" Text="发热" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text59" Left="264.6" Top="2" Width="18.9" Height="18.9" Text="℃" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell64" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell65" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell66" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell67" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell68" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell69" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell70" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row8" Height="21.48">
+            <TableCell Name="Cell71" Border.Lines="All" Text="生活自理能力" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell72" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell73" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox25" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Shzlnl1"/>
+              <CheckBoxObject Name="CheckBox26" Left="122.85" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Shzlnl2"/>
+              <CheckBoxObject Name="CheckBox27" Left="189" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Shzlnl3"/>
+              <TextObject Name="Text60" Left="47.25" Top="1" Width="66.15" Height="18.9" Text="完全独立" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text61" Left="141.75" Top="1" Width="37.8" Height="18.9" Text="辅助" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text62" Left="207.9" Top="1" Width="37.8" Height="18.9" Text="依赖" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell74" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell75" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell76" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell77" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell78" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell79" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell80" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row9" Height="21.48">
+            <TableCell Name="Cell81" Border.Lines="All" Text="体力" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell82" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell83" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox28" Left="28.35" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Tl1"/>
+              <CheckBoxObject Name="CheckBox30" Left="163.2" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Tl3"/>
+              <CheckBoxObject Name="CheckBox31" Left="96.05" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Tl2"/>
+              <TextObject Name="Text63" Left="47.25" Top="1" Width="37.8" Height="18.9" Text="良好" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text65" Left="180.55" Top="1" Width="28.35" Height="18.9" Text="差" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text64" Left="113.4" Top="1" Width="37.8" Height="18.9" Text="一般" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell84" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell85" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell86" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell87" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell88" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell89" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell90" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row10" Height="21.48">
+            <TableCell Name="Cell91" Border.Lines="All" Text="卧位" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell92" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell93" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox32" Left="28.35" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Ww1"/>
+              <CheckBoxObject Name="CheckBox33" Left="96.05" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Ww2"/>
+              <CheckBoxObject Name="CheckBox34" Left="163.65" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Ww3"/>
+              <TextObject Name="Text68" Left="182" Top="1" Width="37.8" Height="18.9" Text="坐位" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text67" Left="113.4" Top="2" Width="47.25" Height="18.9" Text="半卧位" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text66" Left="47.25" Top="2" Width="47.25" Height="18.9" Text="平卧位" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell94" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell95" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell96" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell97" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell98" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell99" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell100" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row11" Height="21.48">
+            <TableCell Name="Cell101" Border.Lines="All" Text="食欲" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell102" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell103" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox35" Left="28.35" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Sy1"/>
+              <CheckBoxObject Name="CheckBox36" Left="96.05" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Sy2"/>
+              <CheckBoxObject Name="CheckBox37" Left="163.2" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Sy3"/>
+              <TextObject Name="Text69" Left="47.25" Top="1" Width="37.8" Height="18.9" Text="良好" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text70" Left="113.4" Top="1" Width="37.8" Height="18.9" Text="一般" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text71" Left="183" Top="1" Width="28.35" Height="18.9" Text="差" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell104" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell105" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell106" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell107" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell108" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell109" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell110" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row12" Height="21.48">
+            <TableCell Name="Cell111" Border.Lines="All" Text="饮水量控制" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell112" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell113" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox38" Left="28.35" Top="5" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Yslkz1"/>
+              <CheckBoxObject Name="CheckBox39" Left="96.05" Top="5" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Yslkz2"/>
+              <CheckBoxObject Name="CheckBox40" Left="163.2" Top="5" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Yslkz3"/>
+              <TextObject Name="Text73" Left="113.4" Top="1" Width="37.8" Height="18.9" Text="较好" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text74" Left="184" Top="1" Width="37.8" Height="18.9" Text="困难" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text72" Left="47.25" Top="2" Width="28.35" Height="18.9" Text="好" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell114" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell115" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell116" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell117" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell118" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell119" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell120" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row13" Height="21.48">
+            <TableCell Name="Cell121" Border.Lines="All" Text="睡眠" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell122" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell123" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox42" Left="96.05" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Sm2"/>
+              <CheckBoxObject Name="CheckBox43" Left="163.2" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Sm3"/>
+              <CheckBoxObject Name="CheckBox41" Left="28.35" Top="4" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Sm1"/>
+              <TextObject Name="Text75" Left="47.25" Top="2" Width="37.8" Height="18.9" Text="良好" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text76" Left="113.4" Top="2" Width="37.8" Height="18.9" Text="一般" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text77" Left="185" Top="2" Width="28.35" Height="18.9" Text="差" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell124" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell125" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell126" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell127" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell128" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell129" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell130" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row14" Height="21.48">
+            <TableCell Name="Cell131" Border.Lines="All" Text="尿量" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell132" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell133" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox44" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Nl1"/>
+              <CheckBoxObject Name="CheckBox45" Left="96.05" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Nl2"/>
+              <TextObject Name="Text7" Left="141.75" Top="1" Width="47.25" Height="18.9" Text="[Categories.Evaluations.Nlvalue1]" HorzAlign="Center"/>
+              <TextObject Name="Text78" Left="47.25" Top="2" Width="28.35" Height="18.9" Text="无" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text79" Left="113.4" Top="2.45" Width="28.35" Height="18.9" Text="有" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text80" Left="189" Top="1" Width="37.8" Height="18.9" Text="ml/d" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell134" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell135" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell136" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell137" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell138" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell139" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell140" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row15" Height="21.48">
+            <TableCell Name="Cell141" Border.Lines="All" Text="大便" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell142" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell143" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox46" Left="103.5" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Dd1"/>
+              <CheckBoxObject Name="CheckBox47" Left="180.2" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Dd1"/>
+              <TextObject Name="Text81" Left="56.7" Top="1" Width="47.25" Height="18.9" Text="次/日" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text82" Left="122.85" Top="1" Width="37.8" Height="18.9" Text="便秘" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text83" Left="198.45" Top="1" Width="66.15" Height="18.9" Text="腹泻性状" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text8" Left="18.9" Top="1" Width="37.8" Height="18.9" Text="[Categories.Evaluations.Ddvalue1]" HorzAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell144" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell145" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell146" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell147" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell148" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell149" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell150" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row16" Height="21.48">
+            <TableCell Name="Cell151" Border.Lines="All" Text="出血" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell152" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell153" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox48" Left="28.35" Top="5" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Cx1"/>
+              <CheckBoxObject Name="CheckBox49" Left="96.05" Top="5" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Cx2"/>
+              <TextObject Name="Text9" Left="184.45" Top="1" Width="255.15" Height="18.9" Text="[Categories.Evaluations.Cxvalue1]"/>
+              <TextObject Name="Text85" Left="113.4" Top="1" Width="66.15" Height="18.9" Text="有   部位" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text84" Left="47.25" Top="2" Width="28.35" Height="18.9" Text="无" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell154" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell155" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell156" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell157" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell158" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell159" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell160" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row17" Height="21.48">
+            <TableCell Name="Cell161" Border.Lines="All" Text="用药情况" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell162" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell163" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox50" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Yyqk1"/>
+              <CheckBoxObject Name="CheckBox51" Left="96.05" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Yyqk1"/>
+              <CheckBoxObject Name="CheckBox52" Left="164.2" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Yyqk1"/>
+              <CheckBoxObject Name="CheckBox53" Left="249.25" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Yyqk1"/>
+              <TextObject Name="Text10" Left="349.65" Top="1" Width="189" Height="18.9" Text="[Categories.Evaluations.Yyqkvalue1]"/>
+              <TextObject Name="Text86" Left="47.25" Top="1.45" Width="47.25" Height="18.9" Text="降压药" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text87" Left="113.4" Top="1.45" Width="47.25" Height="18.9" Text="降糖药" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text88" Left="179.55" Top="1" Width="66.15" Height="18.9" Text="抗凝药物" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text89" Left="264.6" Top="2.45" Width="85.05" Height="18.9" Text="其他   药名" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell164" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell165" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell166" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell167" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell168" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell169" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell170" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row18" Height="21.48">
+            <TableCell Name="Cell171" Border.Lines="All" Text="前次治疗后专科评估" VertAlign="Center" Font="宋体, 10pt, style=Bold" ColSpan="10"/>
+            <TableCell Name="Cell172" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell173" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell174" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell175" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell176" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell177" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell178" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell179" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell180" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row19" Height="21.48">
+            <TableCell Name="Cell181" Border.Lines="All" Text="前次透析后情况" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell182" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell183" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox54" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Qctxhqk1"/>
+              <CheckBoxObject Name="CheckBox55" Left="97.1" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Qctxhqk2"/>
+              <CheckBoxObject Name="CheckBox56" Left="194.2" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Qctxhqk3"/>
+              <CheckBoxObject Name="CheckBox57" Left="262.95" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Qctxhqk4"/>
+              <CheckBoxObject Name="CheckBox58" Left="331.7" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Qctxhqk5"/>
+              <CheckBoxObject Name="CheckBox59" Left="400.45" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Qctxhqk6"/>
+              <TextObject Name="Text90" Left="47.25" Top="1" Width="47.25" Height="18.9" Text="无不适" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text91" Left="117.4" Top="1" Width="75.6" Height="18.9" Text="恶心、呕吐" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text92" Left="210.9" Top="1" Width="37.8" Height="18.9" Text="头痛" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text93" Left="283.5" Top="1" Width="37.8" Height="18.9" Text="头晕" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text94" Left="349.65" Top="1" Width="47.25" Height="18.9" Text="低血压" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text95" Left="418.8" Top="1" Width="37.8" Height="18.9" Text="其他" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell184" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell185" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell186" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell187" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell188" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell189" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell190" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row20" Height="21.48">
+            <TableCell Name="Cell191" Border.Lines="All" Text="脱水情况" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell192" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell193" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox60" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Tsqk1"/>
+              <CheckBoxObject Name="CheckBox61" Left="124.4" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Tsqk2"/>
+              <CheckBoxObject Name="CheckBox62" Left="263.15" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Tsqk3"/>
+              <CheckBoxObject Name="CheckBox63" Left="389" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Tsqk4"/>
+              <TextObject Name="Text11" Left="184" Top="1" Width="37.8" Height="18.9" Text="[Categories.Evaluations.Tsqkvalue1]" HorzAlign="Center"/>
+              <TextObject Name="Text12" Left="321.1" Top="1" Width="28.35" Height="18.9" Text="[Categories.Evaluations.Tsqkvalue2]" HorzAlign="Center"/>
+              <TextObject Name="Text96" Left="47.25" Top="1" Width="75.6" Height="18.9" Text="达到干体重" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text97" Left="143.3" Top="2" Width="37.8" Height="18.9" Text="少脱" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text98" Left="226.8" Top="2" Width="28.35" Height="18.9" Text="kg" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text99" Left="283.5" Top="2" Width="37.8" Height="18.9" Text="多脱" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text100" Left="351.65" Top="2" Width="28.35" Height="18.9" Text="kg" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text101" Left="406.35" Top="1" Width="75.6" Height="18.9" Text="调整干体重" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell194" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell195" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell196" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell197" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell198" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell199" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell200" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row21" Height="21.48">
+            <TableCell Name="Cell201" Border.Lines="All" Text="内瘘穿刺点情况" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell202" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell203" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox64" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Nlccdqk1"/>
+              <CheckBoxObject Name="CheckBox65" Left="90.61" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Nlccdqk2"/>
+              <CheckBoxObject Name="CheckBox66" Left="152.87" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Nlccdqk3"/>
+              <CheckBoxObject Name="CheckBox67" Left="215.13" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Nlccdqk4"/>
+              <CheckBoxObject Name="CheckBox68" Left="277.39" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Nlccdqk5"/>
+              <CheckBoxObject Name="CheckBox69" Left="339.65" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Nlccdqk6"/>
+              <CheckBoxObject Name="CheckBox70" Left="401.9" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Nlccdqk7"/>
+              <TextObject Name="Text102" Left="47.25" Top="2" Width="37.8" Height="18.9" Text="正常" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text103" Left="108.95" Top="1.45" Width="37.8" Height="18.9" Text="出血" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text104" Left="172.1" Top="2.45" Width="37.8" Height="18.9" Text="淤血" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text105" Left="236.25" Top="1" Width="37.8" Height="18.9" Text="血肿" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text106" Left="295.5" Top="2" Width="37.8" Height="18.9" Text="绳梯" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text107" Left="359.1" Top="2" Width="37.8" Height="18.9" Text="定点" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text108" Left="421.25" Top="2" Width="47.25" Height="18.9" Text="区域" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell204" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell205" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell206" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell207" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell208" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell209" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell210" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row22" Height="21.48">
+            <TableCell Name="Cell211" Border.Lines="All" Text="新患者情况" VertAlign="Center" Font="宋体, 10pt, style=Bold" ColSpan="10"/>
+            <TableCell Name="Cell212" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell213" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell214" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell215" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell216" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell217" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell218" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell219" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell220" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+          </TableRow>
+          <TableRow Name="Row23" Height="21.48">
+            <TableCell Name="Cell221" Border.Lines="All" Text="是否首次透析" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell222" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell223" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox71" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Sfsctx1"/>
+              <CheckBoxObject Name="CheckBox72" Left="85.05" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Sfsctx2"/>
+              <TextObject Name="Text13" Left="193" Top="2.45" Width="37.8" Height="18.9" Text="[Categories.Evaluations.Sfsctxvalue1]" HorzAlign="Center"/>
+              <TextObject Name="Text14" Left="268.6" Top="2" Width="37.8" Height="18.9" Text="[Categories.Evaluations.Sfsctxvalue2]" HorzAlign="Center"/>
+              <TextObject Name="Text15" Left="344.2" Top="2" Width="37.8" Height="18.9" Text="[Categories.Evaluations.Sfsctxvalue3]" HorzAlign="Center"/>
+              <TextObject Name="Text109" Left="47.8" Top="1" Width="28.35" Height="18.9" Text="是" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text110" Left="103.95" Top="1" Width="85.05" Height="18.9" Text="否（已行透析" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text111" Left="230.8" Top="2" Width="37.8" Height="18.9" Text="天、" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text112" Left="306.4" Top="2" Width="37.8" Height="18.9" Text="月、" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text113" Left="382" Top="2" Width="37.8" Height="18.9" Text="年）" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell224" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell225" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell226" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell227" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell228" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell229" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell230" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row24" Height="21.48">
+            <TableCell Name="Cell231" Border.Lines="All" Text="外院透析处方" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell232" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell233" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <TextObject Name="Text16" Left="26.9" Top="1" Width="47.25" Height="18.9" Text="[Categories.Evaluations.wytxcfvalue1]" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text17" Left="122.3" Top="1" Width="47.25" Height="18.9" Text="[Categories.Evaluations.wytxcfvalue2]" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text18" Left="311.85" Top="1.45" Width="255.15" Height="18.9" Text="[Categories.Evaluations.wytxcfvalue3]" VertAlign="Center"/>
+              <TextObject Name="Text114" Left="75.6" Top="1" Width="47.25" Height="18.9" Text="次/周" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text115" Left="170.1" Top="2" Width="141.75" Height="18.9" Text="小时/次，抗凝剂及用量        " HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell234" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell235" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell236" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell237" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell238" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell239" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell240" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row25" Height="21.48">
+            <TableCell Name="Cell241" Border.Lines="All" Text="外院透析有无不适" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell242" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell243" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox73" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Wytxywbs1"/>
+              <CheckBoxObject Name="CheckBox74" Left="85.05" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Wytxywbs2"/>
+              <TextObject Name="Text116" Left="47.25" Top="1.45" Width="28.35" Height="18.9" Text="无" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text117" Left="103.95" Top="1.45" Width="28.35" Height="18.9" Text="有" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell244" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell245" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell246" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell247" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell248" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell249" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell250" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row26" Height="21.48">
+            <TableCell Name="Cell251" Border.Lines="All" Text="单针双腔导管置管术后" VertAlign="Center" Font="宋体, 10pt, style=Bold" ColSpan="10"/>
+            <TableCell Name="Cell252" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell253" Border.Lines="All" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell254" Border.Lines="All" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell255" Border.Lines="All" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell256" Border.Lines="All" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell257" Border.Lines="All" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell258" Border.Lines="All" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell259" Border.Lines="All" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell260" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row27" Height="21.48">
+            <TableCell Name="Cell261" Border.Lines="All" Text="位置" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell262" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell263" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox75" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Wz1"/>
+              <CheckBoxObject Name="CheckBox76" Left="103.95" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Wz2"/>
+              <CheckBoxObject Name="CheckBox77" Left="179.55" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Wz3"/>
+              <CheckBoxObject Name="CheckBox78" Left="327.75" Top="3.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Wz4"/>
+              <TextObject Name="Text19" Left="484.4" Top="1" Width="37.8" Height="18.9" Text="[Categories.Evaluations.Wzvalue1]" VertAlign="Center"/>
+              <TextObject Name="Text118" Left="46.8" Top="1" Width="47.25" Height="18.9" Text="临时性" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text119" Left="121.4" Top="1" Width="47.25" Height="18.9" Text="永久性" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text120" Left="198" Top="1" Width="122.85" Height="18.9" Text="颈内静脉（左、右）" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text121" Left="345.65" Top="2" Width="137.75" Height="18.9" Text="股静脉（左、右） 术后" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text122" Left="523.2" Top="1" Width="28.35" Height="18.9" Text="天" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell264" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell265" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell266" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell267" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell268" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell269" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell270" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row28" Height="21.48">
+            <TableCell Name="Cell271" Border.Lines="All" Text="伤口外观" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell272" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell273" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox79" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Skwg1"/>
+              <CheckBoxObject Name="CheckBox80" Left="88.05" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Skwg2"/>
+              <CheckBoxObject Name="CheckBox81" Left="143.3" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Skwg3"/>
+              <CheckBoxObject Name="CheckBox82" Left="193.55" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Skwg4"/>
+              <CheckBoxObject Name="CheckBox83" Left="246.25" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Skwg5"/>
+              <CheckBoxObject Name="CheckBox84" Left="297.5" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Skwg6"/>
+              <TextObject Name="Text20" Left="378" Top="1.45" Width="37.8" Height="18.9" Text="[Categories.Evaluations.Skwgvalue1]" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text128" Left="47.25" Top="2" Width="37.8" Height="18.9" Text="清洁" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text129" Left="103.95" Top="2" Width="37.8" Height="18.9" Text="渗血" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text130" Left="160.65" Top="1" Width="28.35" Height="18.9" Text="红" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text131" Left="211.9" Top="1" Width="28.35" Height="18.9" Text="热" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text132" Left="264.6" Top="1" Width="28.35" Height="18.9" Text="痛" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text133" Left="311.85" Top="2" Width="66.15" Height="18.9" Text="血肿大小" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text134" Left="415.8" Width="28.35" Height="18.9" Text="cm" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell274" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell275" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell276" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell277" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell278" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell279" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell280" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row29" Height="21.48">
+            <TableCell Name="Cell281" Border.Lines="All" Text="换药" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell282" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell283" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox85" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Hy1"/>
+              <CheckBoxObject Name="CheckBox86" Left="110.4" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Hy2"/>
+              <TextObject Name="Text135" Left="47.25" Top="2" Width="56.7" Height="18.9" Text="1次/日" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text136" Left="127.85" Top="1" Width="66.15" Height="18.9" Text="1次/隔日" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell284" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell285" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell286" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell287" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell288" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell289" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell290" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row30" Height="21.48">
+            <TableCell Name="Cell291" Border.Lines="All" Text="导管流量" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell292" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell293" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox87" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Dgll1"/>
+              <CheckBoxObject Name="CheckBox88" Left="96.05" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Dgll2"/>
+              <CheckBoxObject Name="CheckBox89" Left="162.2" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Dgll3"/>
+              <TextObject Name="Text137" Left="47.25" Top="1" Width="37.8" Height="18.9" Text="充足" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text138" Left="113.4" Top="1" Width="37.8" Height="18.9" Text="不足" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text139" Left="179.55" Top="1" Width="56.7" Height="18.9" Text="A-V反接" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell294" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell295" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell296" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell297" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell298" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell299" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell300" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row31" Height="21.48">
+            <TableCell Name="Cell301" Border.Lines="All" Text="有无发热" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell302" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell303" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox90" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Ywfr1"/>
+              <CheckBoxObject Name="CheckBox91" Left="96.05" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Ywfr2"/>
+              <TextObject Name="Text21" Left="151.2" Top="2" Width="47.25" Height="17.9" Text="[Categories.Evaluations.Ywfrvalue1]" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text140" Left="47.25" Top="1" Width="28.35" Height="18.9" Text="无" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text141" Left="113.4" Top="2" Width="37.8" Height="18.9" Text="有" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text142" Left="198.45" Top="2" Width="18.9" Height="18.9" Text="℃" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell304" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell305" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell306" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell307" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell308" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell309" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell310" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row32" Height="21.48">
+            <TableCell Name="Cell311" Border.Lines="All" Text="动静脉内瘘吻合术后" VertAlign="Center" Font="宋体, 10pt, style=Bold" ColSpan="10"/>
+            <TableCell Name="Cell312" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell313" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell314" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell315" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell316" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell317" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell318" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell319" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell320" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row33" Height="21.48">
+            <TableCell Name="Cell321" Border.Lines="All" Text="位置" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell322" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell323" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox92" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Place1"/>
+              <CheckBoxObject Name="CheckBox93" Left="217.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Place2"/>
+              <TextObject Name="Text22" Left="455.6" Top="2" Width="28.35" Height="18.9" Text="[Categories.Evaluations.Placevalue1]" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text23" Left="504.75" Top="2" Width="28.35" Height="18.9" Text="[Categories.Evaluations.Placevalue2]" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text153" Left="46.8" Top="2" Width="160.65" Height="18.9" Text="自体（上、下、左、右）肢" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text154" Left="234.8" Top="1" Width="217.35" Height="18.9" Text="人工血管（上、下、左、右）肢 术后" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text155" Left="483.95" Top="2" Width="18.9" Height="18.9" Text="天" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text156" Left="534.65" Top="2" Width="18.9" Height="18.9" Text="周" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell324" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell325" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell326" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell327" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell328" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell329" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell330" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row34" Height="21.48">
+            <TableCell Name="Cell331" Border.Lines="All" Text="上次透析穿刺状况" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell332" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell333" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox94" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Sctxcczz1"/>
+              <CheckBoxObject Name="CheckBox95" Left="97.59" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Sctxcczz2"/>
+              <CheckBoxObject Name="CheckBox96" Left="188.28" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Sctxcczz3"/>
+              <CheckBoxObject Name="CheckBox97" Left="310.77" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Sctxcczz4"/>
+              <CheckBoxObject Name="CheckBox98" Left="386" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Sctxcczz5"/>
+              <TextObject Name="Text123" Left="47.25" Top="2" Width="37.8" Height="18.9" Text="顺利" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text124" Left="115.75" Top="2" Width="66.15" Height="18.9" Text="二次穿刺" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text125" Left="207.9" Top="2" Width="94.5" Height="18.9" Text="穿刺处外观正常" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text126" Left="330.75" Top="1" Width="37.8" Height="18.9" Text="淤血" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text127" Left="406.35" Top="2" Width="37.8" Height="18.9" Text="肿胀" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell334" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell335" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell336" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell337" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell338" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell339" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell340" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row35" Height="21.48">
+            <TableCell Name="Cell341" Border.Lines="All" Text="触诊/听诊血管杂音" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell342" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell343" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox99" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Xgzy1"/>
+              <CheckBoxObject Name="CheckBox101" Left="160.65" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Xgzy3"/>
+              <CheckBoxObject Name="CheckBox102" Left="96.05" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Xgzy2"/>
+              <TextObject Name="Text150" Left="47.25" Top="1" Width="37.8" Height="18.9" Text="正常" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text151" Left="116.85" Top="1" Width="28.35" Height="18.9" Text="弱" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text152" Left="181.1" Top="1" Width="28.35" Height="18.9" Text="无" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell344" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell345" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell346" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell347" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell348" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell349" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell350" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row36" Height="21.48">
+            <TableCell Name="Cell351" Border.Lines="All" Text="内瘘成熟训练" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell352" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell353" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox103" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Nlcsxl1"/>
+              <CheckBoxObject Name="CheckBox104" Left="96.05" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Nlcsxl1"/>
+              <TextObject Name="Text24" Left="142.75" Top="2" Width="28.35" Height="18.9" Text="[Categories.Evaluations.Nlcsxlvalue1]" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text147" Left="47.25" Top="1" Width="28.35" Height="18.9" Text="无" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text149" Left="170.1" Top="1" Width="47.25" Height="18.9" Text="次/日" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text148" Left="113.4" Top="2" Width="28.35" Height="18.9" Text="有" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell354" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell355" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell356" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell357" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell358" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell359" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell360" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row37" Height="21.48">
+            <TableCell Name="Cell361" Border.Lines="All" Text="内瘘使用年限" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell362" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell363" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox105" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Nlsynx1"/>
+              <CheckBoxObject Name="CheckBox107" Left="119.85" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Nlsynx2"/>
+              <CheckBoxObject Name="CheckBox108" Left="213.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Nlsynx3"/>
+              <CheckBoxObject Name="CheckBox109" Left="292.95" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Nlsynx4"/>
+              <TextObject Name="Text143" Left="47.25" Top="1" Width="66.15" Height="18.9" Text="一个月内" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text144" Left="139.3" Top="1" Width="66.15" Height="18.9" Text="六个月内" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text145" Left="232.25" Top="1" Width="47.25" Height="18.9" Text="一年内" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text146" Left="311.85" Top="1" Width="66.15" Height="18.9" Text="一年以上" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell364" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell365" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell366" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell367" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell368" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell369" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell370" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row38" Height="21.48">
+            <TableCell Name="Cell371" Border.Lines="All" Text="健康教育指导" VertAlign="Center" Font="宋体, 10pt, style=Bold" ColSpan="10"/>
+            <TableCell Name="Cell372" Border.Lines="All" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell373" Border.Lines="All" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell374" Border.Lines="All" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell375" Border.Lines="All" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell376" Border.Lines="All" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell377" Border.Lines="All" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell378" Border.Lines="All" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell379" Border.Lines="All" Font="宋体, 10pt, style=Bold"/>
+            <TableCell Name="Cell380" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row39" Height="21.48">
+            <TableCell Name="Cell381" Border.Lines="All" Text="健康教育方式" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell382" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell383" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox110" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Jkjyfs1"/>
+              <CheckBoxObject Name="CheckBox111" Left="113.4" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Jkjyfs2"/>
+              <CheckBoxObject Name="CheckBox112" Left="200.45" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Jkjyfs3"/>
+              <CheckBoxObject Name="CheckBox113" Left="283.5" Top="3.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Jkjyfs4"/>
+              <TextObject Name="Text157" Left="46.25" Top="1" Width="66.15" Height="18.9" Text="口头宣教" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text158" Left="131.85" Top="1" Width="66.15" Height="18.9" Text="健教单张" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text159" Left="221.35" Top="1" Width="56.7" Height="18.9" Text="PPT讲解" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text160" Left="301.95" Top="1" Width="37.8" Height="18.9" Text="视频" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell384" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell385" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell386" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell387" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell388" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell389" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell390" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row40" Height="21.48">
+            <TableCell Name="Cell391" Border.Lines="All" Text="饮食指导" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell392" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell393" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox114" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Yszd1"/>
+              <CheckBoxObject Name="CheckBox116" Left="118.12" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Yszd2"/>
+              <CheckBoxObject Name="CheckBox117" Left="217.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Yszd3"/>
+              <CheckBoxObject Name="CheckBox118" Left="307.12" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Yszd4"/>
+              <CheckBoxObject Name="CheckBox119" Left="396.9" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Yszd5"/>
+              <TextObject Name="Text161" Left="47.25" Top="2" Width="66.15" Height="18.9" Text="饮水控制" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text162" Left="137.3" Top="2" Width="75.6" Height="18.9" Text="蛋白质摄入" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text163" Left="236.25" Top="2" Width="66.15" Height="18.9" Text="高钾食物" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text164" Left="325.75" Top="2" Width="66.15" Height="18.9" Text="高磷食物" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text165" Left="415.8" Top="2" Width="66.15" Height="18.9" Text="怎样吃盐" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell394" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell395" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell396" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell397" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell398" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell399" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell400" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row41" Height="21.48">
+            <TableCell Name="Cell401" Border.Lines="All" Text="运动指导" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell402" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell403" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox121" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Ydzd1"/>
+              <CheckBoxObject Name="CheckBox122" Left="156.2" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Ydzd2"/>
+              <CheckBoxObject Name="CheckBox123" Left="283.5" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Ydzd3"/>
+              <TextObject Name="Text166" Left="47.25" Top="1" Width="94.5" Height="18.9" Text="哪些运动可以做" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text167" Left="174.1" Top="1" Width="94.5" Height="18.9" Text="预防跌倒的方法" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text168" Left="302.4" Top="2" Width="122.85" Height="18.9" Text="立即停止运动的时刻" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell404" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell405" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell406" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell407" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell408" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell409" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell410" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row42" Height="21.48">
+            <TableCell Name="Cell411" Border.Lines="All" Text="血管通路指导" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell412" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell413" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox124" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Xgtlzd1"/>
+              <CheckBoxObject Name="CheckBox125" Left="122.85" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Xgtlzd2"/>
+              <CheckBoxObject Name="CheckBox126" Left="236.25" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Xgtlzd3"/>
+              <CheckBoxObject Name="CheckBox127" Left="349.65" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Xgtlzd4"/>
+              <TextObject Name="Text169" Left="47.25" Top="1" Width="66.15" Height="18.9" Text="日常护理" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text170" Left="141.75" Top="2" Width="85.05" Height="18.9" Text="内瘘闭塞处理" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text171" Left="255.15" Top="2" Width="85.05" Height="18.9" Text="止血带的使用" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text172" Left="368.55" Top="2" Width="94.5" Height="18.9" Text="内瘘成熟训练" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell414" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell415" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell416" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell417" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell418" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell419" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell420" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row43" Height="21.48">
+            <TableCell Name="Cell421" Border.Lines="All" Text="体重管理" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell422" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell423" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox128" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Tzgl1"/>
+              <CheckBoxObject Name="CheckBox129" Left="132.3" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Tzgl2"/>
+              <CheckBoxObject Name="CheckBox130" Left="255.15" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Tzgl3"/>
+              <TextObject Name="Text173" Left="47.25" Top="1" Width="75.6" Height="18.9" Text="何谓干体重" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text174" Left="151.2" Top="2" Width="94.5" Height="18.9" Text="体重增加的标准" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text175" Left="274.05" Top="1" Width="85.05" Height="18.9" Text="干体重的调整" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell424" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell425" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell426" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell427" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell428" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell429" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell430" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row44" Height="21.48">
+            <TableCell Name="Cell431" Border.Lines="All" Text="受教者" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt" ColSpan="2"/>
+            <TableCell Name="Cell432" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell433" Border.Lines="All" VertAlign="Center" Font="宋体, 10pt" ColSpan="8">
+              <CheckBoxObject Name="CheckBox131" Left="28.35" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Sjz1"/>
+              <CheckBoxObject Name="CheckBox132" Left="132.3" Top="4.16" Width="15.12" Height="15.12" Border.Lines="All" Checked="false" DataColumn="Categories.Evaluations.Sjz2"/>
+              <TextObject Name="Text176" Left="47.25" Top="2" Width="66.15" Height="18.9" Text="患者本人" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text177" Left="151.2" Top="1" Width="274.05" Height="18.9" Text="照顾者（配偶、父母、子女、护工、其它）签名" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text178" Left="425.25" Width="85.05" Height="18.9" Text="[Categories.Evaluations.Sjzvalue1]" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell434" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell435" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell436" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell437" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell438" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell439" Border.Lines="All" Font="宋体, 10pt"/>
+            <TableCell Name="Cell440" Border.Lines="All" Font="宋体, 10pt"/>
+          </TableRow>
+          <TableRow Name="Row45" Height="21.48">
+            <TableCell Name="Cell441" HorzAlign="Center" VertAlign="Bottom" Font="宋体, 10pt" ColSpan="10">
+              <TextObject Name="Text40" Left="311.85" Width="94.5" Height="18.9" Text="责任组长" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text41" Left="510.3" Width="94.5" Height="18.9" Text="责任护士" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text42" Left="406.35" Width="94.5" Height="18.9" Text="[Categories.Evaluations.Checkperson]" HorzAlign="Center" VertAlign="Center"/>
+              <TextObject Name="Text43" Left="604.35" Top="1" Width="94.5" Height="18.9" Text="[Categories.Evaluations.Checknurse]" HorzAlign="Center" VertAlign="Center"/>
+            </TableCell>
+            <TableCell Name="Cell442" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell443" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell444" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell445" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell446" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell447" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell448" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell449" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+            <TableCell Name="Cell450" Border.Lines="All" HorzAlign="Center" VertAlign="Center" Font="宋体, 10pt"/>
+          </TableRow>
+        </TableObject>
+      </DataBand>
+    </DataBand>
+  </ReportPage>
+</Report>

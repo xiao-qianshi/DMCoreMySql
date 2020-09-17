@@ -1,0 +1,130 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    //var keyValue = $.request("keyValue");
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/PatientManage/Puncture/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                    $("#form1").find('.form-control,select,input').attr('readonly', 'readonly');
+                    $("#form1").find('div.ckbox label').attr('for', '');
+                }
+            });
+        }
+       
+    });
+    function initControl() {
+        $.ajax({
+            url: "/SystemManage/User/GetUserSelectJson",
+            data: { keyValue: null },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                var tags = [];
+                var first = {};
+                first.id = "";
+                first.text = "     ";
+                tags.push(first);
+                $.each(data, function (index, item) {
+                    var obj = {};
+                    obj.id = item.id;
+                    obj.text = item.text;
+                    tags.push(obj);
+                }
+                );
+                $("#F_Nurse").bindSelect({
+                    id: "id",
+                    text: "text",
+                    data: tags,
+                    search: true
+                });
+            }
+        });
+
+    }
+
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        $.submitForm({
+            url: "/PatientManage/Puncture/SubmitForm?keyValue=" + keyValue.id,
+            param: $("#form1").formSerialize(),
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+            <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">扩展信息</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">操作日期</th>
+                        <td class="formValue">
+                            <input id="F_OperateTime" name="F_OperateTime" type="text" class="form-control required input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" />
+                        </td>
+                        <th class="formTitle">操作护士</th>
+                        <td class="formValue">
+                            <select id="F_Nurse" name="F_Nurse" type="text" class="form-control required"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">动脉点</th>
+                        <td class="formValue">
+                            <input id="F_Point1" name="F_Point1" type="text" class="form-control required" placeholder="动脉穿刺点编号" />
+                        </td>
+                        <th class="formTitle">静脉点</th>
+                        <td class="formValue">
+                            <input id="F_Point2" name="F_Point2" type="text" class="form-control required" placeholder="静脉穿刺点编号" />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th class="formTitle">动脉点</th>
+                        <td class="formValue input-group">
+                            <input id="F_Distance1" name="F_Distance1" type="text" class="form-control" placeholder="动脉穿刺点至吻口距离" />
+                            <span class="input-group-addon">cm</span>
+                        </td>
+                        <th class="formTitle">静脉点</th>
+                        <td class="formValue input-group">
+                            <input id="F_Distance2" name="F_Distance2" type="text" class="form-control" placeholder="动静脉穿刺间距" />
+                            <span class="input-group-addon">cm</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            备注
+                        </th>
+                        <td class="formValue" colspan="3">
+                            <textarea id="F_Memo" name="F_Memo" class="form-control" style="height: 60px;" placeholder=""></textarea>
+                        </td>
+                    </tr>
+                    <tr style="display:none">
+                        <td class="form-formValue">
+                            <input id="F_Pid" name="F_Pid" type="text" class="form-control required" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend">
+
+            </div>
+        </div>
+    </div>
+</form>

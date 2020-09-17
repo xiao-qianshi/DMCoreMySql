@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "FormBatch";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script src="~/Content/js/jqgrid/jqgrid.min.js"></script>
+<link href="~/Content/js/jqgrid/jqgrid.css" rel="stylesheet" />
+<script src="~/Content/js/jqgrid/grid.locale-cn.js"></script>
+<script>
+    //var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        //$.ajax({
+        //    url: "/PatientManage/DialysisSchedule/GetFormBatchJson",
+        //    //data: { keyValue: keyValue },
+        //    dataType: "json",
+        //    async: false,
+        //    success: function (data) {
+        //        $("#form1").formSerialize(data);
+        //        //$("#F_UserPassword").val("******").attr('disabled', 'disabled');
+        //    }
+        //});
+        change();
+
+    });
+    function initControl() {
+
+        $("#F_GroupName").bindSelect({
+            url: "/SystemManage/ItemsData/GetSelectJson?enCode=BedGroup",
+            id: "id",
+            text: "text"
+        });
+        $("#F_VisitNo").bindSelect();
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        $.submitForm({
+            url: "/PatientManage/DialysisSchedule/InsertBatch",
+            param: $("#form1").formSerialize(),
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+
+        function change() {
+        //var groupName = $("#txt_zb").val();
+        ////groupName = $("#txt_amount").val();
+        //alert(groupName);
+        //    if (!!groupName) {
+        //        alert(groupName);
+        //        var $gridList = $("#gridList");
+        //        alert(groupName);
+        //        $gridList.dataGrid({
+        //            url: "/PatientManage/DialysisMachine/GetGridJson?enCode=" + groupName,
+        //            //height: $(window).height() - 128,
+        //            colModel: [
+        //                //{ label: '主键', name: 'F_Id', hidden: true },
+        //                { label: '床号', name: 'id', width: 60, align: 'left' },
+        //                { label: '透析方式', name: 'text', width: 40, align: 'left' }
+        //            ],
+        //            sortname: 'id asc',
+        //            viewrecords: true
+        //        });         
+        //}
+    }
+
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">筛选信息</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+
+                    <tr>
+                        <th class="formTitle">开始日期</th>
+                        <td class="formValue">
+                            <input id="F_StartDate" name="F_StartDate" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker(minDate: '%y-%M-%d')" autocomplete="off"/>
+                        </td>
+                        <th class="formTitle">截至日期</th>
+                        <td class="formValue">
+                            <input id="F_EndDate" name="F_EndDate" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker(minDate: '%y-%M-%d')" autocomplete="off"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        @*<th class="formTitle">床位组别</th>
+                            <td class="formValue">
+                                <select id="txt_group" name="txt_group" type="text" class="form-control required"></select>
+                            </td>*@
+                        <th class="formTitle">班次数量</th>
+                        <td class="formValue">
+                            <select id="F_VisitNo" name="F_VisitNo" type="text" class="form-control required">
+                                <option value="">==请选择班次数量==</option>
+                                <option value="1">每日1班</option>
+                                <option value="2">每日2班</option>
+                                <option value="3">每日3班</option>
+                                <option value="4">每日4班</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">组别</th>
+                        <td class="formValue">
+                            <select id="F_GroupName" name="F_GroupName" type="text" class="form-control" onchange="change()">
+                                <option value="">==请选择分组==</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="gridPanel">
+        <table id="gridList"></table>
+    </div>
+</form>

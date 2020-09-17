@@ -1,0 +1,616 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewBag.Title = "Info";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+<script src="~/Content/js/validate/jquery.validate.min.js"></script>
+<script src="~/Content/js/datepicker/WdatePicker.js"></script>
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+<link media="print" href="~/Content/js/jqprint/dialysisrecord.css" rel="stylesheet" />
+@*@Scripts.Render("~/bundles/PatientManage/Views/PatVisit/Summery")*@
+<environment include="Development">
+    <script src="~/view-js/patvisit/Summery.js" asp-append-version="true"></script>
+</environment>
+<environment exclude="Development">
+    <script src="~/view-js/patvisit/Summery.min.js" asp-append-version="true"></script>
+</environment>
+<style type="text/css">
+    .wrapper {
+        position: fixed;
+        width: 99%;
+        height: 98%;
+        overflow: hidden;
+    }
+</style>
+<div class="wrapper">
+    <div class="rows" style="margin-bottom: 1%; border: 1px solid #e6e6e6;padding-left: 1px;overflow:hidden;">
+        <div style="float:left;width:24%;margin-top: 0.5%;overflow:hidden;">
+            <div class="rows">
+                <div style="float:left;width:45%;">
+                    <input id="visitDate" name="visitDate" type="text" onfocus="WdatePicker({ onpicked:handleVisitDateChange })" style="height:23px;width:85%" autocomplete="off" />
+                </div>
+                <div style="float:right;width:24%;" class="input-group">
+                    <button type="button" class="btn btn-primary" id="btn-refresh"><i class="fa fa-search"></i>查询</button>
+                </div>
+                <div style="float:right;width:30%;" class="input-group">
+                    <select id="visitNo" name="visitNo">
+                        <option value="0" selected>全部</option>
+                        <option value="1">第一班</option>
+                        <option value="2">第二班</option>
+                        <option value="3">第三班</option>
+                    </select>
+                </div>
+                <div style="float:left;width:59%;margin-top:2%">
+                    <input id="filterkeyword" name="filterkeyword" type="text" style="height:23px;width:85%" placeholder="姓名/透析号/床号" />
+                </div>
+                <div style="float:right;width:37%;margin-top:2%;margin-right:3%">
+                    <select id="groupName" name="groupName">
+                        <option value="">全部</option>
+                    </select>
+                </div>
+                <div style="float:left;width:95%;overflow:auto;padding-top:10px; border: 1px solid #e6e6e6;" id="leftContent">
+                    <ul class="list-group" id="patient-list"></ul>
+                </div>
+            </div>
+        </div>
+        <div style="float:right;width:75.5%;margin-top: 0.5%;margin-bottom: 1%;padding-left: 1px;">
+            <div id="operateContent">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle" style="font-size:15px;">历史透析记录</th>
+                        <td class="formValue">
+                            <select id="date-list" name="date-list" type="text" placeholder="请选择班次" style="font-size:15px;"></select>
+                        </td>
+                        <td class="formValue">
+                            <a id="btn-query" class="btn btn-primary"><i class="fa fa-search"></i>查询</a>
+                        </td>
+                        <td class="formValue">
+                            <a id="btn-save" class="btn btn-danger"><i class="fa fa-save"></i>保存</a>
+                        </td>
+                        <td class="formValue">
+                            <a id="btn-print" class="btn btn-default"><i class="fa fa-print"></i>打印预览</a>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+
+            </div>
+            <div style="padding-top: 5px;overflow-y: auto;" id="mainContent">
+                <h4>基本信息</h4>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">组别</th>
+                        <td class="formValue">
+                            <select id="F_GroupName" name="F_GroupName" type="text" class="form-control required"></select>
+                        </td>
+                        <th class="formTitle">床号</th>
+                        <td class="formValue">
+                            <select id="F_DialysisBedNo" name="F_DialysisBedNo" type="text" class="form-control required"></select>
+                        </td>
+                        <th class="formTitle">日期</th>
+                        <td class="formValue">
+                            <input id="F_VisitDate" name="F_VisitDate" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({minDate: '%y-%M-%d'})" autocomplete="off" />
+                        </td>
+                        <th class="formTitle">班次</th>
+                        <td class="formValue">
+                            <select id="F_VisitNo" name="F_VisitNo" type="text" class="form-control required" placeholder="请选择班次">
+                                <option value=1>第一班</option>
+                                <option value=2>第二班</option>
+                                <option value=3>第三班</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">姓名</th>
+                        <td class="formValue">
+                            <input id="F_Name" name="F_Name" type="text" class="form-control" />
+                        </td>
+                        <th class="formTitle">性别</th>
+                        <td class="formValue">
+                            <select id="F_Gender" name="F_Gender" class="form-control required">
+                                <option value="男">男</option>
+                                <option value="女">女</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">出生日期</th>
+                        <td class="formValue">
+                            <input id="F_BirthDay" name="F_BirthDay" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({maxDate: '%y-%M-%d'})" autocomplete="off" />
+                        </td>
+                        <th class="formTitle">病人来源</th>
+                        <td class="formValue">
+                            <select id="F_PatientSourse" name="F_PatientSourse" type="text" class="form-control required">
+                                <option value="门诊">门诊</option>
+                                <option value="住院">住院</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">透析号</th>
+                        <td class="formValue">
+                            <input id="F_DialysisNo" name="F_DialysisNo" type="text" class="form-control required" placeholder="" />
+                        </td>
+                        <th class="formTitle">病历号</th>
+                        <td class="formValue">
+                            <input id="F_RecordNo" name="F_RecordNo" type="text" class="form-control required" />
+                        </td>
+                        <th class="formTitle">住院号</th>
+                        <td class="formValue">
+                            <input id="F_InpNo" name="F_InpNo" type="text" class="form-control" />
+                        </td>
+                        <th class="formTitle">住院床号</th>
+                        <td class="formValue">
+                            <input id="F_BedNo" name="F_BedNo" type="text" class="form-control" style="width:95%" />
+                        </td>
+                    </tr>
+                </table>
+                <h4>透前评估</h4>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">生命体征</th>
+                        <td class="formValue input-group">
+                            <input id="F_SystolicPressure" name="F_SystolicPressure" type="text" class="form-control" placeholder="收缩压" />
+                            <span class="input-group-addon">/</span>
+                            <input id="F_DiastolicPressure" name="F_DiastolicPressure" type="text" class="form-control" placeholder="舒张压" />
+                            <span class="input-group-addon">mmHg</span>
+                            <input id="F_Pulse" name="F_Pulse" type="text" class="form-control" placeholder="脉搏" />
+                            <span class="input-group-addon">次/分</span>
+                            <input id="F_Temperature" name="F_Temperature" type="text" class="form-control " placeholder="体温" />
+                            <span class="input-group-addon">℃</span>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">透前体重</th>
+                        <td class="formValue input-group">
+                            <input id="F_WeightTQ" name="F_WeightTQ" type="number" class="form-control " />
+                            <span class="input-group-addon">Kg</span>
+                        </td>
+                        <th class="formTitle">预脱体重</th>
+                        <td class="formValue input-group">
+                            <input id="F_WeightYT" name="F_WeightYT" type="number" readonly="readonly" class="form-control " />
+                            <span class="input-group-addon">Kg</span>
+                        </td>
+                        <th class="formTitle">上次透后</th>
+                        <td class="formValue input-group">
+                            <input id="F_WeightSXTH" name="F_WeightSXTH" type="number" class="form-control" />
+                            <span class="input-group-addon">Kg</span>
+                        </td>
+                        <td>
+                            <a class="btn btn-default" data-toggle="tooltip" data-html="true" data-placement="left" title="..."><i class="fa fa-search"></i>称重记录</a>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">外周水肿</th>
+                        <td class="formValue">
+                            <div>
+                                <label class="radio-inline">
+                                    <input type="radio" value="无" name="F_PGwzsz">无
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="轻度" name="F_PGwzsz">轻度
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="中度" name="F_PGwzsz">中度
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="重度" name="F_PGwzsz">重度
+                                </label>
+                            </div>
+                        </td>
+                        <td class="formValue"><input id="F_PGwzsz" class="form-control" style="visibility:hidden" /></td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">心肺听诊</th>
+                        <td class="formValue">
+                            <div>
+                                <label>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;呼吸音：
+                                    <label class="radio-inline">
+                                        <input type="radio" value="清" name="F_PGxftz1">清
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="粗" name="F_PGxftz1">粗
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="可闻及啰音" name="F_PGxftz1">可闻及啰音
+                                    </label>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;HR：
+                                    <input id="F_PGxftz2" name="F_PGxftz2" type="text" style="width:70px;" />
+                                    &nbsp;次/分&nbsp;&nbsp;
+                                    心律：
+                                    <label class="radio-inline">
+                                        <input type="radio" value="律齐" name="F_PGxftz3">律齐
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="不齐" name="F_PGxftz3">不齐
+                                    </label>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">出血情况</th>
+                        <td class="formValue">
+                            <div>
+                                <label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="无" name="F_PGwzcx1">无
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="有" name="F_PGwzcx1">有
+                                    </label>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;部位：
+                                    <input id="F_PGwzcx2" name="F_PGwzcx2" type="text" style="width:300px;" />
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            其他
+                        </th>
+                        <td class="formValue">
+                            <textarea id="F_PGother" name="F_PGother" class="form-control" style="height: 40px;width:95%;font-size:15px;"></textarea>
+                        </td>
+                    </tr>
+                    <tr style="display:none">
+                        <td class="formValue">
+                            <input id="F_PGxftz1" class="form-control" />
+                        </td>
+                        <td class="formValue">
+                            <input id="F_PGxftz3" class="form-control" />
+                        </td>
+                    </tr>
+                    <tr style="display:none">
+                        <td class="formValue">
+                            <input id="F_PGwzcx1" class="form-control" />
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">记录者</th>
+                        <td class="formValue">
+                            <select id="F_RecordDoctor" name="F_RecordDoctor" class="form-control"></select>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+                <h4>透析模式</h4>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">透析方式</th>
+                        <td class="formValue">
+                            <select id="F_DialysisType" name="F_DialysisType" type="text" class="form-control"></select>
+                        </td>
+                        <th class="formTitle">滤器</th>
+                        <td class="formValue">
+                            <select id="F_DialyzerType1" name="F_DialyzerType1" type="text" class="form-control "></select>
+                        </td>
+                        <th class="formTitle">灌流器</th>
+                        <td class="formValue">
+                            <select id="F_DialyzerType2" name="F_DialyzerType2" type="text" class="form-control"></select>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr id="hdhp">
+                        <th class="formTitle">稀释模式</th>
+                        <td class="formValue">
+                            <select id="F_DilutionType" name="F_DilutionType" type="text" class="form-control">
+                                <option value="前稀释">前稀释</option>
+                                <option value="后稀释">后稀释</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">置换液量</th>
+                        <td class="formValue input-group">
+                            <input id="F_ExchangeAmount" name="F_ExchangeAmount" type="text" class="form-control" />
+                            <span class="input-group-addon">L</span>
+                            <input id="F_ExchangeSpeed" name="F_ExchangeSpeed" type="text" class="form-control" />
+                            <span class="input-group-addon">ml/min</span>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">预估时间</th>
+                        <td class="formValue input-group">
+                            <input id="F_EstimateHours" name="F_EstimateHours" type="text" class="form-control" />
+                            <span class="input-group-addon">h</span>
+                        </td>
+                        <th class="formTitle">
+                            血流速
+                        </th>
+                        <td class="formValue input-group">
+                            <input id="F_BloodSpeed" name="F_BloodSpeed" type="text" class="form-control" />
+                            <span class="input-group-addon">ml/min</span>
+                        </td>
+                        <th class="formTitle">
+                            透析液温度
+                        </th>
+                        <td class="formValue input-group">
+                            <input id="F_DialysateTemperature" name="F_DialysateTemperature" type="text" class="form-control" />
+                            <span class="input-group-addon">℃</span>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">血管通路</th>
+                        <td class="formValue">
+                            <select id="F_VascularAccess" name="F_VascularAccess" type="text" class="form-control">
+                                <option value="自体内瘘">自体内瘘</option>
+                                <option value="移植内瘘">移植内瘘</option>
+                                <option value="深静脉置管">深静脉置管</option>
+                                <option value="带隧道带涤纶套导管">带隧道带涤纶套导管</option>
+                                <option value="无隧道无涤纶套导管">无隧道无涤纶套导管</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">部位(名称)</th>
+                        <td class="formValue">
+                            <select id="F_AccessName" name="F_AccessName" type="text" class="form-control ">
+                                <option value="左上肢(A/V)">左上肢(A/V)</option>
+                                <option value="右上肢(A/V)">右上肢(A/V)</option>
+                                <option value="颈内静脉">颈内静脉</option>
+                                <option value="股静脉">股静脉</option>
+                                <option value="锁骨下静脉">锁骨下静脉</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form" style="width: 95%;">
+                    <tr>
+                        <th class="formTitle">抗凝剂</th>
+                        <td class="formValue">
+                            <select id="F_HeparinType" name="F_HeparinType" class="form-control"></select>
+                        </td>
+                        <th class="formTitle">首次</th>
+                        <td class="formValue input-group">
+                            <input id="F_HeparinAmount" name="F_HeparinAmount" class="form-control" />
+                            <span id="HeparinUnit" class="input-group-addon"></span>
+                        </td>
+                        <th class="formTitle">追加</th>
+                        <td class="formValue input-group">
+                            <input id="F_HeparinAddAmount" name="F_HeparinAddAmount" class="form-control" />
+                            <span id="HeparinAddSpeedUnit" class="input-group-addon"></span>
+                        </td>
+                        <td class="formValue input-group" style="display:none">
+                            <input id="F_HeparinUnit" />
+                            <input id="F_HeparinAddSpeedUnit" />
+                        </td>
+                    </tr>
+                </table>
+                <table class="form" style="width: 95%;">
+                    <tr>
+                        <th class="formTitle">透析液</th>
+                        <td class="formValue input-group">
+                            <span class="input-group-addon">Ca</span>
+                            <input id="F_Ca" name="F_Ca" class="form-control" style="min-width:40px;" />
+                            <span class="input-group-addon">mmol/L</span>
+
+                        </td>
+                        <th class="formTitle"></th>
+                        <td class="formValue input-group">
+                            <span class="input-group-addon">K</span>
+                            <input id="F_K" name="F_K" class="form-control" style="min-width:40px;" />
+                            <span class="input-group-addon">mmol/L</span>
+                        </td>
+                        <th class="formTitle"></th>
+                        <td class="formValue input-group">
+                            <span class="input-group-addon">Na</span>
+                            <input id="F_Na" name="F_Na" class="form-control" style="min-width:40px;" />
+                            <span class="input-group-addon">mmol/L</span>
+                        </td>
+                        <th class="formTitle"></th>
+                        <td class="formValue input-group">
+                            <span class="input-group-addon">HCO<sub>3</sub><sup>-</sup></span>
+                            <input id="F_Hco3" name="F_Hco3" class="form-control" style="min-width:40px;" />
+                            <span class="input-group-addon">mmol/L</span>
+                        </td>
+                    </tr>
+                </table>
+                <div class="rows">
+                    <div style="float: left;width: 25%;">
+                        <h4>透析处方</h4>
+                    </div>
+                    <div style="float: right;width: 74%;">
+                        <a id="btn-order" class="btn btn-primary"><i class="fa fa-plus"></i>执行医嘱</a>
+                    </div>
+                    <div style="float:left;width: 99%;">
+                        <table id="gridListOrders"></table>
+                    </div>
+                </div>
+                <div class="rows" style="margin-bottom:10px;">
+                    <div style="float: left;width: 100%;">
+                        <h4>观察记录</h4>
+                    </div>
+                    <div style="float: right;width: 74%;margin-top:2px;">
+                        <a id="btn-ob" class="btn btn-primary" style="display:none;"><i class="fa fa-plus"></i>添加记录</a>
+                    </div>
+                    <div style="float: left;width: 99%;">
+                        <table id="gridListObs"></table>
+                    </div>
+                </div>
+
+                <h4>过程监测</h4>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">开始时间</th>
+                        <td class="formValue">
+                            <input id="F_DialysisStartTime" name="F_DialysisStartTime" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" autocomplete="off" />
+                        </td>
+                        <th class="formTitle">穿刺者</th>
+                        <td class="formValue">
+                            <select id="F_PuncturePerson" name="F_PuncturePerson" class="form-control" />
+                        </td>
+                        <th class="formTitle">上机者</th>
+                        <td class="formValue">
+                            <select id="F_StartPerson" name="F_StartPerson" class="form-control" />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th class="formTitle">结束时间</th>
+                        <td class="formValue">
+                            <input id="F_DialysisEndTime" name="F_DialysisEndTime" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" autocomplete="off" />
+                        </td>
+                        <th class="formTitle">核对者</th>
+                        <td class="formValue">
+                            <select id="F_CheckPerson" name="F_CheckPerson" class="form-control" />
+                        </td>
+                        <th class="formTitle">下机者</th>
+                        <td class="formValue">
+                            <select id="F_EndPerson" name="F_EndPerson" class="form-control" />
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">透后体重</th>
+                        <td class="formValue input-group">
+                            <input id="F_WeightTH" name="F_WeightTH" class="form-control" />
+                            <span class="input-group-addon">Kg</span>
+                        </td>
+                        <th class="formTitle">实脱体重</th>
+                        <td class="formValue  input-group">
+                            <input id="F_WeightST" name="F_WeightST" class="form-control" />
+                            <span class="input-group-addon">Kg</span>
+                        </td>
+                        <th class="formTitle">机显脱水</th>
+                        <td class="formValue  input-group">
+                            <input id="F_MachineShowAmount" name="F_MachineShowAmount" class="form-control" />
+                            <span class="input-group-addon">ml</span>
+                        </td>
+                        <th class="formTitle">实际置换量</th>
+                        <td class="formValue  input-group">
+                            <input id="F_RealExchangeAmount" name="F_RealExchangeAmount" class="form-control" />
+                            <span class="input-group-addon">L</span>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">透后体外循环凝血</th>
+                        <td class="formValue">
+                            <div>
+                                <label>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;动静脉壶&nbsp;
+                                    <label class="radio-inline">
+                                        <input type="radio" value="0级" name="F_DJMH">0级
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="1级" name="F_DJMH">1级
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="2级" name="F_DJMH">2级
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="3级" name="F_DJMH">3级
+                                    </label>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;透析器&nbsp;
+                                    <label class="radio-inline">
+                                        <input type="radio" value="0级" name="F_DialyzerStatus">0级
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="1级" name="F_DialyzerStatus">1级
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="2级" name="F_DialyzerStatus">2级
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" value="3级" name="F_DialyzerStatus">3级
+                                    </label>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="display:none">
+                        <td class="formValue">
+                            <input id="F_DJMH" class="form-control" />
+                        </td>
+                        <td class="formValue">
+                            <input id="F_DialyzerStatus" class="form-control" />
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">透后内瘘情况</th>
+                        <td class="formValue">
+                            <div>
+                                <label class="radio-inline">
+                                    <input type="radio" value="正常" name="F_FistulaStatus">正常
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="渗血" name="F_FistulaStatus">渗血
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="肿胀" name="F_FistulaStatus">肿胀
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="其他" name="F_FistulaStatus">其他
+                                </label>
+                                <input type="text" id="F_FistulaStatus" style="display:none" />
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="formTitle">导管口情况</th>
+                        <td class="formValue">
+                            <div>
+                                <label class="radio-inline">
+                                    <input type="radio" value="渗血" name="F_DuctOpeningStatus">渗血
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="红肿" name="F_DuctOpeningStatus">红肿
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="化脓" name="F_DuctOpeningStatus">化脓
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" value="其他" name="F_DuctOpeningStatus">其他
+                                </label>
+                                <input type="text" id="F_DuctOpeningStatus" style="display:none" />
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            不适症状及原因
+                        </th>
+                        <td class="formValue">
+                            <textarea id="F_Reason" name="F_Reason" class="form-control" style="height: 60px;width:95%;font-size:15px;"></textarea>
+                        </td>
+                    </tr>
+                </table>
+                <h4>疗效评价</h4>
+                <div class="mail-box">
+                    <div class="mail-body" style="padding: 1px;width:95%;">
+                        <textarea id="F_Memo" name="F_Memo" class="form-control" rows="5" style="font-size:15px;"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="print" style="visibility:hidden;display:none">
+    <img id="images" />
+</div>

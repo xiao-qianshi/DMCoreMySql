@@ -1,0 +1,433 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+<link media="print" href="~/Content/js/jqprint/common-l.css" rel="stylesheet" />
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+
+<script src="~/Content/js/datepicker/WdatePicker.js"></script>
+<script src="~/Content/js/validate/jquery.validate.min.js"></script>
+
+<script>
+    var selectId = null;
+    var listAll = [];
+    var visitDate = "";
+    var visitNo = "0";
+    $(function () {
+        $("#F_Option5").bindSelect();
+        $("#F_Option6").bindSelect();
+        visitDate = new Date().Format('yyyy-MM-dd');
+        $("#F_VisitDate").val(visitDate);
+
+        $("#F_Option4").on('click', function (e) {
+            if (e.currentTarget.checked) {
+                $("div.card-body").attr("style", "display:block;");
+            } else {
+                $("div.card-body").attr("style", "display:none;");
+                $("#F_Option5").val();
+                $("#F_Option6").val();
+            }
+        });
+        gridList();
+        $("#NF-query").on('click', function () {
+            $("#gridList").jqGrid('setGridParam', {
+                postData: {
+                    keyword: JSON.stringify({
+                        visitDate: visitDate,
+                        visitNo: visitNo
+                    })
+                }
+            }).trigger('reloadGrid');
+            selectId = "";
+            resetForm();
+        });
+
+        $("#NF-print").on('click', function () {
+            $.modalOpen({
+                id: "Form",
+                title: "打印记录",
+                url: "/MachineManage/MachineProcess/Form?keyValue=" + $("#F_VisitDate").val(),
+                width: "650px",
+                height: "500px",
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
+            });
+        });
+
+        $("#NF-save").on('click', function () {
+            if (!!selectId) {
+                if (!$('#formContent').formValid()) {
+                    return false;
+                } else if (!$("#F_Option1").prop('checked') || !$("#F_Option2").prop('checked')) {
+                    if ($("#F_Memo").val() === "") {
+                        $.modalAlert('请描述异常情况!', 'warning');
+                        return false;
+                    }
+                }
+                $.submitForm({
+                    url: "/MachineManage/MachineProcess/SubmitForm",
+                    param: {
+                        entity: $("#formContent").formSerialize(),
+                        keyValue: selectId
+                    },
+                    success: function () {
+                        //更新当前行
+                        //1、查找行号
+                        var $gridList = $("#gridList");
+                        var rownum = Number($gridList.jqGrid("getGridParam", "selrow"));
+                        var rowcount = $gridList.jqGrid("getGridParam", "reccount");
+                        //console.log(rownum, rowcount);
+                        //更新当前行数据
+                        $.ajax({
+                            url: "/MachineManage/MachineProcess/GetFormJson",
+                            data: { keyValue: selectId },
+                            dataType: "json",
+                            async: false,
+                            success: function (data) {
+                                var json = data;
+
+                                var status = ""; //rowObject.F_OperatePerson
+                                if (json.F_OperatePerson != null) {
+                                    status = '<span class=\"label label-success\">已完成</span>';
+                                    json.F_OperatePerson = "    ";
+                                } else {
+                                    status = '<span class=\"label label-danger\">未处理</span>';
+                                }
+                                json.status = status;
+
+                                $gridList.setRowData(rownum, json);
+                                //跳转至下一行
+                                if (rownum < rowcount) {
+                                    //$gridList.resetSelection(rownum + 1);
+                                    $gridList.jqGrid('setSelection', rownum + 1, false);
+                                    var data = $gridList.jqGrid('getRowData', rownum + 1);
+                                    selectId = data.F_Id;
+                                    $.ajax({
+                                        url: "/MachineManage/MachineProcess/GetFormJson",
+                                        data: { keyValue: selectId },
+                                        dataType: "json",
+                                        async: false,
+                                        success: function (data) {
+                                            $("#formContent").formSerialize(data);
+                                            if (data.F_Option4 === true) {
+                                                $("div.card-body").attr("style", "display:block;");
+                                            } else {
+                                                $("div.card-body").attr("style", "display:none;");
+                                                $("#F_Option5").val();
+                                                $("#F_Option6").val();
+                                            }
+                                            $("span.badge").html(data.F_GroupName + data.F_DialylisBedNo);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        $("#time_horizon a.btn-default").click(function () {
+            $("#time_horizon a.btn-default").removeClass("active");
+            $(this).addClass("active");
+            visitNo = $(this).attr("data-value");
+            $("#gridList").jqGrid('setGridParam', {
+                postData: {
+                    keyword: JSON.stringify({
+                        visitDate: visitDate,
+                        visitNo: visitNo
+                    })
+                }
+            }).trigger('reloadGrid');
+            selectId = "";
+            resetForm();
+        });
+    })
+    function gridList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            url: "/MachineManage/MachineProcess/GetGridJson",
+            height: $(window).height() - 135,
+            colModel: [
+                { label: '主键', name: 'F_Id', hidden: true },
+                { label: 'PID', name: 'F_Pid', hidden: true },
+                { label: 'VID', name: 'F_Vid', hidden: true },
+                {
+                    label: '透析日期', name: 'F_VisitDate', width: 70, align: "left",
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                },
+                { label: '班次', name: 'F_VisitNo', width: 30, align: 'left' },
+                { label: '患者姓名', name: 'F_PName', width: 50, align: 'left' },
+                { label: '性别', name: 'F_PGender', width: 30, align: 'left' },
+                { label: '床位分区', name: 'F_GroupName', width: 50, align: 'center' },
+                { label: '床号', name: 'F_DialylisBedNo', width: 50, align: 'center' },
+                { label: '机器型号', name: 'F_MachineName', width: 120, align: 'center' },
+                {
+                    label: "状态", name: "status", width: 60, align: "center",
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (rowObject.F_OperatePerson == null || rowObject.F_OperatePerson == undefined || rowObject.F_OperatePerson == "") {
+                            return '<span class=\"label label-danger\">未处理</span>';
+                        } else {
+                            return '<span class=\"label label-success\">已完成</span>';
+                        }
+                    }
+                },
+                { label: '操作者', name: 'F_OperatePerson', width: 80, align: 'left' },
+                {
+                    label: '操作日期', name: 'F_OperateTime', width: 100, align: 'left'
+                }
+            ],
+            postData: {
+                keyword: JSON.stringify({
+                    visitDate: visitDate,
+                    visitNo: visitNo
+                })
+            },
+            pager: "#gridPager",
+            sortname: 'F_GroupName asc,F_DialylisBedNo asc',
+            viewrecords: true,
+            onCellSelect: function (rowid, iCol, cellcontent, e) { //单击选择行
+                selectId = $gridList.jqGrid('getRowData', rowid).F_Id;
+                $.ajax({
+                    url: "/MachineManage/MachineProcess/GetFormJson",
+                    data: { keyValue: selectId },
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        $("#formContent").formSerialize(data);
+                        if (data.F_Option4 === true) {
+                            $("div.card-body").attr("style", "display:block;");
+                        } else {
+                            $("div.card-body").attr("style", "display:none;");
+                            $("#F_Option5").val();
+                            $("#F_Option6").val();
+                        }
+                        $("span.badge").html(data.F_GroupName + data.F_DialylisBedNo);
+                    }
+                });
+            }
+        });
+    }
+
+    function btn_delete() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.deleteForm({
+                url: "/MachineManage/MachineProcess/DeleteForm",
+                param: { keyValue: keyValue },
+                success: function () {
+                    $.currentWindow().$("#gridList").trigger("reloadGrid");
+                    selectId = "";
+                    resetForm();
+                }
+            })
+        }
+    }
+
+    Date.prototype.Format = function (fmt) { //author: meizz
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+    function pickerChange(e) {
+        if (e.el.id == "F_OperateTime") {
+            return false;
+        }
+        visitDate = $("#F_VisitDate").val();
+        $("#gridList").jqGrid('setGridParam', {
+            postData: {
+                keyword: JSON.stringify({
+                    visitDate: visitDate,
+                    visitNo: visitNo
+                })
+            }
+        }).trigger('reloadGrid');
+        selectId = "";
+        resetForm();
+    }
+
+    function resetForm() {
+        var $form = $("#formContent");
+        $form.find("input[type='checkbox']").prop('checked', false);
+        $("div.card-body").attr("style", "display:none;");
+        $form.find("textarea,input,select").val("");
+        $("span.badge").html('');
+    }
+
+
+
+    function printPreview(result) {
+        $("#print").html(result);
+        //console.log(result);
+        $("#print").attr("style", "display:block;");//显示div
+        $("#print").jqprint();
+        $("#print").attr("style", "display:none;");//隐藏div
+    }
+
+</script>
+
+<div class="rows" style="margin-bottom: 1%; overflow: hidden;">
+    <div style="float: left; width: 50%;">
+        <div class="topPanel">
+            <div class="toolbar">
+                <div class="btn-group">
+                    <a id="NF-query" authorize="yes" class="btn btn-primary dropdown-text"><i class="fa fa-search"></i>查询</a>
+                </div>
+                <div class="btn-group">
+                    <a id="NF-print" class="btn btn-default dropdown-text"><i class="fa fa-print"></i>打印</a>
+                </div>
+                <div class="operate">
+                    <ul class="nav nav-pills">
+                        <li class="first">已选中<span>1</span>项</li>
+                        @*<li><a id="NF-edit" authorize="yes" onclick="btn_edit()"><i class="fa fa-pencil-square-o"></i>修改</a></li>*@
+                        <li><a id="NF-delete" authorize="yes" onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除</a></li>
+                    </ul>
+                    <a href="javascript:;" class="close"></a>
+                </div>
+                <script>$('.toolbar').authorizeButton()</script>
+            </div>
+            <div class="search">
+                <table>
+                    <tr>
+                        <td style="width: 100px;">
+                            <div class="input-group">
+                                <input id="F_VisitDate" name="F_VisitDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd',onpicked:pickerChange})" autocomplete="off" />
+                            </div>
+                        </td>
+                        <td style="padding-left: 30px;">
+                            <div id="time_horizon" class="btn-group">
+                                <a class="btn btn-default active" data-value="0">全部</a>
+                                <a class="btn btn-default" data-value="1">第一班</a>
+                                <a class="btn btn-default" data-value="2">第二班</a>
+                                <a class="btn btn-default" data-value="3">第三班</a>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="gridPanel">
+            <table id="gridList"></table>
+            <div id="gridPager"></div>
+        </div>
+    </div>
+    <div style="float: right; width: 49%;">
+        <div style="width: 95%">
+            <div style="position: absolute; top: 15px; right: 240px;">
+                <span class="badge"></span>
+            </div>
+            <div style="position: absolute; top: 35px; right: 40px;">
+                <a class="btn btn-warning" id="NF-save"><i class="fa fa-save" style="margin-right: 5px; font-size: 13px;"></i>保存记录</a>
+            </div>
+            <form id="formContent">
+                <h4>透析机维护记录</h4>
+                <div style="margin-top: 5px; margin-left: 10px; margin-right: 10px;">
+                    <table class="form">
+                        <tr>
+                            @*<th class="formTitle">操作时间</th>*@
+                            <td class="formValue">
+                                <input id="F_OperateTime" name="F_OperateTime" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" placeholder="默认为签名时间" autocomplete="off" />
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="card" style="margin-top:20px;">
+                    <div class="card-title">
+                        <div class="alert alert-success" style="text-align: left; margin-bottom: 10px; font-size: 15px;">
+                            <i class="fa fa-warning alert-dismissible" style="position: relative; top: 1px; font-size: 20px; padding-right: 15px;"></i>
+                            是否完成机器自检？
+                            <div class="ckbox" style="float: right;width: 40px;">
+                                <input id="F_Option1" name="F_Option1" type="checkbox"><label for="F_Option1">是</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">
+                        <div class="alert alert-success" style="text-align: left; margin-bottom: 10px; font-size: 15px;">
+                            <i class="fa fa-warning alert-dismissible" style="position: relative; top: 1px; font-size: 20px; padding-right: 15px;"></i>
+                            机器工作状态是否良好？
+                            <div class="ckbox" style="float: right;width: 40px;">
+                                <input id="F_Option2" name="F_Option2" type="checkbox"><label for="F_Option2">是</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">
+                        <div class="alert alert-success" style="text-align: left; margin-bottom: 10px; font-size: 15px;">
+                            <i class="fa fa-warning alert-dismissible" style="position: relative; top: 1px; font-size: 20px; padding-right: 15px;"></i>
+                            设备耗材是否更换？
+                            <div class="ckbox" style="float: right;width: 40px;">
+                                <input id="F_Option4" name="F_Option4" type="checkbox"><label for="F_Option4">是</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="display:none">
+                        <table class="form">
+                            <tr>
+                                <th class="formTitle">耗材名称</th>
+                                <td class="formValue">
+                                    <select id="F_Option5" name="F_Option5" type="text" class="form-control">
+                                        <option value="">选择耗材名称</option>
+                                        <option value="内毒素过滤器">内毒素过滤器</option>
+                                    </select>
+                                </td>
+                                <th class="formTitle">耗材数量</th>
+                                <td class="formValue">
+                                    <select id="F_Option6" name="F_Option6" type="text" class="form-control">
+                                        <option value="">选择数量</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">
+                        <div class="alert alert-success" style="text-align: left; margin-bottom: 10px; font-size: 15px;">
+                            <i class="fa fa-warning alert-dismissible" style="position: relative; top: 1px; font-size: 20px; padding-right: 15px;"></i>
+                            是否按要求程序保养？
+                            <div class="ckbox" style="float: right;width: 40px;">
+                                <input id="F_Option3" name="F_Option3" type="checkbox"><label for="F_Option3">是</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; margin-left: 10px; margin-right: 10px;">
+                    <h5>异常情况描述</h5>
+                    <table class="form">
+                        <tr>
+                            @*<th class="formTitle">异常情况描述</th>*@
+                            <td class="formValue" colspan="3">
+                                <textarea id="F_Memo" name="F_Memo" class="form-control" style="height: 60px;"></textarea>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="print" style="visibility:hidden;display:none">
+</div>
+

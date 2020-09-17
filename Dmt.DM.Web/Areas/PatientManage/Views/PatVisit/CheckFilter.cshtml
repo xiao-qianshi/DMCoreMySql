@@ -1,0 +1,108 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();      
+    });
+    function initControl() {
+        //$("#form1").formSerialize(keyValue);
+        $("#visitDate").val(keyValue);
+
+        $("#bcall").on("change", function () {
+            if (this.checked == true) {
+                $("#bc1,#bc2,#bc3").prop("checked", false);
+            }
+        });
+        $("#bc1,#bc2,#bc3").on("change", function () {
+            if (this.checked == true) {
+                $("#bcall").prop("checked", false);
+            }
+        });
+        $("#bcall").prop("checked", true);
+        $("#groupName").bindSelect({
+            url: "/SystemManage/ItemsData/GetSelectJson?enCode=BedGroup",
+            id: "id",
+            text: "text"
+        });
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        //var postdata = $('#form1').formSerialize();
+        //$.currentWindow().$("#filterstr").attr("value", encodeURI(JSON.stringify(postdata)));
+        //$.modalClose();
+        var queryJson = {};
+        queryJson.visitDate = $("#visitDate").val();
+        queryJson.groupName = $("#groupName").val();
+        if ($("#bcall").prop("checked")) {
+            queryJson.visitNo = 8;
+        } else {
+            queryJson.visitNo = 0;
+            if ($("#bc1").prop("checked")) queryJson.visitNo = queryJson.visitNo + 1;
+            if ($("#bc2").prop("checked")) queryJson.visitNo = queryJson.visitNo + 2;
+            if ($("#bc3").prop("checked")) queryJson.visitNo = queryJson.visitNo + 4;
+        }
+
+        $.ajax({
+            type: 'post',
+            url: "/PatientManage/PatVisit/GetNurseCheckReport",
+            data: JSON.stringify({ keyValue: JSON.stringify(queryJson) }),
+            success: function (result) {
+                $.currentWindow().printcard(result);
+                $.modalClose();
+            }
+        });
+
+        //$.post("/PatientManage/PatVisit/GetNurseCheckReport",
+        //    { queryJson: JSON.stringify(queryJson) },
+        //    function (data, status, xhr) {
+        //        //console.log(data);
+        //        if (status == 'success') {
+        //            console.log(data);
+        //            $.currentWindow().printcard(data);
+        //            $.modalClose();
+        //        }
+        //    });
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">透析日期</th>
+                <td class="formValue">
+                    <input id="visitDate" name="visitDate" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off" />
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle" style="height: 35px;">班次</th>
+                <td class="formValue" style="padding-top: 1px;">
+                    <div class="ckbox">
+                        <input id="bcall" name="bcall" type="checkbox" checked="checked"><label for="bcall">全部</label>
+                    </div>
+                    <div class="ckbox">
+                        <input id="bc1" name="bc1" type="checkbox"><label for="bc1">第一班</label>
+                    </div>
+                    <div class="ckbox">
+                        <input id="bc2" name="bc2" type="checkbox"><label for="bc2">第二班</label>
+                    </div>
+                    <div class="ckbox">
+                        <input id="bc3" name="bc3" type="checkbox"><label for="bc3">第三班</label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle">床位分组</th>
+                <td class="formValue">
+                    <select id="groupName" name="groupName" type="text" class="form-control">
+                        <option value="">全部</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>

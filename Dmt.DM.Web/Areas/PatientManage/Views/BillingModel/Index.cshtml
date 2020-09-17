@@ -1,0 +1,213 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+
+<script>
+    $(function () {
+        //F_AccessName
+        $("#F_DialysisType").bindSelect(
+            {
+                url: "/SystemManage/ItemsData/GetSelectJson?enCode=DialysisType",
+                id: "id",
+                text: "text",
+                change: function () {
+                    var dialysisType = $("#F_DialysisType").val();
+                    var vascularAccess = $("#F_VascularAccess").val();
+                    $("#gridList").jqGrid('setGridParam', {
+                        postData: { dialysisType: dialysisType, vascularAccess: vascularAccess },
+                    }).trigger('reloadGrid');
+                }
+            });
+
+        //<option value="自体内瘘">自体内瘘</option>
+        //    <option value="移植内瘘">移植内瘘</option>
+        //    <option value="带隧道带涤纶套导管">带隧道带涤纶套导管</option>
+        //    <option value="无隧道无涤纶套导管">无隧道无涤纶套导管</option>
+
+        $("#F_VascularAccess").bindSelect({
+            data: [
+                { id: "自体内瘘", text: "自体内瘘" },
+                { id: "移植内瘘", text: "移植内瘘" },
+                { id: "带隧道带涤纶套导管", text: "带隧道带涤纶套导管" },
+                { id: "无隧道无涤纶套导管", text: "无隧道无涤纶套导管" },
+            ],
+            change: function () {
+                var dialysisType = $("#F_DialysisType").val();
+                var vascularAccess = $("#F_VascularAccess").val();
+                $("#gridList").jqGrid('setGridParam', {
+                    postData: { dialysisType: dialysisType, vascularAccess: vascularAccess },
+                }).trigger('reloadGrid');
+            }
+        }
+        );
+        gridList();
+    })
+    function gridList() {
+        var $gridList = $("#gridList");
+        var dialysisType = $("#F_DialysisType").val();
+        var vascularAccess = $("#F_VascularAccess").val();
+        $gridList.dataGrid({
+            url: "/PatientManage/BillingModel/GetGridJson",
+            postData: { dialysisType: dialysisType, vascularAccess: vascularAccess},
+            height: $(window).height() - 128,
+            colModel: [
+                { label: '主键', name: 'F_Id', hidden: true },
+                { label: '透析模式', name: 'F_DialysisType', width: 80, align: 'left' },
+                { label: '血管通路', name: 'F_VascularAccess', width: 80, align: 'left' },
+                { label: '费用类别', name: 'F_ItemClass', width: 60, align: 'left' },
+                { label: '项目名称', name: 'F_ItemName', width: 120, align: 'left' },
+                { label: '规格', name: 'F_ItemSpec', width: 60, align: 'left' },
+                { label: '单位', name: 'F_ItemUnit', width: 40, align: 'center' },
+                { label: '单价', name: 'F_Charges', width: 40, align: 'center' },
+                { label: '数量', name: 'F_Amount', width: 40, align: 'center' },
+                { label: '厂商', name: 'F_Supplier', width: 160, align: 'center' },
+                {
+                    label: '创建日期', name: 'F_CreatorTime', width: 80, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                },
+                {
+                    label: '最后修改日期', name: 'F_LastModifyTime', width: 80, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                }
+            ],
+            pager: "#gridPager",
+            sortname: 'F_CreatorTime desc',
+            viewrecords: true
+        });
+        $("#btn_search").click(function () {
+            var dialysisType = $("#F_DialysisType").val();
+            var vascularAccess = $("#F_VascularAccess").val();
+            $gridList.jqGrid('setGridParam', {
+                postData: { dialysisType: dialysisType, vascularAccess: vascularAccess },
+            }).trigger('reloadGrid');
+        });
+    }
+    function btn_add() {
+        var dialysisType = $("#F_DialysisType").val();
+        var vascularAccess = $("#F_VascularAccess").val();
+        if (!!dialysisType && !!vascularAccess) {
+            var obj = {};
+            obj.dialysisType = encodeURI(dialysisType);
+            obj.vascularAccess = encodeURI(vascularAccess);
+            obj.keyValue = "";
+            $.modalOpen({
+                id: "Form",
+                title: "添加子项",
+                url: "/PatientManage/BillingModel/Form?keyword=" + encodeURI(JSON.stringify(obj)),
+                width: "800px",
+                height: "600px",
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
+            }); 
+        }     
+    }
+    function btn_edit() {
+
+        var dialysisType = $("#F_DialysisType").val();
+        var vascularAccess = $("#F_VascularAccess").val();
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+
+        if (!!keyValue && !!dialysisType && !!vascularAccess) {
+            var obj = {};
+            obj.dialysisType = encodeURI(dialysisType);
+            obj.vascularAccess = encodeURI(vascularAccess);
+            obj.keyValue = keyValue;
+
+            $.modalOpen({
+                id: "Form",
+                title: "修改子项",
+                url: "/PatientManage/BillingModel/Form?keyValue=" + encodeURI(JSON.stringify(obj)),
+                width: "800px",
+                height: "600px",
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
+            });
+        }
+
+
+
+        
+        
+    }
+    function btn_delete() {
+        $.deleteForm({
+            url: "/PatientManage/BillingModel/DeleteForm",
+            param: { keyValue: $("#gridList").jqGridRowValue().F_Id },
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+
+    $("#F_DialysisType").on("select2:select", function () {
+        var dialysisType = $("#F_DialysisType").val();
+        var vascularAccess = $("#F_VascularAccess").val();
+        $gridList.jqGrid('setGridParam', {
+            postData: { dialysisType: dialysisType, vascularAccess: vascularAccess },
+        }).trigger('reloadGrid');
+    })
+
+
+   
+</script>
+
+<div class="topPanel">
+    <div class="toolbar">
+        <div class="btn-group">
+            <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
+        <div class="btn-group">
+            <a id="NF-add" authorize="yes" class="btn btn-primary dropdown-text" onclick="btn_add()"><i class="fa fa-plus"></i>添加子项</a>
+        </div>
+        <div class="operate">
+            <ul class="nav nav-pills">
+                <li class="first">已选中<span>1</span>项</li>
+                <li><a id="NF-edit" authorize="yes" onclick="btn_edit()"><i class="fa fa-pencil-square-o"></i>修改</a></li>
+                <li><a id="NF-delete" authorize="yes" onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除</a></li>
+                @*<li><a id="NF-Details" authorize="yes" onclick="btn_details()"><i class="fa fa-search-plus"></i>查看</a></li>
+                    <li class="split"></li>
+                    <li><a id="NF-disabled" authorize="yes" onclick="btn_disabled()"><i class="fa fa-stop-circle"></i>禁用</a></li>
+                    <li><a id="NF-enabled" authorize="yes" onclick="btn_enabled()"><i class="fa fa-play-circle"></i>启用</a></li>*@
+            </ul>
+            <a href="javascript:;" class="close"></a>
+        </div>
+        <script>$('.toolbar').authorizeButton()</script>
+    </div>
+    <div class="search">
+        <table>
+            <tr>
+                <td>
+                    <div class="input-group" style="width: 150px;">
+                        <select id="F_DialysisType" name="F_DialysisType" class="form-control" placeholder="选择透析模式">
+                        </select>
+                    </div>
+                </td>
+                <td style="padding-left: 5px;">
+                    <div class="input-group" style="width: 150px;">
+                        <select id="F_VascularAccess" name="F_VascularAccess" class="form-control" placeholder="选择血管通路">
+                            
+                        </select>
+                    </div>
+                </td>
+                <td style="padding-left: 2px;display:none;">
+                    <div class="input-group">
+                        <input id="txt_keyword" type="text" class="form-control" placeholder="" style="width: 200px;">
+                        <span class="input-group-btn">
+                            <button id="btn_search" type="button" class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridList"></table>
+    <div id="gridPager"></div>
+</div>

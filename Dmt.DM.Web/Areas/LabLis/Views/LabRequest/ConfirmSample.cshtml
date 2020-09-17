@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyword = $.request("keyword");
+    $(function () {
+        initControl();
+    });
+
+    function initControl() {
+        $("#txt_barcode").focus();
+        $("#txt_barcode").keyup(function (e) {
+            if (e.which == 13) {
+                $("#alertmsg").attr('style', 'display: none;');
+                $("#errorMsg").html('');
+                var txt_value = e.currentTarget.value;
+                if (!!txt_value) {
+                    if (txt_value.length > 8) {
+                        //保存条码号
+                        var params = {
+                            barcode: txt_value,
+                            samplingTime: $("#sampleTime").val()
+                        };
+                        if ($('[name=__RequestVerificationToken]').length > 0) {
+                            params["__RequestVerificationToken"] = $('[name=__RequestVerificationToken]').val();
+                        }
+                        $.ajax({
+                            url: '/LabLis/LabRequest/SampleConfirm',
+                            data: JSON.stringify(params),
+                            dataType: "json",
+                            async: false,
+                            type: 'post',
+                            success: function (data) {
+                                console.log(data);
+                                if (data.state == 'error') {
+                                    $("#alertmsg").attr('style', 'display: block;');
+                                    $("#errorMsg").html(data.message);
+                                }
+                                $("#txt_barcode").val('');
+                                $("#txt_barcode").focus();
+                            }
+
+                        });
+
+                    }
+                }
+            }
+        });
+    }
+    function submitForm() {
+        $.currentWindow().$("#btn_search").trigger('click');
+        $.modalClose();
+    }
+
+</script>
+<div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+    <div class="input-group">
+        <input type="number" id="txt_barcode" placeholder="请扫描条码号..." style="font-size: 25px;font-weight: bold;" autocomplete="off" />
+    </div>
+    <div id="alertmsg" class="alert alert-danger" style="text-align: left; margin-bottom: 10px; margin-top: 10px;width:auto;display: none;">
+        <i class="fa fa-warning alert-dismissible" style="position: relative; bottom: 10px; font-size: 15px; padding-right: 5px;"></i>
+        <strong id="errorMsg"></strong>
+    </div>
+    <div style="margin-top: 20px; margin-left: 10px; margin-right: 10px;font-size: 15px;">
+        <div class="checkbox" style="float: left;width: 45%;">
+            <label><input type="checkbox" name="ck-box" id="ck-box" />自定义采集时间</label>
+        </div>
+        <div style="float: left;width: 54%;">
+            <input id="sampleTime" name="sampleTime" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss',minDate: '%y-%M-%d 00:00:00'})" autocomplete="off" placeholder="默认值为当前时间" />
+        </div>
+
+    </div>
+
+</div>
+

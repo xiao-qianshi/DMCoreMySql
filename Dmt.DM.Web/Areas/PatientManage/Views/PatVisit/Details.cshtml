@@ -1,0 +1,95 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        $.ajax({
+            url: "/PatientManage/DialysisMachine/GetFormJson",
+            data: { keyValue: keyValue },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                $("#form1").formSerialize(data);
+                $("#form1").find('.form-control,select,input').attr('readonly', 'readonly');
+                $("#form1").find('div.ckbox label').attr('for', '');
+            }
+        });
+    });
+    function initControl() {
+        $("#F_DefaultType").bindSelect({
+            url: "/SystemManage/ItemsData/GetSelectJson?enCode=DialysisType",
+            id: "id",
+            text: "text"
+        }
+        );
+        $("#F_EnabledMark").bindSelect();
+        $("#F_GroupName").bindSelect({
+            url: "/SystemManage/ItemsData/GetSelectJson?enCode=BedGroup",
+            id: "id",
+            text: "text"
+        });
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+            <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">扩展信息</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">组别</th>
+                        <td class="formValue">
+                            <select id="F_GroupName" name="F_GroupName" type="text" class="form-control required">
+                                
+                            </select>
+                        </td>
+                        <th class="formTitle">床号</th>
+                        <td class="formValue">
+                            <input id="F_DialylisBedNo" name="F_DialylisBedNo" type="text" class="form-control required" placeholder="请输入床号" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">显示顺序</th>
+                        <td class="formValue">
+                            <input id="F_ShowOrder" name="F_ShowOrder" type="text" class="form-control required" placeholder="请输入显示顺序号" />
+                        </td>
+                        <th class="formTitle">仪器名称</th>
+                        <td class="formValue">
+                            <input id="F_MachineName" name="F_MachineName" type="text" class="form-control required" placeholder="请输入仪器名称" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">仪器编号</th>
+                        <td class="formValue">
+                            <input id="F_MachineNo" name="F_MachineNo" type="text" class="form-control required" placeholder="请输入仪器编号" />
+                        </td>
+                        <th class="formTitle">透析方式</th>
+                        <td class="formValue">
+                            <select id="F_DefaultType" name="F_DefaultType" class="form-control required">
+                                
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">是否启用</th>
+                        <td class="formValue">
+                            <select id="F_EnabledMark" name="F_EnabledMark" class="form-control">
+                                <option value="true">是</option>
+                                <option value="false">否</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend">
+
+            </div>
+        </div>
+    </div>
+</form>

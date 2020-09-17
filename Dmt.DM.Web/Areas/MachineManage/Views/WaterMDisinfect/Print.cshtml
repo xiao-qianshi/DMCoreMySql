@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+<link media="print" href="~/Content/js/jqprint/medicalfile.css" rel="stylesheet" />
+
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        $.ajax({
+            url: "/PatientManage/MedicalRecord/GetPrintContent",
+            data: { keyValue: keyValue },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                $("#print").html($("<div>").html(data.content).text());
+            }
+        });
+    });
+    function initControl() {
+       
+    }
+
+    function btn_print() {
+        $("#print").jqprint();
+    }
+</script>
+
+<div style="position: absolute; top: 22px; right: 8px;">
+    <a class="btn btn-default " onclick="btn_print()"><i class="fa fa-print" style="margin-right: 5px; font-size: 13px;"></i>直接打印</a>
+</div>
+
+<div class="price-box" id="print">
+    @*<div id="print">
+    </div>*@
+</div>
+

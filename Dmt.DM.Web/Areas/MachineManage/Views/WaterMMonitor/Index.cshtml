@@ -1,0 +1,462 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+<script src="~/Content/js/datepicker/WdatePicker.js"></script>
+<script src="~/Content/js/validate/jquery.validate.min.js"></script>
+
+<script>
+    var selectID = "";
+    var currentRecord = null;
+    var briefHtml = '\
+            <table class="form">\
+                <tr>\
+                    <th class="formTitle" style="width: auto;">自来水压力(动态)(0.2-0.5Mpa)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value1" name="F_Value1" type="number" class="form-control" />\
+                        <span class="input-group-addon">Mpa</span>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;">粗过滤进水端压力(0.2-0.5Mpa)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value2" name="F_Value2" type="number" class="form-control" />\
+                        <span class="input-group-addon">Mpa</span>\
+                    </td>\
+                </tr>\
+                <tr>\
+                    <th class="formTitle" style="width: auto;">粗过滤出水端压力(0.2-0.5Mpa)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value3" name="F_Value3" type="number" class="form-control" />\
+                        <span class="input-group-addon">Mpa</span>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;">粗过滤压差(＜0.1Mpa)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value4" name="F_Value4" type="number" class="form-control" />\
+                        <span class="input-group-addon">Mpa</span>\
+                    </td>\
+                </tr>\
+                <tr>\
+                    <th class="formTitle" style="width: auto;">多介质过滤器压力(砂滤)(0.45-0.6Mpa)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value5" name="F_Value5" type="number" class="form-control" />\
+                        <span class="input-group-addon">Mpa</span>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;">活性炭过滤器压力(炭滤)(0.45-0.6Mpa)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value6" name="F_Value6" type="number" class="form-control" />\
+                        <span class="input-group-addon">Mpa</span>\
+                    </td>\
+                </tr>\
+                <tr>\
+                    <th class="formTitle" style="width: auto;">树脂过滤器压力(软化)(0.45-0.6Mpa)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value7" name="F_Value7" type="number" class="form-control" />\
+                        <span class="input-group-addon">Mpa</span>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;">精过滤进水端压力(0.45-0.6Mpa)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value8" name="F_Value8" type="number" class="form-control" />\
+                        <span class="input-group-addon">Mpa</span>\
+                    </td>\
+                </tr>\
+                <tr>\
+                    <th class="formTitle" style="width: auto;">精过滤出水端压力(0.45-0.6Mpa)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value9" name="F_Value9" type="number" class="form-control" />\
+                        <span class="input-group-addon">Mpa</span>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;">精过滤压差(＜0.1Mpa)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value10" name="F_Value10" type="number" class="form-control" />\
+                        <span class="input-group-addon">Mpa</span>\
+                    </td>\
+                </tr>\
+                <tr>\
+                    <th class="formTitle" style="width: auto;">上机前总氯检测结果(＜0.1mg/l)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value11" name="F_Value11" type="number" class="form-control" />\
+                        <span class="input-group-addon">mg/l</span>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;">下机后总氯检测结果(＜0.1mg/l)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value12" name="F_Value12" type="number" class="form-control" />\
+                        <span class="input-group-addon">mg/l</span>\
+                    </td>\
+                </tr>\
+                <tr>\
+                    <th class="formTitle" style="width: auto;">上机前硬度检测结果(＜17mg/l)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value13" name="F_Value13" type="number" class="form-control" />\
+                        <span class="input-group-addon">mg/l</span>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;">下机后硬度检测结果(＜17mg/l)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value14" name="F_Value14" type="number" class="form-control" />\
+                        <span class="input-group-addon">mg/l</span>\
+                    </td>\
+                </tr>\
+            </table>\
+            <table class="form">\
+                <tr>\
+                    <th class="formTitle" style="width: auto;"></th>\
+                    <td class="formValue">\
+                        <div class="ckbox">\
+                            <input id="F_Value15" name="F_Value15" type="checkbox">\
+                            <label for="F_Value15">预处理有无漏水现象</label>\
+                        </div>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;"></th>\
+                    <td class="formValue">\
+                        <div class="ckbox">\
+                            <input id="F_Value16" name="F_Value16" type="checkbox">\
+                            <label for="F_Value16">确认控制头时间</label>\
+                        </div>\
+                    </td>\
+                </tr>\
+                <tr>\
+                    <th class="formTitle" style="width: auto;"></th>\
+                    <td class="formValue">\
+                        <div class="ckbox">\
+                            <input id="F_Value17" name="F_Value17" type="checkbox">\
+                            <label for="F_Value17">滤芯建议更换周期</label>\
+                        </div>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;"></th>\
+                    <td class="formValue">\
+                        <div class="ckbox">\
+                            <input id="F_Value18" name="F_Value18" type="checkbox">\
+                            <label for="F_Value18">树脂还原剂添加情况</label>\
+                        </div>\
+                    </td>\
+                </tr>\
+            </table>\
+            <table class="form">\
+                <tr>\
+                    <th class="formTitle" style="width: 40px;padding-top: 5px;">\
+                        备注\
+                    </th>\
+                    <td class="formValue">\
+                        <textarea id="F_Memo" name="F_Memo" class="form-control" style="height: 80px;"></textarea>\
+                    </td>\
+                </tr>\
+            </table>\
+            ';
+    var observationHtml = '\
+            <table class="form">\
+                <tr>\
+                    <th class="formTitle" style="width: auto;">一级系统压力(0.7-1.0Mpa)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value1" name="F_Value1" type="number" class="form-control" />\
+                        <span class="input-group-addon">Mpa</span>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;">一级纯水压力(0.25-0.6Mpa)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value2" name="F_Value2" type="number" class="form-control" />\
+                        <span class="input-group-addon">Mpa</span>\
+                    </td>\
+                </tr>\
+                <tr>\
+                    <th class="formTitle" style="width: auto;">二级系统压力(0.7-1.0Mpa)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value3" name="F_Value3" type="number" class="form-control" />\
+                        <span class="input-group-addon">Mpa</span>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;">二级纯水压力(0.25-0.6Mpa)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value4" name="F_Value4" type="number" class="form-control" />\
+                        <span class="input-group-addon">Mpa</span>\
+                    </td>\
+                </tr>\
+                <tr>\
+                    <th class="formTitle" style="width: auto;">管路末端压力(0.25-0.6Mpa)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value5" name="F_Value5" type="number" class="form-control" />\
+                        <span class="input-group-addon">Mpa</span>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;">原水电导率</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value6" name="F_Value6" type="number" class="form-control" />\
+                        <span class="input-group-addon">μs/cm</span>\
+                    </td>\
+                </tr>\
+                <tr>\
+                    <th class="formTitle" style="width: auto;">一级电导率</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value7" name="F_Value7" type="number" class="form-control" />\
+                        <span class="input-group-addon">μs/cm</span>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;">二级电导率 (≤10μs/cm)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value8" name="F_Value8" type="number" class="form-control" />\
+                        <span class="input-group-addon">μs/cm</span>\
+                    </td>\
+                </tr>\
+                <tr>\
+                    <th class="formTitle" style="width: auto;">原水水温</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value9" name="F_Value9" type="number" class="form-control" />\
+                        <span class="input-group-addon">℃</span>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;">产水量</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value10" name="F_Value10" type="number" class="form-control" />\
+                        <span class="input-group-addon">L/H</span>\
+                    </td>\
+                </tr>\
+                <tr>\
+                    <th class="formTitle" style="width: auto;">设备运行状态</th>\
+                    <td class="formValue input-group">\
+                        <div class="ckbox">\
+                            <input id="F_Value11" name="F_Value11" type="checkbox">\
+                            <label for="F_Value11">正常</label>\
+                        </div>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;">细菌内毒素检测(≤0.25EU/mL)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value12" name="F_Value12" type="number" class="form-control" />\
+                        <span class="input-group-addon">EU/mL</span>\
+                    </td>\
+                </tr>\
+                <tr>\
+                    <th class="formTitle" style="width: auto;">微生物检测结果(≤100CFU/mL)</th>\
+                    <td class="formValue input-group">\
+                        <input id="F_Value13" name="F_Value13" type="number" class="form-control" />\
+                        <span class="input-group-addon">FU/mL</span>\
+                    </td>\
+                    <th class="formTitle" style="width: auto;">化学消毒</th>\
+                    <td class="formValue input-group">\
+                        <div class="ckbox">\
+                            <input id="F_Value14" name="F_Value14" type="checkbox">\
+                            <label for="F_Value14">无残留</label>\
+                        </div>\
+                    </td>\
+                </tr>\
+            </table>\
+            <table class="form">\
+                <tr>\
+                    <th class="formTitle" style="width: 40px;padding-top: 5px;">\
+                        备注\
+                    </th>\
+                    <td class="formValue">\
+                        <textarea id="F_Memo" name="F_Memo" class="form-control" style="height: 80px;"></textarea>\
+                    </td>\
+                </tr>\
+            </table>\
+            ';
+   
+    $(function () {
+        var datenow = new Date().Format('yyyy-MM-dd');
+        $("#txt_RecordDate").val(datenow);
+        $("div .mail-body").html(briefHtml);
+        $("div .mail-body").css({ "height": $(window).height() - 110 });
+        $("#time_horizon a.btn-default").click(function () {
+            $("#time_horizon a.btn-default").removeClass("active");
+            $(this).addClass("active");
+            var chooseId = $("#time_horizon a.active").attr('data-value');
+            if (chooseId === '1') {
+                $("div .mail-body").html(briefHtml);
+            } else {
+                $("div .mail-body").html(observationHtml);
+            }
+            selectID = '';
+            $('#btn_search').trigger("click");
+        });
+        $("#btn_search").click(function () {
+            var recordDate = $("#txt_RecordDate").val();
+            if (recordDate === '' || recordDate == null) recordDate = new Date().Format('yyyy-MM-dd');
+            var chooseId = $("#time_horizon a.active").attr('data-value');
+            var url = '';
+            if (chooseId === '1') {
+                url = '/MachineManage/WaterMMonitor/GetBriefFormByDateJson';
+            } else {
+                url = '/MachineManage/WaterMMonitor/GetObservationFormByDateJson';
+            }
+            $.ajax({
+                url: url,
+                data: { recordDate: recordDate },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                    selectID = data.F_Id == null ? '' : data.F_Id;
+                    if (!!data.F_CheckPerson) {
+                        $("span.badge").html('已签名');
+                    } else {
+                        $("span.badge").html('');
+                    }
+                    currentRecord = data;
+                }
+            });
+        });
+        $('#btn_search').trigger("click");
+    })
+
+    function recordDateChange() {
+        $("#btn_search").trigger('click');
+    }
+
+    Date.prototype.Format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+    function btn_delete() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.deleteForm({
+                url: "/MachineManage/WaterMLog/DeleteForm",
+                param: { keyValue: keyValue },
+                success: function () {
+                    $.currentWindow().$("#gridList").trigger("reloadGrid");
+                }
+            })
+            selectID = "";
+            $('#form1').find("input[type='text']").each(function () {
+                $(this).val("");
+            });
+            $('#form1').find("input[type='number']").each(function () {
+                $(this).val("");
+            });
+            $('#form1').find("input[type='checkbox']").each(function () {
+                $(this).prop('checked', false);
+            });
+        }
+    }
+
+    function btn_save() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+
+        if (!!selectID) {
+            if (currentRecord != null) {
+                if (!!currentRecord.F_CheckPerson) {
+                    $.modalMsg("注：该项记录【已提交】！");
+                    return false;
+                }
+            }
+        }
+
+        var chooseId = $("#time_horizon a.active").attr('data-value');
+        var url = '';
+        if (chooseId === '1') {
+            url = '/MachineManage/WaterMMonitor/SubmitBriefForm';
+        } else {
+            url = '/MachineManage/WaterMMonitor/SubmitObservationForm';
+        }
+        var recordDate = $("#txt_RecordDate").val();
+        if (recordDate === '' || recordDate == null) recordDate = new Date().Format('yyyy-MM-dd');
+        var postdata = $("#form1").formSerialize();
+        postdata['F_RecordDate'] = recordDate;
+        $.submitForm({
+            url: url,
+            param: {
+                entity: postdata,
+                keyValue: selectID
+            },
+            success: function() {
+                $("#btn_search").trigger('click');
+            }
+        });
+    }
+
+    function btn_checked() {
+        if (currentRecord != null) {
+            if (!!currentRecord.F_CheckPerson) {
+                $.modalMsg("注：该项记录【已提交】！");
+                return false;
+            } else {
+                if (!!selectID) {
+                    $.modalConfirm("注：您确定要【提交】该项记录吗？", function (r) {
+                        if (r) {
+                            var url = '';
+                            var chooseId = $("#time_horizon a.active").attr('data-value');
+                            if (chooseId === '1') {
+                                url = '/MachineManage/WaterMMonitor/SignBriefForm';
+                            } else {
+                                url = '/MachineManage/WaterMMonitor/SignObservationForm';
+                            }
+                            $.submitForm({
+                                url: url,
+                                param: { keyValue: selectID },
+                                success: function () {
+                                    $("#btn_search").trigger('click');
+                                }
+                            })
+                        }
+                    });
+                }
+            }
+        }
+    }
+    function btn_download() {
+        var keyValue = $("#txt_RecordDate").val();
+        $.download("/MachineManage/WaterMMonitor/Download", "keyValue=" + keyValue, 'post');
+    }
+</script>
+
+<div class="rows" style="margin-bottom: 1%; overflow: hidden;">
+    <div style="position: absolute; top: 20px; right: 260px;">
+        <span class="badge" style="background-color: forestgreen;"></span>
+    </div>
+    <div class="topPanel" style="border: none; background: none;">
+        <div class="toolbar">
+            <div class="btn-group">
+                <a id="NF-save" authorize="yes" class="btn btn-primary" onclick="btn_save()"><i class="fa fa-save"></i>保存</a>
+            </div>
+            <div class="btn-group">
+                <a id="NF-checked" authorize="yes" class="btn btn-warning" onclick="btn_checked()"><i class="fa fa-play-circle"></i>签名</a>
+            </div>
+            <div class="btn-group">
+                <a id="NF-download" class="btn btn-default" authorize="yes" onclick="btn_download()"><i class="fa fa-cloud-download"></i>下载</a>
+            </div>
+
+            @*<script>$('.toolbar').authorizeButton()</script>*@
+        </div>
+        <div class="search">
+            <table>
+                <tr>
+                    <td style="padding-left: 10px;">
+                        <div id="time_horizon" class="btn-group">
+                            <a class="btn btn-default active" data-value="1">记录表（一）</a>
+                            <a class="btn btn-default" data-value="2">记录表（二）</a>
+                        </div>
+                    </td>
+                    <td style="padding-left: 2px;">
+                        <div class="input-group">
+                            <input id="txt_RecordDate" autocomplete="off" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd', onpicked: recordDateChange })" placeholder="登记日期" style="width: 120px;">
+                            <span class="input-group-btn">
+                                <button id="btn_search" type="button" class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="gridPanel">
+        <form id="form1">
+            <div class="mail-box">
+                <div class="mail-body" style="overflow-y: auto;">
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,197 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+
+<script>
+    $(function () {
+        gridList();
+    })
+    function gridList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            url: "/PatientManage/QualityItem/GetGridJson",
+            height: $(window).height() - 128,
+            colModel: [
+                { label: '主键', name: 'F_Id', hidden: true },
+                { label: '代码', name: 'F_ItemCode', width: 80, align: 'left' },
+                { label: '名称', name: 'F_ItemName', width: 200, align: 'left' },
+                { label: 'His对照码', name: 'F_HisItemCode', width: 80, align: 'left' },
+                { label: '单位', name: 'F_Unit', width: 100, align: 'left' },
+                { label: '参考下限', name: 'F_LowerValue', width: 100, align: 'left' },
+                { label: '参考上限', name: 'F_UpperValue', width: 100, align: 'left' },
+                { label: '危急值下限', name: 'F_LowerCriticalValue', width: 100, align: 'left' },
+                { label: '危急值上限', name: 'F_UpperCriticalValue', width: 100, align: 'left' },
+                {
+                    label: "状态", name: "F_EnabledMark", width: 60, align: "center",
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue == 1) {
+                            return '<span class=\"label label-success\">正常</span>';
+                        } else if (cellvalue == 0) {
+                            return '<span class=\"label label-default\">禁用</span>';
+                        }
+                    }
+                },
+                { label: '类别', name: 'F_ItemType', width: 80, align: 'left' },
+                { label: '排序号', name: 'F_OrderNo', width: 80, align: 'left' },
+                { label: '备注', name: 'F_Memo', width: 300, align: 'left' },
+                {
+                    label: '最后修改日期', name: 'F_LastModifyTime', width: 80, align: 'left',
+                    formatter: "date", formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d' }
+                }
+            ],
+            pager: "#gridPager",
+            sortname: 'F_OrderNo asc',
+            viewrecords: true
+        });
+
+        $("#time_horizon a.btn-default").click(function () {
+            $("#time_horizon a.btn-default").removeClass("active");
+            $(this).addClass("active");
+            $('#btn_search').trigger("click");
+        });
+        $("#btn_search").click(function () {
+            var timeType = $("#time_horizon a.active").attr('data-value');
+            var queryJson = {
+                keyword: $("#txt_keyword").val(),
+                timeType: $("#time_horizon a.active").attr('data-value'),
+            }
+            $gridList.jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson) },
+            }).trigger('reloadGrid');
+        });
+
+        $("#btn_search").click(function () {
+            $gridList.jqGrid('setGridParam', {
+                postData: { keyword: $("txt_keyword").val() },
+            }).trigger('reloadGrid');
+        });
+    }
+    function btn_add() {
+        $.modalOpen({
+            id: "Form",
+            title: "新增",
+            url: "/PatientManage/QualityItem/Form",
+            width: "800px",
+            height: "600px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });    
+    }
+    function btn_edit() {
+        var keyValue  = $("#gridList").jqGridRowValue().F_Id;
+        $.modalOpen({
+            id: "Form",
+            title: "修改",
+            url: "/PatientManage/QualityItem/Form?keyValue=" + keyValue,
+            width: "800px",
+            height: "600px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+    function btn_delete() {
+        $.deleteForm({
+            url: "/PatientManage/QualityItem/DeleteForm",
+            param: { keyValue: $("#gridList").jqGridRowValue().F_Id },
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+    function btn_details() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        $.modalOpen({
+            id: "Details",
+            title: "查看",
+            url: "/PatientManage/QualityItem/Details?keyValue=" + keyValue,
+            width: "800px",
+            height: "600px",
+            btn: null,
+        });
+    }
+
+    function btn_disabled() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        $.modalConfirm("注：您确定要【停用】该项吗？", function (r) {
+            if (r) {
+                $.submitForm({
+                    url: "/PatientManage/QualityItem/DisableForm",
+                    param: { keyValue: keyValue },
+                    success: function () {
+                        $.currentWindow().$("#gridList").trigger("reloadGrid");
+                    }
+                })
+            }
+        });
+    }
+    function btn_enabled() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        $.modalConfirm("注：您确定要【启用】该项吗？", function (r) {
+            if (r) {
+                $.submitForm({
+                    url: "/PatientManage/QualityItem/EnabledForm",
+                    param: { keyValue: keyValue },
+                    success: function () {
+                        $.currentWindow().$("#gridList").trigger("reloadGrid");
+                    }
+                })
+            }
+        });
+    }
+</script>
+
+<div class="topPanel">
+    <div class="toolbar">
+        <div class="btn-group">
+            <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
+        <div class="btn-group">
+            <a id="NF-add" authorize="yes" class="btn btn-primary dropdown-text" onclick="btn_add()"><i class="fa fa-plus"></i>新建</a>
+        </div>
+        <div class="operate">
+            <ul class="nav nav-pills">
+                <li class="first">已选中<span>1</span>项</li>
+                <li><a id="NF-edit" authorize="yes" onclick="btn_edit()"><i class="fa fa-pencil-square-o"></i>修改</a></li>
+                <li><a id="NF-delete" authorize="yes" onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除</a></li>
+                <li><a id="NF-Details" authorize="yes" onclick="btn_details()"><i class="fa fa-search-plus"></i>查看</a></li>
+            </ul>
+            <a href="javascript:;" class="close"></a>
+        </div>
+        <script>$('.toolbar').authorizeButton()</script>
+    </div>
+    <div class="search">
+        <table>
+            <tr>
+                <td>
+                    <div class="input-group">
+                        <input id="txt_keyword" type="text" class="form-control" placeholder="代码/名称" style="width: 200px;">
+                        <span class="input-group-btn">
+                            <button id="btn_search" type="button" class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </td>
+                <td style="padding-left: 10px;">
+                    <div id="time_horizon" class="btn-group">
+                        <a class="btn btn-default active" data-value="">全部</a>
+                        <a class="btn btn-default" data-value="临检">临检</a>
+                        <a class="btn btn-default" data-value="生化">生化</a>
+                        <a class="btn btn-default" data-value="免疫">免疫</a>
+                        <a class="btn btn-default" data-value="分子发光">分子发光</a>
+                        <a class="btn btn-default" data-value="微生物">微生物</a>
+                        <a class="btn btn-default" data-value="其他">其他</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridList"></table>
+    <div id="gridPager"></div>
+</div>

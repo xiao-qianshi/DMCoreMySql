@@ -1,0 +1,153 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyword");
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+        }
+    });
+    function initControl() {
+        var statusArr = [
+            { id: '转入', text: '转入' },
+            { id: '转出', text: '转出' },
+            { id: '退出', text: '退出' },
+            { id: '短期', text: '短期' }
+        ]
+        var exitArr = [
+            { id: '好转脱离透析', text: '好转脱离透析' },
+            { id: '肾移植', text: '肾移植' },
+            { id: '转为腹膜透析', text: '转为腹膜透析' },
+            { id: '放弃治疗', text: '放弃治疗' },
+            { id: '死亡', text: '死亡' },
+            { id: '其它', text: '其它' }
+        ]
+        $("#F_Status").bindSelect({
+            data: statusArr,
+            change: function (e) {
+                var tr1html = '\
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">\
+                            转出机构\
+                        </th>\
+                        <td class="formValue" colspan="3">\
+                            <textarea id="F_LocationOut" name="F_LocationOut" class="form-control required" style="height: 40px; width :430px"></textarea>\
+                        </td>\
+                        ';
+                var tr2html = '\
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">\
+                            转出原因\
+                        </th>\
+                        <td class="formValue" colspan="3">\
+                            <textarea id="F_TransferReason" name="F_TransferReason" class="form-control required" style="height: 60px; width :430px"></textarea>\
+                        </td>\
+                        ';
+                var tr3html = '\
+                        <th class="formTitle">退出类别</th>\
+                        <td class="formValue">\
+                            <select id="F_ExitType" name="F_ExitType" class="form-control required"></select>\
+                        </td>\
+                        ';
+                var tr4html = '\
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">\
+                        退出原因\
+                        </th>\
+                        <td class="formValue" colspan="3">\
+                        <textarea id="F_ExitReason" name="F_ExitReason" class="form-control required" style="height: 60px; width :430px"></textarea>\
+                        </td>\
+                        ';
+                switch (e.id) {
+                    case '转入':
+                        $("#tr3,#tr4,#tr2").empty().html('');
+                        $("#tr1").html(tr1html);
+                        //$("#tr2").html(tr2html);
+                        break;
+                    case '转出':
+                        $("#tr1,#tr3,#tr4").empty().html('');
+                        //$("").html(tr1html);
+                        $("#tr2").html(tr2html);
+                        break;
+                    case '退出':
+                        $("#tr1,#tr2").empty().html('');
+                        $("#tr3").html(tr3html);
+                        $("#tr4").html(tr4html);
+                        $("#F_ExitType").bindSelect({
+                            data: exitArr,
+                            change: function (e) {
+                                //console.log(e);
+                            }
+                        });
+                        break;
+                    case '短期':
+                        $("#tr1,#tr2,#tr3,#tr4").empty().html('');
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+    }
+
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        var postData = $("#form1").formSerialize();
+        //postData["F_Pid"] = keyValue;
+        if (!!keyValue) {
+            $.submitForm({
+                url: "/PatientManage/Patient/SubmitTransfer",
+                param: {
+                    entity: postData,
+                    keyValue: keyValue
+                },
+                success: function () {
+                    $.currentWindow().settransfer();
+                    $.loading(false);
+                }
+            }) 
+        } 
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">日期</th>
+                <td class="formValue">
+                    <input id="F_TransferDate" name="F_TransferDate" class="form-control input-wdatepicker required" onfocus="WdatePicker()" autocomplete="off" />
+                </td>
+                <th class="formTitle">变更类别</th>
+                <td class="formValue">
+                    <select id="F_Status" name="F_Status" class="form-control required"></select>
+                </td>
+            </tr>
+            <tr id="tr1">
+                <th class="formTitle" valign="top" style="padding-top: 5px;">
+                    转出机构
+                </th>
+                <td class="formValue" colspan="3">
+                    <textarea id="F_LocationOut" name="F_LocationOut" class="form-control" style="height: 40px; width :430px"></textarea>
+                </td>
+            </tr>
+            <tr id="tr2">
+            </tr>
+            <tr id="tr3">
+            </tr>
+            <tr id="tr4">
+            </tr>
+            <tr>
+                <th class="formTitle" valign="top" style="padding-top: 5px;">
+                    备注
+                </th>
+                <td class="formValue" colspan="3">
+                    <textarea id="F_Memo" name="F_Memo" class="form-control" style="height: 60px; width :430px"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>
+
+
+

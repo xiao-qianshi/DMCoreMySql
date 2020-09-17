@@ -1,0 +1,150 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        $.ajax({
+            url: "/LabLis/LabItem/GetFormJson",
+            data: { keyValue: keyValue },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                $("#form1").formSerialize(data);
+                $("#form1").find('.form-control,select,input').attr('readonly', 'readonly');
+                $("#form1").find('div.ckbox label').attr('for', '');
+            }
+        });
+    });
+    function initControl() {
+        $("#F_SampleType").bindSelect();
+        $("#F_Container").bindSelect();
+        $("#F_Type").bindSelect();
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+            <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">扩展信息</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">代码</th>
+                        <td class="formValue">
+                            <input id="F_Code" name="F_Code" type="text" class="form-control required" placeholder="请输入项目代码" autocomplete="off" />
+                        </td>
+                        <th class="formTitle">名称</th>
+                        <td class="formValue">
+                            <input id="F_Name" name="F_Name" type="text" class="form-control required" placeholder="请输入项目名称" autocomplete="off" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">英文名</th>
+                        <td class="formValue">
+                            <input id="F_EnName" name="F_EnName" type="text" class="form-control" placeholder="请输入项目英文名" autocomplete="off" />
+                        </td>
+                        <th class="formTitle">简称</th>
+                        <td class="formValue">
+                            <input id="F_ShortName" name="F_ShortName" type="text" class="form-control required" placeholder="请输入项目简称" autocomplete="off" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">样本类型</th>
+                        <td class="formValue">
+                            <select id="F_SampleType" name="F_SampleType" type="text" class="form-control required" placeholder="抗凝全血">
+                                <option value="">请选择样本类型</option>
+                                <option value="抗凝全血">抗凝全血</option>
+                                <option value="血浆">血浆</option>
+                                <option value="全血">全血</option>
+                                <option value="血清">血清</option>
+                                <option value="动脉全血">动脉全血</option>
+                                <option value="EDTA抗凝全血">EDTA抗凝全血</option>
+                                <option value="粪便">粪便</option>
+                                <option value="尿液">尿液</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">采样容器</th>
+                        <td class="formValue">
+                            <select id="F_Container" name="F_Container" type="text" class="form-control required" placeholder="红头管">
+                                <option value="">请选择采样容器</option>
+                                <option value="红头管">红头管</option>
+                                <option value="紫头管">紫头管</option>
+                                <option value="绿头管">绿头管</option>
+                                <option value="黑头管">黑头管</option>
+                                <option value="粪便盒">粪便盒</option>
+                                <option value="尿杯">尿杯</option>
+                                <option value="无菌杯">无菌杯</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">类型</th>
+                        <td class="formValue">
+                            <select id="F_Type" name="F_Type" type="text" class="form-control required">
+                                <option value="临检">临检</option>
+                                <option value="生化">生化</option>
+                                <option value="免疫">免疫</option>
+                                <option value="分子发光">分子发光</option>
+                                <option value="微生物">微生物</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">编号</th>
+                        <td class="formValue">
+                            <table class="form">
+                                <tr>
+                                    @*<th class="formTitle"></th>*@
+                                    <td class="formValue">
+                                        <input id="F_CuvetteNo" name="F_CuvetteNo" type="number" class="form-control required" style="min-width: 80px;" placeholder="合管编号" autocomplete="off" />
+                                    </td>
+                                    <td class="formValue">
+                                        <input id="F_Sorter" name="F_Sorter" type="number" class="form-control" style="min-width: 80px;" placeholder="排序号" autocomplete="off" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle" style="height: 35px;">选项</th>
+                        <td class="formValue" style="padding-top: 10px;">
+                            <div class="ckbox">
+                                <input id="F_IsExternal" name="F_IsExternal" type="checkbox" checked><label for="F_IsExternal">是否外送项目</label>
+                            </div>
+                            <input id="F_ThirdPartyCode" name="F_ThirdPartyCode" type="text" class="form-control" placeholder="输入迪安(金域)项目代码" style="width: 250px;" autocomplete="off" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" style="height: 35px;"></th>
+                        <td class="formValue" style="padding-top: 10px;">
+                            <div class="input-group">
+                                <div class="ckbox">
+                                    <input id="F_IsPeriodic" name="F_IsPeriodic" type="checkbox"><label for="F_IsPeriodic">是否定期项目</label>
+                                </div>
+                                <input id="F_TimeInterval" name="F_TimeInterval" type="number" class="form-control" placeholder="检验周期(天)" style="width: 250px;" autocomplete="off" />
+                                @*<span class="input-group">天</span>*@
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">备注</th>
+                        <td class="formValue" colspan="3">
+                            <textarea id="F_Memo" name="F_Memo" class="form-control" style="height: 80px; width :95%" placeholder="填写检验注意事项" autocomplete="off"></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend">
+
+            </div>
+        </div>
+    </div>
+</form>

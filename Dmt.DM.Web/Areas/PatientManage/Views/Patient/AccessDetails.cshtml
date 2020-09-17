@@ -1,0 +1,145 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<link href="~/Content/js/fileinput/fileinput.min.css" media="all" rel="stylesheet" type="text/css"/>
+<link href="~/Content/js/fileinput/fontawesome.css" media="all" rel="stylesheet" type="text/css"/>
+<script src="~/Content/js/fileinput/sortable.min.js"></script>
+<script src="~/Content/js/fileinput/fileinput.min.js"></script>
+<script src="~/Content/js/fileinput/zh.js"></script>
+<script src="~/Content/js/fileinput/theme.min.js"></script>
+<script>
+    var keyValue = $.request("keyValue");
+    var initialPreviewPics = [];
+    var initialPreviewConfigPics = [];
+    getinitdata();
+    $(function () {  
+        //$.ajax({
+        //    url: "/PatientManage/Patient/GetPics",
+        //    data: { keyValue: keyValue },
+        //    dataType: "json",
+        //    async: false,
+        //    success: function (data) {
+        //        $("#file-1").initialPreview =
+        //            [
+        //                "\\pic\\upload\\01\\TIM图片1.png",
+        //                "\\pic\\upload\\01\\TIM图片2.jpg",
+        //                "\\pic\\upload\\01\\TIM图片3.png"
+        //            ];
+        //        $("#file-1").initialPreviewConfig =
+        //            [
+        //            { caption: "transport-1.jpg", size: 329892, width: "120px", url: "{$url}", key: 1 },
+        //            { caption: "transport-2.jpg", size: 872378, width: "120px", url: "{$url}", key: 2 },
+        //            { caption: "transport-3.jpg", size: 632762, width: "120px", url: "{$url}", key: 3 }
+        //            ];
+        //    }
+        //});
+    });
+
+    function getinitdata() {
+        $.ajax({
+            url: "/PatientManage/Patient/GetPics",
+            data: { keyValue: keyValue },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                initialPreviewPics = data.initialPreview;
+                initialPreviewConfigPics = data.initialPreviewConfig;
+                //$("#file-1").initialPreview =
+                //    [
+                //        "\\pic\\upload\\01\\TIM图片1.png",
+                //        "\\pic\\upload\\01\\TIM图片2.jpg",
+                //        "\\pic\\upload\\01\\TIM图片3.png"
+                //    ];
+                //$("#file-1").initialPreviewConfig =
+                //    [
+                //        { caption: "transport-1.jpg", size: 329892, width: "120px", url: "{$url}", key: 1 },
+                //        { caption: "transport-2.jpg", size: 872378, width: "120px", url: "{$url}", key: 2 },
+                //        { caption: "transport-3.jpg", size: 632762, width: "120px", url: "{$url}", key: 3 }
+                //    ];
+            }
+        });
+    }
+
+    function deletepic(filename) {
+        $.ajax({
+            type: 'POST',
+            url: "/PatientManage/Patient/DeletePic",
+            data: { pid: keyValue, filename: filename },
+            dataType: "json",
+            async: false
+        })
+    }
+
+</script>
+
+<div class="container">
+    <form enctype="multipart/form-data" style="width:790px;margin:4px 4px 4px 4px">
+        <div class="form-group">
+            <div class="file-loading">
+                <input type="file" class="file" id="file-1" multiple data-theme="fas">
+            </div>
+            <div id="errorBlock" class="help-block"></div>
+        </div>
+        <hr>
+    </form>
+</div>
+
+<script>
+
+    $("#file-1").fileinput({
+        theme: 'fas',
+        language: 'zh',
+        uploadUrl: '/PatientManage/Patient/SaveAs',
+        showRemove: true,
+        //initialPreviewShowDelete: false,
+        //deleteUrl: '/PatientManage/Patient/DeletePic',
+        browseClass: "btn btn-primary btn-lg",
+        allowedFileExtensions: ['jpg', 'png', 'gif'],
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        overwriteInitial: false,
+        maxFileSize: 3000,
+        maxFilesNum: 10,
+        allowedFileTypes: ['image', 'video', 'flash'],
+        initialPreviewAsData: true,
+        initialPreview: initialPreviewPics
+        //[
+        //"\\pic\\upload\\01\\TIM图片1.png",
+        //"\\pic\\upload\\01\\TIM图片2.jpg",
+        //"\\pic\\upload\\01\\TIM图片3.png"
+        //]
+        ,
+        initialPreviewConfig: initialPreviewConfigPics
+        //[
+        //{ caption: "transport-1.jpg", size: 329892, width: "120px", url: "{$url}", key: 1 },
+        //{ caption: "transport-2.jpg", size: 872378, width: "120px", url: "{$url}", key: 2 },
+        //{ caption: "transport-3.jpg", size: 632762, width: "120px", url: "{$url}", key: 3 }
+        //]
+        ,
+        slugCallback: function (filename) {
+            return filename.replace('(', '_').replace(']', '_');
+        }
+    });
+
+    $("#file-1").on('filepredelete', function (event, key, jqXHR, data) {
+        console.log(key);
+        console.log(jqXHR);
+        console.log(data);
+    });
+    $("#file-1").on('filedeleted', function (event, key, jqXHR, data) {
+        console.log(key);
+        console.log(jqXHR);
+        console.log(data);
+    });
+    $("#file-1").on('filebeforedelete', function (event, key, data) {
+        console.log(key);
+        console.log(data);
+    });
+    $("#file-1").on('filesuccessremove', function (event, previewId, extra) {
+        //在移除事件里取出所需数据，并执行相应的删除指令
+        deletepic($("#" + previewId)[0].innerText);
+    });
+
+</script>
+

@@ -1,0 +1,308 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        $.ajax({
+            url: "/PatientManage/Patient/GetFormJson",
+            data: { keyValue: keyValue },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                $("#form1").formSerialize(data);
+                $("#form1").find('.form-control,select,input').attr('readonly', 'readonly');
+                $("#form1").find('div.ckbox label').attr('for', '');
+            }
+        });
+    });
+    function initControl() {
+        $("#F_Gender").bindSelect()
+        $("#F_Trasfer").bindSelect()
+        $("#F_EnabledMark").bindSelect()
+        $("#F_MaritalStatus").bindSelect();
+        $("#F_BloodAbo").bindSelect();
+        $("#F_BloodRh").bindSelect();
+        $("#F_EnabledMark").bindSelect();
+        $("#F_Tp").bindSelect();
+        $("#F_Hiv").bindSelect();
+        $("#F_HBsAg").bindSelect();
+        $("#F_HBsAb").bindSelect();
+        $("#F_HBcAb").bindSelect();
+        $("#F_HBeAg").bindSelect();
+        $("#F_HBeAb").bindSelect();
+        $("#F_HCVAb").bindSelect();
+        $("#F_InsuranceType").bindSelect();  
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+            <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">扩展信息</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">透析号</th>
+                        <td class="formValue">
+                            <input id="F_DialysisNo" name="F_DialysisNo" type="text" class="form-control required" placeholder="请输入透析号" />
+                        </td>
+                        <th class="formTitle">病历号</th>
+                        <td class="formValue">
+                            <input id="F_RecordNo" name="F_RecordNo" type="text" class="form-control required" placeholder="请输入病历号" />
+                        </td>
+                        <th class="formTitle">姓名</th>
+                        <td class="formValue">
+                            <input id="F_Name" name="F_Name" type="text" class="form-control required" placeholder="请输入姓名" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">出生日期</th>
+                        <td class="formValue">
+                            <input id="F_BirthDay" name="F_BirthDay" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker()" autocomplete="off"/>
+                        </td>
+                        <th class="formTitle">性别</th>
+                        <td class="formValue">
+                            <select id="F_Gender" name="F_Gender" class="form-control required">
+                                <option value="男">男</option>
+                                <option value="女">女</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">婚姻</th>
+                        <td class="formValue">
+                            <select id="F_MaritalStatus" name="F_MaritalStatus" class="form-control required">
+                                <option value="已婚">已婚</option>
+                                <option value="未婚">未婚</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">身份证号</th>
+                        <td class="formValue">
+                            <input id="F_IdNo" name="F_IdNo" type="text" class="form-control" />
+                        </td>
+                        <th class="formTitle">His就诊号</th>
+                        <td class="formValue">
+                            <input id="F_PatientNo" name="F_PatientNo" type="text" class="form-control" />
+                        </td>
+                        <th class="formTitle">卡号</th>
+                        <td class="formValue">
+                            <input id="F_CardNo" name="F_CardNo" type="text" class="form-control" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">医疗保险</th>
+                        <td class="formValue">
+                            <select id="F_InsuranceType" name="F_InsuranceType" type="text" class="form-control">
+                                <option value="职工医保">职工医保</option>
+                                <option value="居民医保">居民医保</option>
+                                <option value="省医保">省医保</option>
+                                <option value="农合">农合</option>
+                                <option value="自费">自费</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">联系人</th>
+                        <td class="formValue">
+                            <input id="F_Contacts" name="F_Contacts" type="text" class="form-control" />
+                        </td>
+                        <th class="formTitle">联系电话</th>
+                        <td class="formValue">
+                            <input id="F_PhoneNo" name="F_PhoneNo" type="text" class="form-control" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">其他联系人</th>
+                        <td class="formValue">
+                            <input id="F_Contacts2" name="F_Contacts2" type="text" class="form-control" />
+                        </td>
+                        <th class="formTitle">联系电话</th>
+                        <td class="formValue">
+                            <input id="F_PhoneNo2" name="F_PhoneNo2" type="text" class="form-control" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            住址
+                        </th>
+                        <td class="formValue" colspan="3">
+                            <textarea id="F_Address" name="F_Address" class="form-control" style="height: 40px; width :630px"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            原发病
+                        </th>
+                        <td class="formValue" colspan="3">
+                            <textarea id="F_PrimaryDisease" name="F_PrimaryDisease" class="form-control" style="height: 40px; width :630px"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            诊断
+                        </th>
+                        <td class="formValue" colspan="3">
+                            <textarea id="F_Diagnosis" name="F_Diagnosis" class="form-control" style="height: 40px; width :630px"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">首透日期</th>
+                        <td class="formValue">
+                            <input id="F_DialysisStartTime" name="F_DialysisStartTime" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker()" autocomplete="off"/>
+                        </td>
+                        <th class="formTitle">是否启用</th>
+                        <td class="formValue">
+                            <select id="F_EnabledMark" name="F_EnabledMark" class="form-control">
+                                <option value="true">是</option>
+                                <option value="false">否</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">转归</th>
+                        <td class="formValue">
+                            <select id="F_Trasfer" name="F_Trasfer" class="form-control">
+                                <option value="本院血液透析">本院血液透析</option>
+                                <option value="转腹膜透析">转腹膜透析</option>
+                                <option value="转外院透析">转外院透析</option>
+                                <option value="脱离透析">脱离透析</option>
+                                <option value="肾移植">肾移植</option>
+                                <option value="死亡">死亡</option>
+                                <option value="其它">其它</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">干体重</th>
+                        <td class="formValue input-group">
+                            <input id="F_IdealWeight" name="F_IdealWeight" type="number" class="form-control" placeholder="干体重" />
+                            <span class="input-group-addon">Kg</span>
+                        </td>
+                        <th class="formTitle">身高</th>
+                        <td class="formValue input-group">
+                            <input id="F_Height" name="F_Height" type="number" class="form-control" placeholder="体重" />
+                            <span class="input-group-addon">cm</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">血型 ABO</th>
+                        <td class="formValue">
+                            <select id="F_BloodAbo" name="F_BloodAbo" type="text" class="form-control">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="O">O</option>
+                                <option value="AB">AB</option>
+                                <option value="">未知</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">Rh</th>
+                        <td class="formValue">
+                            <select id="F_BloodRh" name="F_BloodRh" type="text" class="form-control">
+                                <option value="+">(+)</option>
+                                <option value="-">(-)</option>
+                                <option value="">未知</option>
+                            </select>
+                        </td>
+                        <td />
+                        <td />
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">乙肝 HBsAg</th>
+                        <td class="formValue">
+                            <select id="F_HBsAg" name="F_HBsAg" type="text" class="form-control">
+                                <option value="+">(+)</option>
+                                <option value="-">(-)</option>
+                                <option value="">未知</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">HBsAb</th>
+                        <td class="formValue">
+                            <select id="F_HBsAb" name="F_HBsAb" type="text" class="form-control">
+                                <option value="+">(+)</option>
+                                <option value="-">(-)</option>
+                                <option value="">未知</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">HBcAb</th>
+                        <td class="formValue">
+                            <select id="F_HBcAb" name="F_HBcAb" type="text" class="form-control">
+                                <option value="+">(+)</option>
+                                <option value="-">(-)</option>
+                                <option value="">未知</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">HBeAg</th>
+                        <td class="formValue">
+                            <select id="F_HBeAg" name="F_HBeAg" type="text" class="form-control">
+                                <option value="+">(+)</option>
+                                <option value="-">(-)</option>
+                                <option value="">未知</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">HBeAb</th>
+                        <td class="formValue">
+                            <select id="F_HBeAb" name="F_HBeAb" type="text" class="form-control">
+                                <option value="+">(+)</option>
+                                <option value="-">(-)</option>
+                                <option value="">未知</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">丙肝</th>
+                        <td class="formValue">
+                            <select id="F_HCVAb" name="F_HCVAb" type="text" class="form-control">
+                                <option value="+" style="color:brown">(+)</option>
+                                <option value="-">(-)</option>
+                                <option value="">未知</option>
+                            </select>
+                        </td>
+                        <td />
+                        <td />
+                        <td />
+                    </tr>
+                    <tr>
+                        <th class="formTitle">HIV</th>
+                        <td class="formValue">
+                            <select id="F_Hiv" name="F_Hiv" type="text" class="form-control">
+                                <option value="+">(+)</option>
+                                <option value="-">(-)</option>
+                                <option value="">未知</option>
+                            </select>
+                        </td>
+                        <td />
+                        <td />
+                        <td />
+                    </tr>
+                    <tr>
+                        <th class="formTitle">梅毒</th>
+                        <td class="formValue">
+                            <select id="F_Tp" name="F_Tp" type="text" class="form-control">
+                                <option value="+">(+)</option>
+                                <option value="-">(-)</option>
+                                <option value="">未知</option>
+                            </select>
+                        </td>
+                        <td />
+                        <td />
+                        <td />
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend2">
+
+            </div>
+        </div>
+    </div>
+</form>

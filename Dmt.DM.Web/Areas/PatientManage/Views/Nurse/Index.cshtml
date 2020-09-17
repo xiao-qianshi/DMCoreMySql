@@ -1,0 +1,252 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+<script src="~/Content/js/datepicker/WdatePicker.js"></script>
+<script type="text/javascript">
+    var currentPID = '';
+    $(function () {
+        initControl();
+        gridList();
+    });
+    function initControl() {
+        $.ajax({
+            url: "/PatientManage/Patient/GetSelectJson",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                var tags = [];
+                var first = {};
+                first.id = "";
+                first.text = "";
+                tags.push(first);
+                $.each(data,
+                    function (index, item) {
+                        var obj = {};
+                        obj.id = item.id;
+                        obj.text = item.name + "(No." + item.recordNo + ")" + item.py;
+                        tags.push(obj);
+                    }
+                );
+                $("#F_ParentId").bindSelect({
+                    search: true,
+                    data: tags
+                });
+            }
+        });
+
+        $("#btn_search").click(function () {
+            var postData = {};
+            var pid = $("#F_ParentId").val();
+            if (!!pid) {
+                postData.pid = pid;
+                var startDate = $("#startDate").val();
+                if (!!startDate) {
+                    postData.startDate = startDate;
+                }
+                var endDate = $("#endDate").val();
+                if (!!endDate) {
+                    postData.endDate = endDate;
+                }
+                $("#gridList").jqGrid('setGridParam',
+                    {
+                        url: "/PatientManage/Nurse/GetGridJson",
+                        postData: postData
+                    }).trigger('reloadGrid');
+            }
+        });
+    }
+
+    function gridList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            height: $(window).height() - 135,
+            colModel: [
+                { label: "主键", name: "F_Id", hidden: true, key: true },
+                {
+                    label: '时间', name: 'F_NurseOperatorTime', width: 120, align: 'left',
+                    formatter: "time", formatoptions: { srcformat: 'Y-m-d h:m:s', newformat: 'Y-m-d h:m' }
+                },
+                {
+                    label: '机温', name: 'F_T', width: 35, align: 'center'
+                },
+                {
+                    label: '收缩压', name: 'F_SSY', width: 60, align: 'center', hidden: true
+                },
+                {
+                    label: '舒张压', name: 'F_SZY', width: 60, align: 'center', hidden: true
+                },
+                {
+                    label: '血压', name: 'pressure', width: 100, align: 'center',
+                    formatter: function (cellvalue, options, rowObject) {
+                        return rowObject.F_SSY + ' / ' + rowObject.F_SZY;
+                    }
+                },
+                {
+                    label: '脉搏', name: 'F_HR', width: 50, align: 'center'
+                },
+                {
+                    label: '血流速', name: 'F_BF', width: 60, align: 'center'
+                },
+                {
+                    label: '动脉压', name: 'F_A', width: 60, align: 'center'
+                },
+                {
+                    label: '静脉压', name: 'F_V', width: 60, align: 'center'
+                },
+                {
+                    label: '电导率', name: 'F_C', width: 60, align: 'center'
+                },
+                {
+                    label: 'TMP', name: 'F_TMP', width: 60, align: 'center'
+                },
+                {
+                    label: '超滤率', name: 'F_UFV', width: 50, align: 'center'
+                },
+                {
+                    label: '剩余肝素量', name: 'F_GSL', width: 50, align: 'center'
+                },
+                {
+                    label: '超滤量', name: 'F_UFR', width: 50, align: 'center'
+                },
+                { label: '记录者', name: 'F_NurseName', width: 50, align: 'center' },
+                { label: '症状及处理', name: 'F_MEMO', width: 200, align: "left", sortable: false }
+            ],
+            pager: "#gridPager",
+            sortname: 'F_NurseOperatorTime desc',
+            viewrecords: true
+        });
+    }
+    function btn_add() {
+        var pid = $("#F_ParentId").val();
+        if (!!pid) {
+            $.modalOpen({
+                id: "Form",
+                title: "新增记录",
+                url: "/PatientManage/Nurse/Form?keyword=" + pid,
+                width: "800px",
+                height: "600px",
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
+            });
+        }
+    }
+    function btn_edit() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.modalOpen({
+                id: "Form",
+                title: "修改记录",
+                url: "/PatientManage/Nurse/Form?keyValue=" + keyValue,
+                width: "800px",
+                height: "600px",
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
+            });
+        }
+    }
+    function btn_delete() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.deleteForm({
+                url: "/PatientManage/Nurse/DeleteForm",
+                param: { keyValue: keyValue },
+                success: function () {
+                    $.currentWindow().$("#btn_search").trigger("click");
+                }
+            });
+        }
+    }
+
+    function btn_copy() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.deleteForm({
+                url: "/PatientManage/Nurse/CopyForm",
+                param: { keyValue: keyValue },
+                prompt: "注：您确定要复制该项数据吗？",
+                loading: "正在复制数据...",
+                success: function () {
+                    $.currentWindow().$("#btn_search").trigger("click");
+                }
+            });
+            //$.ajax({
+            //    url: "/PatientManage/Nurse/CopyForm",
+            //    data: { keyValue: keyValue },
+            //    dataType: "json",
+            //    async: false,
+            //    type: 'post',
+            //    success: function () {
+            //        $.currentWindow().$("#btn_search").trigger("click");
+            //    }
+            //});
+        }
+    }
+
+    function btn_details() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.modalOpen({
+                id: "Details",
+                title: "查看记录",
+                url: "/PatientManage/Nurse/Details?keyValue=" + keyValue,
+                width: "800px",
+                height: "600px",
+                btn: null
+            });
+        }
+    }
+
+</script>
+
+<div class="topPanel">
+    <div class="toolbar">
+        <div class="btn-group">
+            <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
+        <div class="btn-group">
+            <a class="btn btn-primary" id="NF-add" onclick="btn_add()"><i class="fa fa-plus"></i>新建记录</a>
+        </div>
+        <div class="operate">
+            <ul class="nav nav-pills">
+                @*<li><a id="NF-add" authorize="yes" onclick="btn_add()"><i class="fa fa-plus"></i>新建记录</a></li>*@
+                <li class="first">已选中<span>1</span>项</li>
+                <li><a id="NF-copy" authorize="yes" onclick="btn_copy()"><i class="fa fa-plus"></i>复制记录</a></li>
+                <li><a id="NF-edit" authorize="yes" onclick="btn_edit()"><i class="fa fa-pencil-square-o"></i>修改记录</a></li>
+                <li><a id="NF-delete" authorize="yes" onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除记录</a></li>
+                <li><a id="NF-Details" authorize="yes" onclick="btn_details()"><i class="fa fa-search-plus"></i>查看记录</a></li>
+            </ul>
+            <a href="javascript:;" class="close"></a>
+        </div>
+        <script>$('.toolbar').authorizeButton()</script>
+    </div>
+    <div class="search">
+        <table>
+            <tr>
+                <td>
+                    <div class="input-group" style="width: 150px; margin-right: 15px;">
+                        <select id="F_ParentId" name="F_ParentId" class="form-control" placeholder="选择患者"></select>
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group">
+                        <input id="startDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker()" placeholder="起始日期" autocomplete="off" style="width: 100px; margin-right: 5px;" />
+                        <input id="endDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({maxDate:'%y-%M-%d'})" placeholder="截至日期" autocomplete="off" style="width: 100px; margin-right: 1px;" />
+                        <span class="input-group-btn">
+                            <button id="btn_search" type="button" class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridList"></table>
+    <div id="gridPager"></div>
+</div>

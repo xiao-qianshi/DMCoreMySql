@@ -1,0 +1,262 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+<script src="~/Content/js/highcharts/highcharts.js"></script>
+<script src="~/Content/js/datepicker/WdatePicker.js"></script>
+<script>
+    var itemlist = []
+    var sumList = []
+    var gridData = []
+    var lineData = []
+    var filterrows = []
+    var initType = ""
+
+    var colors = ["#8600FF", "#00FFFF", "#A8FF24", "#F9F900", "#D94600", "#984B4B", "#5CADAD", "#AE57A4", "#FF0000", "#FF60AF", "#FF44FF"]
+
+    $(function () {
+        var dateEnd = new Date();
+        var dateStart = new Date(dateEnd.getTime() - 86400000 * 30)
+        $("#endDate").val(dateEnd.Format("yyyy-MM-dd"))
+        $("#startDate").val(dateStart.Format("yyyy-MM-dd"))
+        $.ajax({
+            url: "/SystemManage/User/GetUserSelectJson",
+            dataType: "json",
+            async: false,
+            success: function (value) {
+                var first = {}
+                first.id = ""
+                first.text = "全部"
+                itemlist.push(first)
+                //itemlist = value;
+                if (value.length > 0) {
+                    $.each(value, function (index, item) {
+                        var obj = {};
+                        obj.id = item.id;
+                        obj.text = item.text;
+                        itemlist.push(obj);
+                    }
+                    );
+                }     
+            }
+        });
+
+        $("#itemCode").bindSelect({
+            data: itemlist,
+            search: true
+        });
+
+        gridList();
+    });
+
+    function btn_query() {
+        var paras = {}
+        paras.startDate = $("#startDate").val()
+        paras.endDate = $("#endDate").val()
+        paras.pid = $("#itemCode").val()
+        $.ajax({
+            url: "/DataStatistics/Workload/GetRecordCountJson?keyValue=" + encodeURI(JSON.stringify(paras)),
+            dataType: "json",
+            async: false,
+            success: function (value) {
+                var sumInfo = value.GroupItems;
+                var seriesData = [{
+                    name: '合计',
+                    data: [sumInfo.PunctureSum, sumInfo.StarteSum, sumInfo.CheckSum, sumInfo.EndSum]
+                }
+                ]
+                
+                // Build the chart
+                $('#container').highcharts({
+                    chart: {
+                        type: 'column',
+                        zoomType: 'x'
+                    },
+                    title: {
+                        text: '工作量汇总信息'
+                    },
+                    //subtitle: {
+                    //    text: document.ontouchstart === undefined ?
+                    //        '框选放大' :
+                    //        '手势放大'
+                    //},
+                    xAxis: {
+                        categories: [
+                            '穿刺',
+                            '上机',
+                            '核对',
+                            '下机'
+                        ]
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: '人次'
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: '<span>{point.key}</span><table>',
+                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                            '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                        footerFormat: '</table>',
+                        shared: true,
+                        useHTML: true
+                    },
+                    plotOptions: {
+                        column: {
+                            pointPadding: 0.2,
+                            borderWidth: 0
+                        }
+                    },
+                    series: seriesData
+                });
+                var $gridList = $("#gridList");
+                $gridList.jqGrid('clearGridData');
+                $gridList.setGridParam({ data: value.Items}).trigger('reloadGrid');       
+            }
+        });
+    }
+
+    function gridList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            datatype: 'local',
+            height: 330,
+            colModel: [
+                { label: '主键', name: 'UId', hidden: true },
+                { label: '姓名', name: 'UName', width: 80, align: 'left' },
+                { label: '穿刺', name: 'PunctureCount', width: 80, align: 'left' },
+                { label: '上机', name: 'StarteCount', width: 80, align: 'left' },
+                { label: '核对', name: 'CheckCount', width: 80, align: 'left' },
+                { label: '下机', name: 'EndCount', width: 80, align: 'left' }
+            ],
+            pager: "#gridPager",
+            rowNum: 20,
+            rowList: [20, 30, 40],
+            sortname: 'UName asc',
+            viewrecords: true
+        });
+    }
+
+    // 对Date的扩展，将 Date 转化为指定格式的String
+    // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+    // 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+    Date.prototype.Format = function (fmt) { //author: meizz
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px; min-width: 310px; height: 50px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">起始日期</th>
+                <td class="formValue">
+                    <input id="startDate" name="startDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({maxDate: '%y-%M-%d'})" />
+                </td>
+                <th class="formTitle">截至日期</th>
+                <td class="formValue">
+                    <input id="endDate" name="endDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({maxDate: '%y-%M-%d'})" />
+                </td>
+                <th class="formTitle">操作者</th>
+                <td class="formValue">
+                    <select id="itemCode" name="itemCode" type="text" class="form-control" placeholder="选择人员"></select>
+                </td>
+                <td class="formValue">
+                    <div class="btn-group">
+                        <a id="btn_query" class="btn btn-primary dropdown-text" onclick="btn_query()" style="width: 60px"><i class="fa fa-search"></i>查询</a>
+                    </div>
+                </td>
+                <td />
+                <td></td>
+            </tr>
+        </table>
+    </div>
+    <div class="rows" style="margin-bottom: 1%; overflow: hidden;">
+        <div style="float: left; width: 49%;">
+            <div style="height: 450px; border: 1px solid #e6e6e6; background-color: #fff;">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-pie-chart fa-lg" style="padding-right: 5px;"></i>统计信息
+                    </div>
+                    <div class="panel-body" style="padding-bottom: 0px;">
+                        <div id="container" style="height: 400px; width: 100%; padding-right: 10px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="float: right; width: 50%;">
+            <div style="height: 450px; border: 1px solid #e6e6e6; background-color: #fff;">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-bars fa-lg" style="padding-right: 5px;"></i>明细数据
+                    </div>
+                    <div class="panel-body" style="padding-bottom: 0px;">
+                        <div id="gridPanel" style="height: 420px; width: 100%; padding-right: 10px;">
+                            <table id="gridList"></table>
+                            <div id="gridPager"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<style>
+    .panel-default {
+        border: none;
+        border-radius: 0px;
+        margin-bottom: 0px;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+
+        .panel-default > .panel-heading {
+            color: #777;
+            background-color: #fff;
+            border-color: #e6e6e6;
+            padding: 10px 10px;
+        }
+
+        .panel-default > .panel-body {
+            padding: 10px;
+            padding-bottom: 0px;
+        }
+
+            .panel-default > .panel-body ul {
+                overflow: hidden;
+                padding: 0;
+                margin: 0px;
+                margin-top: -5px;
+            }
+
+                .panel-default > .panel-body ul li {
+                    line-height: 24px;
+                    list-style-type: none;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
+
+                    .panel-default > .panel-body ul li .time {
+                        color: #a1a1a1;
+                        float: right;
+                        padding-right: 5px;
+                    }
+</style>

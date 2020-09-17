@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="05/01/2019 02:41:45" ReportInfo.Modified="05/05/2019 01:25:57" ReportInfo.CreatorVersion="2017.1.16.0">
+  <Dictionary>
+    <BusinessObjectDataSource Name="StorageCategories" ReferenceName="StorageCategories" DataType="null" Enabled="true">
+      <Column Name="HospialName" DataType="System.String"/>
+      <Column Name="HospialLogo" DataType="System.Byte[]" BindableControl="Picture"/>
+      <Column Name="PrintDate" DataType="System.String"/>
+      <Column Name="Costs" DataType="System.String"/>
+      <BusinessObjectDataSource Name="StorageSummaries" DataType="null" Enabled="true">
+        <Column Name="StorageType" DataType="System.String"/>
+        <Column Name="Costs" DataType="System.String"/>
+        <BusinessObjectDataSource Name="StorageDetails" DataType="null" Enabled="true">
+          <Column Name="ItemCode" DataType="System.String"/>
+          <Column Name="ItemName" DataType="System.String"/>
+          <Column Name="ItemSpec" DataType="System.String"/>
+          <Column Name="Amount" DataType="System.String"/>
+          <Column Name="RealAmount" DataType="System.String"/>
+          <Column Name="Unit" DataType="System.String"/>
+          <Column Name="Price" DataType="System.String"/>
+          <Column Name="Charges" DataType="System.String"/>
+          <Column Name="CheckResultType" DataType="System.String"/>
+        </BusinessObjectDataSource>
+      </BusinessObjectDataSource>
+    </BusinessObjectDataSource>
+  </Dictionary>
+  <ReportPage Name="Page1" RawPaperSize="9" LeftMargin="0" TopMargin="0" RightMargin="0" BottomMargin="0" FirstPageSource="15" OtherPagesSource="15">
+    <ReportTitleBand Name="ReportTitle1" Width="793.8" Height="18.9"/>
+    <PageHeaderBand Name="PageHeader1" Top="22.02" Width="793.8" Height="75.6">
+      <TextObject Name="Text1" Left="9.45" Top="9.45" Width="765.45" Height="56.7" Text="[StorageCategories.HospialName]&#13;&#10;盘存报告" HorzAlign="Center" VertAlign="Bottom" Font="宋体, 16pt, style=Bold"/>
+      <PictureObject Name="Picture1" Width="132.3" Height="75.6" DataColumn="StorageCategories.HospialLogo"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="100.75" Width="793.8" Height="28.35" DataSource="StorageCategories">
+      <TextObject Name="Text3" Left="9.45" Top="8.45" Width="264.6" Height="18.9" Text="盘存日期：[StorageCategories.PrintDate]" Font="宋体, 12pt, style=Bold"/>
+      <TextObject Name="Text4" Left="292.95" Top="8.45" Width="283.5" Height="18.9" Text="费用总计：[StorageCategories.Costs]" Font="宋体, 12pt, style=Bold"/>
+      <DataBand Name="Data2" Top="132.23" Width="793.8" Height="66.15" DataSource="StorageSummaries">
+        <TextObject Name="Text20" Left="9.45" Top="47.25" Width="66.15" Height="18.9" Text="编码" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text21" Left="75.6" Top="47.25" Width="255.15" Height="18.9" Text="名称" VertAlign="Center"/>
+        <TextObject Name="Text22" Left="330.75" Top="47.25" Width="94.5" Height="18.9" Text="规格" VertAlign="Center"/>
+        <TextObject Name="Text23" Left="576.45" Top="47.25" Width="66.15" Height="18.9" Text="数量变动" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text24" Left="472.5" Top="47.25" Width="37.8" Height="18.9" Text="单价" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text25" Left="699.3" Top="47.25" Width="66.15" Height="18.9" Text="金额" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text26" Left="510.3" Top="47.25" Width="66.15" Height="18.9" Text="实际数量" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text27" Left="425.25" Top="47.25" Width="47.25" Height="18.9" Text="单位" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text29" Left="9.45" Top="9.45" Width="415.8" Height="37.8" Text="类别：[StorageCategories.StorageSummaries.StorageType]  费用小计：[StorageCategories.StorageSummaries.Costs]元" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <LineObject Name="Line1" Top="6" Width="765.45"/>
+        <DataBand Name="Data3" Top="201.5" Width="793.8" Height="20.35" DataSource="StorageDetails">
+          <TextObject Name="Text13" Left="9.45" Top="1.45" Width="66.15" Height="18.9" Text="[StorageCategories.StorageSummaries.StorageDetails.ItemCode]" VertAlign="Center"/>
+          <TextObject Name="Text14" Left="75.6" Top="1.45" Width="255.15" Height="18.9" Text="[StorageCategories.StorageSummaries.StorageDetails.ItemName]" VertAlign="Center"/>
+          <TextObject Name="Text15" Left="330.75" Top="1.45" Width="94.5" Height="18.9" Text="[StorageCategories.StorageSummaries.StorageDetails.ItemSpec]" VertAlign="Center"/>
+          <TextObject Name="Text16" Left="576.45" Top="1.45" Width="66.15" Height="18.9" Text="[StorageCategories.StorageSummaries.StorageDetails.Amount]" HorzAlign="Center" VertAlign="Center"/>
+          <TextObject Name="Text17" Left="472.5" Top="1.45" Width="37.8" Height="18.9" Text="[StorageCategories.StorageSummaries.StorageDetails.Price]" HorzAlign="Center" VertAlign="Center"/>
+          <TextObject Name="Text18" Left="699.3" Top="1.45" Width="66.15" Height="18.9" Text="[StorageCategories.StorageSummaries.StorageDetails.Charges]" HorzAlign="Center" VertAlign="Center"/>
+          <TextObject Name="Text19" Left="510.3" Top="1.45" Width="66.15" Height="18.9" Text="[StorageCategories.StorageSummaries.StorageDetails.RealAmount]" HorzAlign="Center" VertAlign="Center"/>
+          <TextObject Name="Text28" Left="425.25" Top="1.45" Width="47.25" Height="18.9" Text="[StorageCategories.StorageSummaries.StorageDetails.Unit]" HorzAlign="Center" VertAlign="Center"/>
+          <TextObject Name="Text5" Left="642.6" Top="1" Width="56.7" Height="18.9" Text="[StorageCategories.StorageSummaries.StorageDetails.CheckResultType]"/>
+        </DataBand>
+      </DataBand>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="224.98" Width="793.8" Height="18.9">
+      <TextObject Name="Text2" Left="56.7" Width="689.85" Height="18.9" Text="第[Page#]页/共[TotalPages#]页" HorzAlign="Center" VertAlign="Center"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

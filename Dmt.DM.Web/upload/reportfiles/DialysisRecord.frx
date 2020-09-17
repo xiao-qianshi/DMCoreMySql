@@ -1,0 +1,351 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="12/18/2018 21:43:29" ReportInfo.Modified="09/02/2020 21:30:33" ReportInfo.CreatorVersion="1.6.17.0">
+  <ScriptText>using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Drawing;
+using System.Data;
+using System.IO;
+using FastReport;
+using FastReport.Data;
+using FastReport.Dialog;
+using FastReport.Barcode;
+using FastReport.Table;
+using FastReport.Utils;
+
+namespace FastReport
+{
+  public class ReportScript
+  {
+
+    private void ReportTitle1_BeforeLayout(object sender, EventArgs e)
+    {
+//      //在模板的DataPrintBefore事件中写下如下代码
+//      string imgStr = (string)Report.GetColumnValue(&quot;Hospital.Logo&quot;);
+//      MessageBox.Show(imgStr);
+//      byte[] imgData=Convert.FromBase64String(imgStr);
+//      MemoryStream ms = new MemoryStream(imgData);
+//      Image img = System.Drawing.Image.FromStream(ms);   
+//      //PictureObject pic=Report.FindObject('Picture1') as PictureObject;
+//      Picture1.Image=img;
+//        Picture1.Image=ReadImage(((Byte[])Report.GetColumnValue(&quot;Hospital.Logo&quot;)));
+      
+    }
+    
+    public Image ReadImage(byte[] bytes)
+    {
+      MemoryStream ms=new MemoryStream(bytes,0,bytes.Length);
+      Image image = System.Drawing.Image.FromStream(ms);
+      return image;  
+    }
+    
+    
+    
+    
+  }
+}
+</ScriptText>
+  <Dictionary>
+    <BusinessObjectDataSource Name="Categories" ReferenceName="Categories" DataType="System.Int32" Enabled="true">
+      <Column Name="HospialName" DataType="System.String"/>
+      <Column Name="HospialLogo" DataType="System.Byte[]" BindableControl="Picture"/>
+      <Column Name="Name" DataType="System.String"/>
+      <Column Name="DialysisNo" DataType="System.String"/>
+      <Column Name="CardNo" DataType="System.String"/>
+      <Column Name="VisitDate" DataType="System.String"/>
+      <Column Name="VisitNo" DataType="System.String"/>
+      <Column Name="DialysisCount" DataType="System.String"/>
+      <Column Name="RecordNo" DataType="System.String"/>
+      <Column Name="PatientNo" DataType="System.String"/>
+      <Column Name="Gender" DataType="System.String"/>
+      <Column Name="AgeString" DataType="System.String"/>
+      <Column Name="BirthDay" DataType="System.String"/>
+      <Column Name="InsuranceNo" DataType="System.String"/>
+      <Column Name="IdNo" DataType="System.String"/>
+      <Column Name="MaritalStatus" DataType="System.String"/>
+      <Column Name="IdealWeight" DataType="System.String"/>
+      <Column Name="DialysisStartTime" DataType="System.String"/>
+      <Column Name="Diagnosis" DataType="System.String"/>
+      <Column Name="Address" DataType="System.String"/>
+      <Column Name="Contacts" DataType="System.String"/>
+      <Column Name="Trasfer" DataType="System.String"/>
+      <Column Name="PhoneNo" DataType="System.String"/>
+      <Column Name="BedNo" DataType="System.String"/>
+      <BusinessObjectDataSource Name="PatVisitRecords" DataType="System.Int32" Enabled="true">
+        <Column Name="DialyzerType1" DataType="System.String"/>
+        <Column Name="DialyzerType2" DataType="System.String"/>
+        <Column Name="EstimateHours" DataType="System.String"/>
+        <Column Name="BloodSpeed" DataType="System.String"/>
+        <Column Name="DialysateTemperature" DataType="System.String"/>
+        <Column Name="HeparinType" DataType="System.String"/>
+        <Column Name="VascularAccess" DataType="System.String"/>
+        <Column Name="VitalSigns" DataType="System.String"/>
+        <Column Name="PGwzsz" DataType="System.String"/>
+        <Column Name="PGwzcx" DataType="System.String"/>
+        <Column Name="WeightIdea" DataType="System.String"/>
+        <Column Name="WeightTQ" DataType="System.String"/>
+        <Column Name="WeightYT" DataType="System.String"/>
+        <Column Name="WeightTH" DataType="System.String"/>
+        <Column Name="RecordDoctor" DataType="System.String"/>
+        <Column Name="DJMH" DataType="System.String"/>
+        <Column Name="DialyzerStatus" DataType="System.String"/>
+        <Column Name="DialysisTime" DataType="System.String"/>
+        <Column Name="MachineShowAmount" DataType="System.String"/>
+        <Column Name="RealExchangeAmount" DataType="System.String"/>
+        <Column Name="DuctOpeningStatus" DataType="System.String"/>
+        <Column Name="FistulaStatus" DataType="System.String"/>
+        <Column Name="PuncturePerson" DataType="System.String"/>
+        <Column Name="StartPerson" DataType="System.String"/>
+        <Column Name="CheckPerson" DataType="System.String"/>
+        <Column Name="EndPerson" DataType="System.String"/>
+        <Column Name="Reason" DataType="System.String"/>
+        <Column Name="Memo" DataType="System.String"/>
+      </BusinessObjectDataSource>
+      <BusinessObjectDataSource Name="Observations" DataType="System.Int32" Enabled="true">
+        <Column Name="SSY" DataType="System.String"/>
+        <Column Name="SZY" DataType="System.String"/>
+        <Column Name="HR" DataType="System.String"/>
+        <Column Name="A" DataType="System.String"/>
+        <Column Name="BF" DataType="System.String"/>
+        <Column Name="UFR" DataType="System.String"/>
+        <Column Name="V" DataType="System.String"/>
+        <Column Name="C" DataType="System.String"/>
+        <Column Name="T" DataType="System.String"/>
+        <Column Name="UFV" DataType="System.String"/>
+        <Column Name="TMP" DataType="System.String"/>
+        <Column Name="GSL" DataType="System.String"/>
+        <Column Name="MEMO" DataType="System.String"/>
+        <Column Name="Nurse" DataType="System.String"/>
+        <Column Name="NurseOperatorTime" DataType="System.String"/>
+      </BusinessObjectDataSource>
+      <BusinessObjectDataSource Name="Orders" DataType="System.Int32" Enabled="true">
+        <Column Name="OrderType" DataType="System.String"/>
+        <Column Name="OrderText" DataType="System.String"/>
+        <Column Name="OrderSpec" DataType="System.String"/>
+        <Column Name="OrderUnitAmount" DataType="System.String"/>
+        <Column Name="OrderUnitSpec" DataType="System.String"/>
+        <Column Name="OrderAmount" DataType="System.String"/>
+        <Column Name="OrderFrequency" DataType="System.String"/>
+        <Column Name="OrderAdministration" DataType="System.String"/>
+        <Column Name="IsTemporary" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Doctor" DataType="System.String"/>
+        <Column Name="DoctorAuditTime" DataType="System.String"/>
+        <Column Name="Nurse" DataType="System.String"/>
+        <Column Name="NurseOperatorTime" DataType="System.String"/>
+        <Column Name="Memo" DataType="System.String"/>
+      </BusinessObjectDataSource>
+    </BusinessObjectDataSource>
+  </Dictionary>
+  <ReportPage Name="Page1" RawPaperSize="9" LeftMargin="5" TopMargin="5" RightMargin="5" BottomMargin="5" FirstPageSource="15" OtherPagesSource="15">
+    <PageHeaderBand Name="PageHeader1" Width="756" Height="85.05" KeepChild="true">
+      <TextObject Name="Text1" Left="160.65" Top="9.45" Width="557.55" Height="56.7" Text="[Categories.HospialName]血液净化治疗记录单" HorzAlign="Center" VertAlign="Center" Font="宋体, 18pt, style=Bold"/>
+      <PictureObject Name="Picture1" Left="9.45" Width="151.2" Height="56.7" DataColumn="Categories.HospialLogo"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="89.05" Width="756" DataSource="Categories">
+      <DataBand Name="Data2" Top="93.05" Width="756" Height="306.18" Guides="0,0,0" DataSource="PatVisitRecords">
+        <TableObject Name="Table1" Width="737.16" Height="306.18" Border.Lines="All">
+          <TableColumn Name="Column1" Width="61.43"/>
+          <TableColumn Name="Column2" Width="61.43"/>
+          <TableColumn Name="Column3" Width="61.43"/>
+          <TableColumn Name="Column4" Width="61.43"/>
+          <TableColumn Name="Column5" Width="61.43"/>
+          <TableColumn Name="Column6" Width="61.43"/>
+          <TableColumn Name="Column7" Width="61.43"/>
+          <TableColumn Name="Column8" Width="61.43"/>
+          <TableColumn Name="Column9" Width="61.43"/>
+          <TableColumn Name="Column10" Width="61.43"/>
+          <TableColumn Name="Column11" Width="61.43"/>
+          <TableColumn Name="Column12" Width="61.43"/>
+          <TableRow Name="Row1" Height="34.02">
+            <TableCell Name="Cell1" Border.Lines="All" Text="姓名：[Categories.Name] 性别：[Categories.Gender] 年龄：[Categories.AgeString]" VertAlign="Center" Font="宋体, 10.5pt" ColSpan="5"/>
+            <TableCell Name="Cell2" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell3" Border.Lines="All" VertAlign="Center" Font="宋体, 10.5pt"/>
+            <TableCell Name="Cell4" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell5" Border.Lines="All" VertAlign="Center" Font="宋体, 10.5pt"/>
+            <TableCell Name="Cell26" Border.Lines="All" Text="日期：[Categories.VisitDate] [IIf([Categories.VisitNo]==&quot;1&quot;,&quot;第一班&quot;,&quot;&quot;)][IIf([Categories.VisitNo]==&quot;2&quot;,&quot;第二班&quot;,&quot;&quot;)][IIf([Categories.VisitNo]==&quot;3&quot;,&quot;第三班&quot;,&quot;&quot;)]" VertAlign="Center" Font="宋体, 9pt" ColSpan="3"/>
+            <TableCell Name="Cell27" Border.Lines="All" VertAlign="Center" Font="宋体, 10.5pt"/>
+            <TableCell Name="Cell28" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell29" Border.Lines="All" Text="病案号：[Categories.DialysisNo] 次数：[Categories.DialysisCount] 床号： [Categories.BedNo]" VertAlign="Center" Font="宋体, 9pt" ColSpan="4"/>
+            <TableCell Name="Cell30" Border.Lines="All" VertAlign="Center" Font="宋体, 10.5pt"/>
+            <TableCell Name="Cell31" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell32" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+          </TableRow>
+          <TableRow Name="Row8" Height="34.02">
+            <TableCell Name="Cell85" Text="透析模式：[Categories.PatVisitRecords.DialysisType]" VertAlign="Center" Font="宋体, 10.5pt" ColSpan="12"/>
+            <TableCell Name="Cell86" Font="宋体, 9pt"/>
+            <TableCell Name="Cell87" Font="宋体, 9pt"/>
+            <TableCell Name="Cell88" Font="宋体, 9pt"/>
+            <TableCell Name="Cell89" Font="宋体, 9pt"/>
+            <TableCell Name="Cell90" Font="宋体, 9pt"/>
+            <TableCell Name="Cell91" Font="宋体, 9pt"/>
+            <TableCell Name="Cell92" Font="宋体, 9pt"/>
+            <TableCell Name="Cell93" Font="宋体, 9pt"/>
+            <TableCell Name="Cell94" Font="宋体, 9pt"/>
+            <TableCell Name="Cell95" Font="宋体, 9pt"/>
+            <TableCell Name="Cell96" Font="宋体, 9pt"/>
+          </TableRow>
+          <TableRow Name="Row2" Height="34.02">
+            <TableCell Name="Cell6" Border.Lines="All" Text="透析器：[Categories.PatVisitRecords.DialyzerType1]" VertAlign="Center" Font="宋体, 10.5pt" ColSpan="2"/>
+            <TableCell Name="Cell7" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell8" Border.Lines="All" Text="灌流器：[Categories.PatVisitRecords.DialyzerType2]" VertAlign="Center" Font="宋体, 10.5pt" ColSpan="2"/>
+            <TableCell Name="Cell9" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell10" Border.Lines="All" Text="透析时间：[Categories.PatVisitRecords.EstimateHours]h" VertAlign="Center" Font="宋体, 10.5pt" ColSpan="2"/>
+            <TableCell Name="Cell33" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell34" Border.Lines="All" Text="血流速：[Categories.PatVisitRecords.BloodSpeed]ml/min" VertAlign="Center" Font="宋体, 10.5pt" ColSpan="3"/>
+            <TableCell Name="Cell35" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell36" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell37" Border.Lines="All" Text="透析液温度：[Categories.PatVisitRecords.DialysateTemperature]℃" VertAlign="Center" Font="宋体, 10.5pt" ColSpan="3"/>
+            <TableCell Name="Cell38" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell39" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+          </TableRow>
+          <TableRow Name="Row3" Height="34.02">
+            <TableCell Name="Cell11" Border.Lines="Top, Bottom" Text="抗凝：[Categories.PatVisitRecords.HeparinType]" VertAlign="Center" Font="宋体, 10.5pt" ColSpan="10"/>
+            <TableCell Name="Cell12" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell13" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell14" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell15" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell40" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell41" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell42" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell43" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell44" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell45" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell46" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+          </TableRow>
+          <TableRow Name="Row5" Height="34.02">
+            <TableCell Name="Cell21" Border.Lines="Top, Bottom" Text="血管通路类型：[Categories.PatVisitRecords.VascularAccess]" VertAlign="Center" Font="宋体, 11.25pt" ColSpan="12"/>
+            <TableCell Name="Cell22" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell23" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell24" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell25" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell54" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell55" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell56" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell57" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell58" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell59" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell60" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+          </TableRow>
+          <TableRow Name="Row7" Height="68.04">
+            <TableCell Name="Cell73" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt" ColSpan="12">
+              <TextObject Name="Text3" Width="727.65" Height="22.68" Text="透析前评估：生命体征: [Categories.PatVisitRecords.VitalSigns]" VertAlign="Center" Font="宋体, 11pt"/>
+              <TextObject Name="Text121" Top="22.9" Width="727.65" Height="22.68" Text="[Categories.PatVisitRecords.PGwzsz]" VertAlign="Center" Font="宋体, 11pt"/>
+              <TextObject Name="Text123" Top="45.25" Width="727.65" Height="22.68" Text="出血情况：[Categories.PatVisitRecords.PGwzcx]" VertAlign="Center" Font="宋体, 11pt"/>
+            </TableCell>
+            <TableCell Name="Cell74" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell75" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell76" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell77" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell78" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell79" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell80" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell81" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell82" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell83" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell84" Border.Lines="Top, Bottom" VertAlign="Center" Font="宋体, 9pt"/>
+          </TableRow>
+          <TableRow Name="Row9" Height="34.02">
+            <TableCell Name="Cell97" Text="特殊透析医嘱：" VertAlign="Center" Font="宋体, 11pt" ColSpan="12"/>
+            <TableCell Name="Cell98" Font="宋体, 9pt"/>
+            <TableCell Name="Cell99" Font="宋体, 9pt"/>
+            <TableCell Name="Cell100" Font="宋体, 9pt"/>
+            <TableCell Name="Cell101" Font="宋体, 9pt"/>
+            <TableCell Name="Cell102" Font="宋体, 9pt"/>
+            <TableCell Name="Cell103" Font="宋体, 9pt"/>
+            <TableCell Name="Cell104" Font="宋体, 9pt"/>
+            <TableCell Name="Cell105" Font="宋体, 9pt"/>
+            <TableCell Name="Cell106" Font="宋体, 9pt"/>
+            <TableCell Name="Cell107" Font="宋体, 9pt"/>
+            <TableCell Name="Cell108" Font="宋体, 9pt"/>
+          </TableRow>
+          <TableRow Name="Row6" Height="34.02">
+            <TableCell Name="Cell61" Border.Lines="All" Text="干体重：[Categories.IdealWeight] Kg" VertAlign="Center" Font="宋体, 10.5pt" ColSpan="2"/>
+            <TableCell Name="Cell62" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell63" Border.Lines="All" Text="透前体重：[Categories.PatVisitRecords.WeightTQ]Kg" VertAlign="Center" Font="宋体, 10.5pt" ColSpan="2"/>
+            <TableCell Name="Cell64" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell65" Border.Lines="All" Text="拟脱水： [Categories.PatVisitRecords.WeightYT]L" VertAlign="Center" Font="宋体, 10.5pt" ColSpan="2"/>
+            <TableCell Name="Cell66" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell67" Border.Lines="All" Text="透析后体重：[Categories.PatVisitRecords.WeightTH]Kg" VertAlign="Center" Font="宋体, 10.5pt" ColSpan="3"/>
+            <TableCell Name="Cell68" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell69" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell70" Border.Lines="All" Text="医生签名：[Categories.PatVisitRecords.RecordDoctor]" VertAlign="Center" Font="宋体, 10.5pt" ColSpan="3"/>
+            <TableCell Name="Cell71" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+            <TableCell Name="Cell72" Border.Lines="All" VertAlign="Center" Font="宋体, 9pt"/>
+          </TableRow>
+        </TableObject>
+      </DataBand>
+      <DataBand Name="Data7" Top="403.23" Width="756" Height="26.46">
+        <TextObject Name="Text85" Left="122.85" Width="415.8" Height="26.46" Border.Lines="All" Text="医嘱" HorzAlign="Center" VertAlign="Center" Font="宋体, 11pt, style=Bold"/>
+        <TextObject Name="Text4" Width="122.85" Height="26.46" Border.Lines="All" Text="时间" HorzAlign="Center" VertAlign="Center" Font="宋体, 11pt, style=Bold"/>
+        <TextObject Name="Text86" Left="538.2" Width="66.15" Height="26.46" Border.Lines="All" Text="医生签名" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <TextObject Name="Text88" Left="670.95" Width="66.15" Height="26.46" Border.Lines="All" Text="执行护士签名" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <TextObject Name="Text87" Left="604.8" Width="66.15" Height="26.46" Border.Lines="All" Text="执行时间" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+      </DataBand>
+      <DataBand Name="Data3" Top="433.69" Width="756" Height="26.46" DataSource="Orders">
+        <TextObject Name="Text91" Width="122.85" Height="26.46" Border.Lines="All" Text="[Categories.Orders.DoctorAuditTime]" VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text92" Left="122.85" Width="415.8" Height="26.46" Border.Lines="All" CanGrow="true" CanBreak="false" Text="[Categories.Orders.OrderText]   [Categories.Orders.OrderAmount] [Categories.Orders.OrderUnitSpec] [Categories.Orders.OrderAdministration] " VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text93" Left="538.65" Width="66.15" Height="26.46" Border.Lines="All" Text="[Categories.Orders.Doctor]" HorzAlign="Center" VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text95" Left="670.95" Width="66.15" Height="26.46" Border.Lines="All" Text="[Categories.Orders.Nurse]" HorzAlign="Center" VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text2" Left="604.8" Width="66.15" Height="26.46" Border.Lines="All" Text="[Categories.Orders.NurseOperatorTime]" HorzAlign="Center" VertAlign="Center" Font="宋体, 11pt"/>
+      </DataBand>
+      <DataBand Name="Data4" Top="464.15" Width="756" Height="52.92">
+        <TextObject Name="Text42" Top="26.46" Width="47.25" Height="26.46" Border.Lines="All" Text="时间" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <TextObject Name="Text96" Left="47.25" Top="26.46" Width="47.25" Height="26.46" Border.Lines="All" Text="电导" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <TextObject Name="Text97" Left="94.5" Top="26.46" Width="37.8" Height="26.46" Border.Lines="All" Text="机温" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <TextObject Name="Text98" Left="132.3" Top="26.46" Width="56.7" Height="26.46" Border.Lines="All" Text="血压" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <TextObject Name="Text99" Left="189" Top="26.46" Width="37.8" Height="26.46" Border.Lines="All" Text="脉搏" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <TextObject Name="Text100" Left="226.8" Top="26.46" Width="47.25" Height="26.46" Border.Lines="All" Text="血流速" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <TextObject Name="Text101" Left="274.05" Top="26.46" Width="47.25" Height="26.46" Border.Lines="All" Text="动脉压" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <TextObject Name="Text102" Left="321.3" Top="26.46" Width="47.25" Height="26.46" Border.Lines="All" Text="静脉压" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <TextObject Name="Text103" Left="368.55" Top="26.46" Width="37.8" Height="26.46" Border.Lines="All" Text="TMP" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <TextObject Name="Text104" Left="406.35" Top="26.46" Width="47.25" Height="26.46" Border.Lines="All" Text="超滤率" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <TextObject Name="Text105" Left="453.6" Top="26.46" Width="47.25" Height="26.46" Border.Lines="All" Text="超滤量" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <TextObject Name="Text89" Left="500.85" Top="26.46" Width="160.65" Height="26.46" Border.Lines="All" Text="症状及处理" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <TextObject Name="Text90" Left="661.5" Top="26.46" Width="75.6" Height="26.46" Border.Lines="All" Text="签名" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <TextObject Name="Text41" Width="737.1" Height="26.46" Border.Lines="Left, Right, Top" Text="透析中参数监测与患者症状" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+      </DataBand>
+      <DataBand Name="Data5" Top="521.07" Width="756" Height="26.46" DataSource="Observations">
+        <TextObject Name="Text109" Width="47.25" Height="26.46" Border.Lines="All" Text="[Categories.Observations.NurseOperatorTime]" Format="Time" Format.Format="t" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt"/>
+        <TextObject Name="Text110" Left="47.25" Width="47.25" Height="26.46" Border.Lines="All" Text="[Categories.Observations.C]" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt"/>
+        <TextObject Name="Text111" Left="94.5" Width="37.8" Height="26.46" Border.Lines="All" Text="[Categories.Observations.T]" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt"/>
+        <TextObject Name="Text112" Left="132.3" Width="56.7" Height="26.46" Border.Lines="All" Text="[Categories.Observations.SSY]/[Categories.Observations.SZY]" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt"/>
+        <TextObject Name="Text113" Left="189" Width="37.8" Height="26.46" Border.Lines="All" Text="[Categories.Observations.HR]" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt"/>
+        <TextObject Name="Text114" Left="226.8" Width="47.25" Height="26.46" Border.Lines="All" Text="[Categories.Observations.BF]" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt"/>
+        <TextObject Name="Text115" Left="274.05" Width="47.25" Height="26.46" Border.Lines="All" Text="[Categories.Observations.A]" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt"/>
+        <TextObject Name="Text116" Left="321.3" Width="47.25" Height="26.46" Border.Lines="All" Text="[Categories.Observations.V]" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt"/>
+        <TextObject Name="Text117" Left="368.55" Width="37.8" Height="26.46" Border.Lines="All" Text="[Categories.Observations.TMP]" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt"/>
+        <TextObject Name="Text118" Left="406.35" Width="47.25" Height="26.46" Border.Lines="All" Text="[Categories.Observations.UFV]" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt"/>
+        <TextObject Name="Text106" Left="453.6" Width="47.25" Height="26.46" Border.Lines="All" Text="[Categories.Observations.UFR]" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt"/>
+        <TextObject Name="Text107" Left="500.85" Width="160.65" Height="26.46" Border.Lines="All" CanGrow="true" Text="[Categories.Observations.MEMO]" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt"/>
+        <TextObject Name="Text108" Left="661.5" Width="75.6" Height="26.46" Border.Lines="All" Text="[Categories.Observations.Nurse]" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt"/>
+      </DataBand>
+      <DataBand Name="Data6" Top="551.53" Width="756" Height="208.35" DataSource="PatVisitRecords">
+        <TextObject Name="Text119" Width="737.1" Height="69.5" Border.Lines="All" Font="宋体, 7pt"/>
+        <TextObject Name="Text57" Top="2" Width="75.6" Height="18.9" Text="治疗小结" Font="Arial, 11pt, style=Bold"/>
+        <TextObject Name="Text58" Left="78.6" Top="2.45" Width="652.05" Height="66.15" Text="[Categories.PatVisitRecords.Memo]" Font="Arial, 11pt"/>
+        <TextObject Name="Text60" Left="633.15" Top="47.25" Width="94.5" Height="18.9" Font="Arial, 11pt"/>
+        <TextObject Name="Text59" Left="548.1" Top="47.25" Width="75.6" Height="18.9" Text="医师签字" Font="Arial, 11pt, style=Bold"/>
+        <TextObject Name="Text61" Top="69.15" Width="737.1" Height="26.46" Border.Lines="Left, Right" Text="透后体外循环凝血情况：" VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text43" Left="160.65" Top="69.15" Width="151.2" Height="26.46" Text="动/静脉壶：[Categories.PatVisitRecords.DJMH]" VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text120" Left="359.1" Top="69.15" Width="283.5" Height="26.46" Text="透析器：[Categories.PatVisitRecords.DialyzerStatus]" VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text5" Top="94.5" Width="737.1" Height="26.46" Border.Lines="All" Font="宋体, 9pt"/>
+        <TextObject Name="Text68" Left="9.45" Top="94.5" Width="198.45" Height="26.46" Text="实际治疗时间 [Categories.PatVisitRecords.DialysisTime] " VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text69" Left="236.25" Top="94.5" Width="170.1" Height="26.46" Text="实际脱水量 [Categories.PatVisitRecords.MachineShowAmount] ml" VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text70" Left="434.7" Top="94.5" Width="255.15" Height="26.46" Text="实际置换液量  [Categories.PatVisitRecords.RealExchangeAmount] L" VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text6" Top="120.85" Width="737.1" Height="87.5" Border.Lines="Left, Right, Bottom" Font="宋体, 9pt"/>
+        <TextObject Name="Text125" Left="9.45" Top="123.85" Width="292.95" Height="26.46" Text="透后内瘘情况：[Categories.PatVisitRecords.FistulaStatus]" VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text131" Left="322.3" Top="123.85" Width="387.45" Height="26.46" Text="透后导管口情况：[Categories.PatVisitRecords.DuctOpeningStatus]" VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text126" Left="9.9" Top="152.2" Width="699.3" Height="26.46" Text="是否将患者安全送出透析间： 是  原因：[Categories.PatVisitRecords.Reason]" VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text127" Left="379" Top="180.1" Width="141.75" Height="26.46" Text="核对护士：[Categories.PatVisitRecords.CheckPerson]" VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text128" Left="558.55" Top="180.1" Width="141.75" Height="26.46" Text="下机护士：[Categories.PatVisitRecords.EndPerson]" VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text129" Left="199.45" Top="180.1" Width="141.75" Height="26.46" Text="操作护士：[Categories.PatVisitRecords.StartPerson]" VertAlign="Center" Font="宋体, 11pt"/>
+        <TextObject Name="Text130" Left="10.45" Top="180.1" Width="170.1" Height="26.46" Text="穿刺护士：[Categories.PatVisitRecords.PuncturePerson]" VertAlign="Center" Font="宋体, 11pt"/>
+      </DataBand>
+    </DataBand>
+    <PageFooterBand Top="763.88" Width="756" Height="37.8">
+      <TextObject Name="Text46" Width="737.1" Height="37.8" Text="备注：单位：血压：mmHg; 脉搏：次/分；静脉压/动脉压/跨膜压：mmHg;电导：ms/cm；温度：℃；超滤量：ml；超滤率：ml/h;剩余肝素：ml（肝素浓度：5mg/ml）;血流量：ml/min；默认透析液配方：Na 138mmol/L, K 2.0mmol/L, Ca 1.5mmol/L，无糖透析液，透析液流速500ml/min。" Font="宋体, 9pt"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

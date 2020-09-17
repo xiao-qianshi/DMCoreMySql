@@ -1,0 +1,140 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script src="~/Content/js/highcharts/highcharts.js"></script>
+<script>
+    var json = $.parseJSON(decodeURI($.request("keyValue")));
+    var keyValue = json.pid;
+    var ideaWeight = json.ideaWeight;
+    var categories = [];
+    var series = [];
+    var plotLines = [];
+    $(function () {   
+        $.ajax({
+            url: "/PatientManage/PatVisit/GetWeightCharts",
+            data: { keyValue: keyValue },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                //console.log(data);
+                var tqserie = {};
+                var thserie = {};
+                tqserie.name = "透前体重";
+                thserie.name = "透后体重";
+                tqserie.data = [];
+                thserie.data = [];
+                $.each(data, function (i, item) {
+                    categories.push(item.date);
+                    tqserie.data.push(item.tq);
+                    thserie.data.push(item.th);
+                });
+                series.push(tqserie);
+                series.push(thserie);
+
+                if (!!ideaWeight) {
+                    plotLines.push({
+                        label: {
+                            text: '干体重 ' + ideaWeight,     //标签的内容
+                            align: 'left',                //标签的水平位置，水平居左,默认是水平居中center
+                            x: 10                         //标签相对于被定位的位置水平偏移的像素，重新定位，水平居左10px
+                        },
+                        color: 'red',           //线的颜色，定义为红色
+                        dashStyle: 'solid',     //默认值，这里定义为实线
+                        value: ideaWeight,               //定义在那个值上显示标示线，这里是在x轴上刻度为3的值处垂直化一条线
+                        width: 2                //标示线的宽度，2px
+                    });
+                    ////%3 间隔1日加
+                    var ideaWeight1 = (ideaWeight * 1.03).toFixed(2);
+                    plotLines.push({
+                        label: {
+                            text: '+3% ' + ideaWeight1,     
+                            align: 'left',               
+                            x: 10              
+                        },
+                        color: 'red',          
+                        dashStyle: 'shortdash',    
+                        value: '' + ideaWeight1,              
+                        width: 1
+                    });
+                    //%5 间隔2日加
+                    var ideaWeight2 = (ideaWeight * 1.05).toFixed(2);
+                    plotLines.push({
+                        label: {
+                            text: '+5% ' + ideaWeight2,
+                            align: 'left',
+                            x: 10
+                        },
+                        color: 'red',
+                        dashStyle: 'shortdash',
+                        value: '' + ideaWeight2,
+                        width: 1
+                    });
+                }
+
+                $('#container').highcharts({
+                    chart: {
+                        zoomType: 'x'
+                    },
+                    title: {
+                        text: '体重变化曲线',
+                    },
+                    subtitle: {
+                        text: document.ontouchstart === undefined ?
+                            '-' :
+                            '-'
+                    },
+                    xAxis: {
+                        categories: categories
+                    },
+                    yAxis: {
+                        title: {
+                            text: '体重 (Kg)'
+                        },
+                        plotLines: plotLines
+                        //[
+                        //{
+                        //    label: {
+                        //        text: '干体重' + 80.56,     //标签的内容
+                        //        align: 'left',                //标签的水平位置，水平居左,默认是水平居中center
+                        //        x: 10                         //标签相对于被定位的位置水平偏移的像素，重新定位，水平居左10px
+                        //    },    
+                        //    color: 'red',           //线的颜色，定义为红色
+                        //    dashStyle: 'solid',     //默认值，这里定义为实线
+                        //    value: 80.56,               //定义在那个值上显示标示线，这里是在x轴上刻度为3的值处垂直化一条线
+                        //    width: 2                //标示线的宽度，2px
+                        //}    
+                        //]
+                    },
+                    tooltip: {
+                        valueSuffix: 'Kg'
+                    },
+                    plotOptions: {
+                        series: {
+                            cursor: 'pointer',
+                            point: {
+                                events: {
+                                    click: function () {
+                                        //alert(this.series.name + "," + this.x + "," + this.y)
+                                    }
+                                }
+                            },
+                            marker: {
+                                lineWidth: 1
+                            }
+                        }
+                    },
+                    series: series
+                });
+
+            }
+        });
+    });
+</script>
+
+<form id="form1">
+    <div id="container" style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+    </div>
+</form>
+
+

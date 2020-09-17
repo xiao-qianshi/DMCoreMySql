@@ -1,0 +1,94 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewBag.Title = "Info";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script src="~/Content/js/datepicker/WdatePicker.js"></script>
+<environment include="Development">
+    <script src="~/view-js/lablis/LabRequest/Index.js" asp-append-version="true"></script>
+</environment>
+<environment exclude="Development">
+    <script src="~/view-js/lablis/LabRequest/Index.min.js" asp-append-version="true"></script>
+</environment>
+
+<style type="text/css">
+    [class*="col-"] {
+        padding: 0px;
+    }
+
+    p {
+        height: 30px;
+    }
+
+    .panel-body {
+        padding: 5px;
+    }
+</style>
+
+<div style="margin-top: 5px;">
+    <div style="float:left;display: inline-block;">
+        <strong>开单时间</strong>
+        <input id="requestDate" name="requestDate" type="text" class="input-wdatepicker" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd' })" autocomplete="off" style="height: 25px;width: 100px;" />
+    </div>
+    <div style="float:left;">
+        <a class="btn btn-default" id="btn-query"><i class="fa fa-search"></i>查询</a>
+    </div>
+    <div style="float:left;padding-left: 10px;">
+        <div id="status_horizon" class="btn-group">
+            <a class="btn btn-default active" data-value="1">新申请</a>
+            <a class="btn btn-default" data-value="2">已提交</a>
+            <a class="btn btn-default" data-value="3">已采样</a>
+            <a class="btn btn-default" data-value="4">正在检验</a>
+            <a class="btn btn-default" data-value="5">已审核</a>
+            <a class="btn btn-default" data-value="6">已打印</a>
+        </div>
+    </div>
+    <div style="float: right;">
+        <div class="btn-group" style="margin-right: 3px;">
+            <a class="btn btn-default dropdown-text" id="btn-choosepatient"><i class="fa fa-user"></i>选择患者</a>
+            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+            <ul class="dropdown-menu pull-right">
+                <li><a class="btn btn-default" id="btn-choosepatientbyvisit">今日透析患者</a></li>
+                <li><a class="btn btn-default" id="btn-clearpatient">清空选择项</a></li>
+            </ul>
+        </div>
+        <div class="btn-group" style="margin-right: 3px;">
+            <a class="btn btn-default dropdown-text" id="btn-chooseitem"><i class="fa fa-th-list"></i>选择项目</a>
+            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+            <ul class="dropdown-menu pull-right">
+                <li><a class="btn btn-default" id="btn-clearitem">清空选择项</a></li>
+            </ul>
+        </div>
+        <a class="btn btn-warning" style="margin-right: 3px;" id="btn-save"><i class="fa fa-save">保存</i></a>
+        <a class="btn btn-warning" style="margin-right: 3px;" id="btn-batchsign"><i class="fa fa-pencil-square">批量提交</i></a>
+        <a id="btn-eye" class="btn btn-info" style="margin-right: 3px;"><i class="fa fa-eye-slash"></i></a>
+    </div>
+</div>
+
+<div style="width: 100%;margin-top: 45px;">
+    <div id="order-panel">
+        <div style="width :100%;margin: 2px;">
+            <h5>已选患者</h5>
+            <div style="width: 99%; margin: 2px;border: 1px solid #e6e6e6; background-color: #fff;min-height: 60px;">
+                <div class="row" style="margin: 10px;" id="selectedPatients"></div>
+            </div>
+            <h5>已选检验项目</h5>
+            <div style="width: 99%; margin: 2px;border: 1px solid #e6e6e6; background-color: #fff;min-height: 60px;">
+                <div class="row" style="margin: 10px;" id="selectedItems"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="request-panel" style="margin-top: 5px;">
+        <div class="panel panel-info" style="min-height: 300px;">
+            <div class="panel-heading">
+                检验申请明细记录
+            </div>
+            <div class="panel-body" style="padding: 15px;">
+                <div class="row" id="sheetsBody">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

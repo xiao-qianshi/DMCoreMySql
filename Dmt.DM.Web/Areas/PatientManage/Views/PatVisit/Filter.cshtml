@@ -1,0 +1,113 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.parseJSON(decodeURI($.request("keyValue")));
+    var filterValues = {};
+    $(function () {
+        initControl();      
+    });
+    function initControl() {
+        $("#form1").formSerialize(keyValue);
+        //filterValues.startDate = keyValue.startDate;
+        //filterValues.endDate = keyValue.endDate;
+        //filterValues.bcall = keyValue.bcall;
+        //filterValues.bc1 = keyValue.bc1;
+        //filterValues.bc2 = keyValue.bc2;
+        //filterValues.bc3 = keyValue.bc3;
+        $("#bcall").on("change", function () {
+            if (this.checked == true) {
+                $("#bc1,#bc2,#bc3").prop("checked", false);
+            }
+        });
+        $("#bc1,#bc2,#bc3").on("change", function () {
+            if (this.checked == true) {
+                $("#bcall").prop("checked", false);
+            }
+        });
+
+        $("#statusall").on("change", function () {
+            if (this.checked == true) {
+                $("#statuscomplete,#statusuncomplete").prop("checked", false);
+            }
+        });
+        $("#statusuncomplete").on("change", function () {
+            if (this.checked == true) {
+                $("#statusall").prop("checked", false);
+                $("#statuscomplete").prop("checked", false);
+            }
+        });
+
+        $("#statuscomplete").on("change", function () {
+            if (this.checked == true) {
+                $("#statusall").prop("checked", false);
+                $("#statusuncomplete").prop("checked", false);
+            }
+        });
+
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        var postdata = $('#form1').formSerialize();
+        $.currentWindow().$("#filterstr").attr("value", encodeURI(JSON.stringify(postdata)));
+        //$.currentWindow().$("#gridList").trigger("reloadGrid");
+        $.modalClose();
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">起始日期</th>
+                <td class="formValue">
+                    <input id="startDate" name="startDate" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off"/>
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle">截至日期</th>
+                <td class="formValue">
+                    <input id="endDate" name="endDate" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off"/>
+                </td>
+            </tr>
+
+            <tr>
+                <th class="formTitle" style="height: 35px;">班次</th>
+                <td class="formValue" style="padding-top: 1px;">
+                    <div class="ckbox">
+                        <input id="bcall" name="bcall" type="checkbox" checked="checked"><label for="bcall">全部</label>
+                    </div>
+                    <div class="ckbox">
+                        <input id="bc1" name="bc1" type="checkbox"><label for="bc1">第一班</label>
+                    </div>
+                    <div class="ckbox">
+                        <input id="bc2" name="bc2" type="checkbox"><label for="bc2">第二班</label>
+                    </div>
+                    <div class="ckbox">
+                        <input id="bc3" name="bc3" type="checkbox"><label for="bc3">第三班</label>
+                    </div>
+
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle" style="height: 35px;">状态</th>
+                <td class="formValue" style="padding-top: 1px;">
+                    <div class="ckbox">
+                        <input id="statusall" name="statusall" type="checkbox" checked="checked"><label for="statusall">全部</label>
+                    </div>
+
+                    <div class="ckbox">
+                        <input id="statusuncomplete" name="statusuncomplete" type="checkbox"><label for="statusuncomplete">未完成</label>
+                    </div>
+
+                    <div class="ckbox">
+                        <input id="statuscomplete" name="statuscomplete" type="checkbox"><label for="statuscomplete">已完成</label>
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>

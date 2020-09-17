@@ -1,0 +1,839 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewBag.Title = "Info";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<link href="~/Content/js/simditor/css/simditor.css" rel="stylesheet" />
+<script src="~/Content/js/simditor/js/module.min.js"></script>
+<script src="~/Content/js/simditor/js/hotkeys.min.js"></script>
+<script src="~/Content/js/simditor/js/simditor.min.js"></script>
+
+<environment include="Development">
+    <script src="~/view-js/patient/Summery.js" asp-append-version="true"></script>
+</environment>
+<environment exclude="Development">
+    <script src="~/view-js/patient/Summery.min.js" asp-append-version="true"></script>
+</environment>
+
+<link href="~/Content/css/timeline/timeline.min.css" rel="stylesheet" />
+
+<div style="position: absolute; top: 1px; right: 80px;">
+    <a class="btn btn-default" id="btn-choose" style="font-size: 15px;"><i class="fa fa-users" style="margin-right: 5px; font-size: 15px;"></i>切换患者</a>
+</div>
+<div style="margin-top:-1px;width:70%;margin-left:30px;">
+    <h4>
+        已选患者：
+        &nbsp;&nbsp;
+        <i id="patientName" class="fa fa-user" style="color:red;font-size:20px"></i>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <i id="patientGender" class="fa fa-male"></i>
+        &nbsp;&nbsp;&nbsp;
+        <i id="patientAge"></i>
+        &nbsp;&nbsp;&nbsp;透析号：
+        <i id="dialysisNo"></i>
+        &nbsp;&nbsp;&nbsp;
+        <i id="beInfected" style="color:red;font-size:20px"></i>
+    </h4>
+</div>
+<div class="wrapper" style="margin-top:10px;">
+    <ul class="nav nav-tabs" style="margin-top: -10px;">
+        <li class="active"><a href="#a" data-toggle="tab">透析参数</a></li>
+        <li><a href="#b" data-toggle="tab">血管通路</a></li>
+        <li><a href="#c" data-toggle="tab">穿刺记录</a></li>
+        <li><a href="#d" data-toggle="tab">病历文书</a></li>
+        <li><a href="#e" data-toggle="tab">医嘱用药</a></li>
+        @*<li><a href="#f" data-toggle="tab">检验申请</a></li>*@
+        <li><a href="#g" data-toggle="tab">转归记录</a></li>
+        @*<li><a href="#h" data-toggle="tab">月小结</a></li>*@
+    </ul>
+    <div class="tab-content" style="padding-top: 5px;">
+        <div id="a" class="tab-pane active" style="padding: 15px;">
+            <div style="position: relative; top: 1px;right: 15px;float: right">
+                <a class="btn btn-primary" id="btn-addtxcs" style="font-size: 10px;"><i class="fa fa-plus" style="margin-right: 5px; font-size: 12px;"></i>新建记录</a>
+            </div>
+            <div style="position: relative; top: 45px;right: -75px;float: right">
+                <a class="btn btn-warning" id="btn-addmodeltxcs" style="font-size: 10px;"><i class="fa fa-copy" style="margin-right: 5px; font-size: 12px;"></i>复制模板</a>
+            </div>
+            <div class="rows">
+            </div>
+        </div>
+        <div id="b" class="tab-pane" style="padding: 1px;">
+            <div style="position: inherit; top: 8px;right: 15px;float: right;">
+                <a class="btn btn-primary" id="btn-addaccess" style="font-size: 10px;margin-right: 15px; "><i class="fa fa-plus" style="font-size: 12px;"></i>新建记录</a>
+                <a class="btn btn-warning" id="btn-saveaccess" style="font-size: 10px;margin-right: 15px; "><i class="fa fa-copy" style="font-size: 12px;"></i>保存记录</a>
+                <a class="btn btn-danger" id="btn-deleteaccess" style="font-size: 10px;margin-right: 15px; "><i class="fa fa-trash" style="font-size: 12px;"></i>删除记录</a>
+            </div>
+            <div style="float: left; width: 20%;margin: -2px 2px -10px 4px;">
+                <div class="panel panel-default" style="border: 1px solid #e6e6e6; background-color: #fff;">
+                    <div class="panel-heading">
+                        <strong>血管通路记录</strong>
+                    </div>
+                    <div class="panel-body">
+                        <div class="list-group" id="access-list" style="padding-bottom: 1px; overflow-y: auto;margin: -10px -15px -10px -5px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div style="float: right; width: 79%;margin: 0px 2px -10px 0px;">
+                <div style="border: 1px solid #e6e6e6; background-color: #fff;margin-top: 0px;" id="access-right">
+                    <div class="panel panel-body">
+                        <form id="formaccess">
+                            <div style="margin-top: -22px; margin-left: 1px; margin-right: 0px;">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+                                    <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">图片信息</a></li>
+                                </ul>
+                                <div class="tab-content" style="padding-top: 5px; margin-right: 0px;">
+                                    <div role="tabpanel" class="tab-pane active" id="basic">
+                                        <table class="form">
+                                            <tr>
+                                                <th class="formTitle">手术日期</th>
+                                                <td class="formValue">
+                                                    <input id="B_OperateTime" name="B_OperateTime" type="text" class="form-control required input-wdatepicker" onfocus="WdatePicker()" autocomplete="off" />
+                                                </td>
+                                                <th class="formTitle">启用日期</th>
+                                                <td class="formValue">
+                                                    <input id="B_FirstUseTime" name="B_FirstUseTime" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker()" autocomplete="off" />
+                                                </td>
+
+                                            </tr>
+                                            <tr>
+                                                <th class="formTitle">通路类型</th>
+                                                <td class="formValue">
+                                                    <select id="B_Type" name="B_Type" type="text" class="form-control required">
+                                                        <option value="永久性">永久性</option>
+                                                        <option value="半永久性">半永久性</option>
+                                                        <option value="暂时性">暂时性</option>
+                                                    </select>
+                                                </td>
+                                                <th class="formTitle">通路类别</th>
+                                                <td class="formValue">
+                                                    <select id="B_VascularAccess" name="B_VascularAccess" type="text" class="form-control required">
+                                                        <option value="自体内瘘">自体内瘘</option>
+                                                        <option value="移植内瘘">移植内瘘</option>
+                                                        <option value="带隧道带涤纶套导管">带隧道带涤纶套导管</option>
+                                                        <option value="无隧道无涤纶套导管">无隧道无涤纶套导管</option>
+                                                        <option value="直接动静脉穿刺">直接动静脉穿刺</option>
+                                                        <option value="中心静脉穿刺">中心静脉穿刺</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="formTitle">期望血流速</th>
+                                                <td class="formValue input-group">
+                                                    <input id="B_BloodSpeed_Idea" name="B_BloodSpeed_Idea" type="text" class="form-control" />
+                                                    <span class="input-group-addon">ml/min</span>
+                                                </td>
+                                                <th class="formTitle">实际血流速</th>
+                                                <td class="formValue input-group">
+                                                    <input id="B_BloodSpeed" name="B_BloodSpeed" type="text" class="form-control" />
+                                                    <span class="input-group-addon">ml/min</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="formTitle">通路位置</th>
+                                                <td class="formValue">
+                                                    <select id="B_BodyPart" name="B_BodyPart" type="text" class="form-control required">
+                                                        <option value="腕部">腕部</option>
+                                                        <option value="肘部">肘部</option>
+                                                        <option value="鼻咽窝">鼻咽窝</option>
+                                                        <option value="颈内静脉">颈内静脉</option>
+                                                        <option value="锁骨下静脉">锁骨下静脉</option>
+                                                        <option value="下肢">下肢</option>
+                                                    </select>
+                                                </td>
+                                                <th class="formTitle"></th>
+                                                <td class="formValue">
+                                                    <select id="B_BodyPosition" name="B_BodyPosition" type="text" class="form-control required">
+                                                        <option value="左">左侧</option>
+                                                        <option value="右">右侧</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table class="form">
+                                            <tr>
+                                                <th class="formTitle" valign="top" style="padding-top: 5px;">
+                                                    通路详细描述
+                                                </th>
+                                                <td class="formValue" colspan="3">
+                                                    <textarea id="B_Memo" name="B_Memo" class="form-control" style="height: 60px;" placeholder="注明连接点：eg.桡动脉-头静脉"></textarea>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table class="form">
+                                            <tr>
+                                                <th class="formTitle" valign="top" style="padding-top: 5px;">
+                                                    并发症历史记录
+                                                </th>
+                                                <td class="formValue" colspan="8">
+                                                    <textarea id="B_Complication" name="B_Complication" class="form-control" style="height: 120px;"
+                                                              placeholder="注明产生并发症时间、症状及处理措施：
+                                                      eg.2019-01-01 血栓  溶栓 "></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr style="display:none">
+                                                <td class="form-formValue">
+                                                    <input id="B_Pid" name="B_Pid" type="text" class="form-control required" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table class="form">
+                                            <tr>
+                                                <th class="formTitle" style="height: 35px;">选项</th>
+                                                <td class="formValue" style="padding-top: 1px;">
+                                                    <div class="ckbox">
+                                                        <input id="B_EnabledMark" name="B_EnabledMark" type="checkbox"><label for="B_EnabledMark">是否启用</label>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table class="form">
+                                            <tr>
+                                                <th class="formTitle" valign="top" style="padding-top: 5px;"></th>
+                                                <td class="formValue">
+                                                    <textarea id="B_DisabledRemark" name="B_DisabledRemark" class="form-control" style="height: 60px;"
+                                                              placeholder="停用原因"></textarea>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="extend">
+                                        <div class="card card-info">
+                                            <div class="card-body">
+                                                <button type="button" class="btn btn-primary" id="btn-uploadaccess"><i class="fa fa-cloud-upload"></i>上传图片</button>
+                                                <h6 />
+                                                <img src="" id="accessimg" class="img-thumbnail" alt="" height="450">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="c" class="tab-pane" style="padding-right: 15px;">
+            <div style="float: left; width: 40%;margin: 0px 2px -10px 2px;">
+                <div style="border: 1px solid #e6e6e6; background-color: #fff;margin-top: 0px;">
+                    <div class="card card-info">
+                        <div class="card-body" style="margin-top: 3px;">
+                            <a class="btn btn-primary" id="btn-uploadccjl"><i class="fa fa-cloud-upload"></i>上传图片</a>
+                            <a class="btn btn-primary" id="btn-addccjl" style="float: right;margin-right: 8px;"><i class="fa fa-plus"></i>新建记录</a>
+                            <h6 />
+                            <img src="" id="ccjlimg" class="img-thumbnail" alt="" height="450">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="float: right; width: 59%;margin: 0px 2px -10px 2px;">
+                <div class="rows" style="border: 1px solid #e6e6e6; background-color: #fff;margin-top: 1px;overflow-y: auto;padding-top: 5px;" id="ccjl-list">
+                </div>
+            </div>
+        </div>
+        <div id="d" class="tab-pane" style="padding-right: 0px;">
+            <div class="input-group" style="margin-top: 3px;margin-bottom: 2px;margin-left: 20px;width: 95%">
+                <span class="input-group-addon">日期</span>
+                <input id="bl-startdate" name="bl-startdate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off" placeholder="起始日期" style="width: 135px;" />
+                <input id="bl-enddate" name="bl-enddate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off" placeholder="截至日期" style="width: 135px;" />
+                <div class="btn-group" style="float: right;width: auto;">
+                    <a id="btn-blquery" class="btn btn-default dropdown-text"><i class="fa fa-search"></i>查询病历</a>
+                    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                    <ul class="dropdown-menu pull-left">
+                        <li><a id="btn-blprint" class="btn btn-default">打印预览</a></li>
+                    </ul>
+                    <a id="btn-bladd" class="btn btn-primary" style="margin-left: 10px;margin-right: 10px;"><i class="fa fa-plus"></i>新建病历</a>
+                    <a id="btn-blsave" class="btn btn-warning" style="margin-left: 10px;margin-right: 10px;"><i class="fa fa-save"></i>保存病历</a>
+                    <a id="btn-bldelete" class="btn btn-danger"><i class="fa fa-trash"></i>删除病历</a>
+                </div>
+            </div>
+            <div style="float: left;width: 30%;margin: 5px 2px -10px 2px;">
+                <div style="border: 1px solid #e6e6e6; background-color: #fff;margin-top: -2px;margin-right: 1px;">
+                    <div class="panel panel-default" style="border: 1px solid #e6e6e6; background-color: #fff;">
+                        <div class="panel-heading">
+                            <strong>病历文书记录</strong>
+                        </div>
+                        <div class="panel-body">
+                            <div class="list-group" id="bl-list" style="padding-bottom: 1px; overflow-y: auto;margin: 1px;">
+                                @*<a class="list-group-item">
+                                        <h5 class="list-group-item-heading">2020-05-25 11:23:34</h5>
+                                        <strong class="list-group-item-text">首次病程记录</strong>
+                                        <i class="fa fa-pencil-square" style="float: right;font-size: 22px;margin-top: -6px;margin-right: 5px;"></i>
+                                        <i class="list-group-item-text" style="float: right;margin-right: 20px;">张医生</i>
+                                    </a>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="float: right;width: 69%;margin: 1px;border: 2px solid #e6e6e6; background-color: #fff;overflow-y: auto;overflow-x: hidden;" id="bl-container">
+                <div class="rows" style="margin-top: 5px;">
+                    <div class="col-md-3">
+                        <input id="bl-contenttime" name="bl-contenttime" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" autocomplete="off" placeholder="文档时间" style="width: 99%" />
+                    </div>
+                    <div class="col-md-6"><input id="bl-title" type="text" name="bl-title" class="form-control" autocomplete="off" placeholder="文档标题" style="width: 95%" /></div>
+                    <div class="col-md-2">
+                        <a class="btn btn-default"><i class="fa fa-flask">化验报告</i></a>
+                    </div>
+                    <div class="col-md-12" style="margin: 2px;">
+                        <textarea id="bl-editor" placeholder="这里输入病历正文" autofocus></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="e" class="tab-pane" style="padding-right: 15px;">
+            <div class="input-group" style="margin-top: 3px;margin-bottom: 2px;margin-left: 20px;width: 95%">
+                <span class="input-group-addon">日期</span>
+                <input id="yz-startdate" name="yz-startdate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off" placeholder="起始日期" style="width: 135px;" />
+                <input id="yz-enddate" name="yz-enddate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off" placeholder="截至日期" style="width: 135px;" />
+                <div class="btn-group" style="float: right;width: auto;">
+                    <a id="btn-yzquery" class="btn btn-default" style="margin-right: 10px;"><i class="fa fa-search"></i>查询医嘱</a>
+                    @*<a id="btn-yzadd" class="btn btn-primary" style="margin-right: 10px;"><i class="fa fa-plus"></i>新建医嘱</a>*@
+                    <a id="btn-yzaudit" class="btn btn-warning" style="margin-right: 10px;"><i class="fa fa-pencil"></i>批量提交</a>
+                    @*<a id="btn-yzdelete" class="btn btn-danger" style="margin-right: 10px;"><i class="fa fa-trash"></i>删除医嘱</a>*@
+                </div>
+            </div>
+            <div style="margin: 5px 2px 1px 2px;border: 1px solid #e6e6e6; background-color: #fff;">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong>医嘱记录</strong>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row" id="yz-list" style="padding-bottom: 1px; overflow-y: auto;margin: 1px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin: 15px 2px 1px 2px;border: 1px solid #e6e6e6; background-color: #fff;">
+                <div style="margin-left: 2px;margin-top: 10px;margin-left: 8px;" id="yz-newdata">
+                    <strong>药品医嘱数据项</strong>
+                    <a class="btn btn-primary" id="btn-yzsave" style="float: right;margin-right: 60px;"><i class="fa fa-save">保存医嘱</i></a>
+                    <div class="row" style="margin-top: 16px;">
+                        <div class="col-md-2" style="padding-left: 1px;padding-right: 1px;">
+                            <div class="rows">
+                                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" style="padding-left: 1px;padding-right: 1px;">
+                                    <select id="YZ_IsTemporary" class="form-control">
+                                        <option value="false">临</option>
+                                        <option value="true">长</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9" style="padding-left: 1px;padding-right: 1px;">
+                                    <input style="margin-right: 1px;" placeholder="起始时间" id="YZ_OrderStartTime" name="YZ_OrderStartTime" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss',minDate: '%y-%M-%d 00:00:00'})" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" style="padding-left: 1px;padding-right: 1px;">
+                            <select type="text" class="form-control required" id="YZ_OrderCode" name="YZ_OrderCode"></select>
+                        </div>
+                        <div class="col-md-2" style="padding-left: 1px;padding-right: 1px;">
+                            <div class="input-group">
+                                <input type="number" class="form-control" placeholder="剂量" aria-describedby="drug-unit">
+                                <span class="input-group-addon" id="drug-unit">u</span>
+                            </div>
+                        </div>
+                        <div class="col-md-2" style="padding-left: 1px;padding-right: 1px;">
+                            <select id="YZ_OrderFrequency" name="YZ_OrderFrequency" class="form-control required">
+                                <option value="st">立即</option>
+                                <option value="Qd">Qd(每日一次)</option>
+                                <option value="Bid">Bid(每日两次)</option>
+                                <option value="Tid">Tid(每日三次)</option>
+                                <option value="Qid">Qid(每日)</option>
+                                <option value="Qod">Qod(隔日一次)</option>
+                                <option value="Qw">Qw(每周一次)</option>
+                                <option value="Biw">Biw(每周两次)</option>
+                                <option value="Tiw">Tiw(每周三次)</option>
+                                <option value="Qow">QQow(隔周一次)</option>
+                                <option value="Q2w">QQ2w(每两周一次)</option>
+                                <option value="Q3w">Q3w(每三周一次)</option>
+                                <option value="Q4w">Q4w(每四周一次)</option>
+                                <option value="Q1/2h">Q1/2h(30分钟一次）</option>
+                                <option value="Qh">Qh(每小时一次）</option>
+                                <option value="Q2h">Q2h(二小时一次）</option>
+                                <option value="Q3h">Q3h(三小时一次）</option>
+                                <option value="Q4h">Q4h(四小时一次）</option>
+                                <option value="Q6h">Q6h(六小时一次）</option>
+                                <option value="Q8h">Q8h(八小时一次）</option>
+                                <option value="Q12h">Q12h(12小时一次）</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2" style="padding-left: 1px;padding-right: 10px;">
+                            <input type="text" id="YZ_OrderAdministration" class="form-control" placeholder="用法" aria-describedby="drug-unit">
+                        </div>
+                        <div class="col-md-1" style="margin-top: 6px;padding-left: 1px;padding-right: 1px;">
+                            <i class="fa fa-plus" style="font-size: 25px;margin-right: 12px;"></i>
+                            <i class="fa fa-info-circle" style="font-size: 25px;" data-toggle="tooltip" data-html="true" data-placement="top" title="..."></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="f" class="tab-pane" style="padding-right: 15px;">
+            <div class="input-group" style="margin-top: 3px;margin-bottom: 2px;margin-left: 20px;width: 95%">
+                <span class="input-group-addon">日期</span>
+                <input id="da-startdate" name="da-startdate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off" placeholder="起始日期" style="width: 135px;" />
+                <input id="da-enddate" name="da-enddate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off" placeholder="截至日期" style="width: 135px;" />
+                <div class="btn-group" style="float: right;width: auto;">
+                    <a id="btn-daquery" class="btn btn-default dropdown-text"><i class="fa fa-search"></i>查询结果</a>
+                    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                    <ul class="dropdown-menu pull-left">
+                        <li><a id="btn-daprint" class="btn btn-default">打印预览</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="g" class="tab-pane" style="padding-right: 15px;">
+            <div class="row" style="width: 90%;padding: 5px 20px;">
+                <div class="timeline timeline-single-column" id="transferContent">
+                    <span class="timeline-label">
+                        <a class="btn btn-primary fa-lg"><i class="fa fa-plus-circle"></i></a>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div id="h" class="tab-pane" style="padding-right: 15px;">
+            <div class="input-group" style="margin-top: 3px;margin-bottom: 2px;margin-left: 20px;width: 95%">
+                <input id="yxj-month" name="yxj-month" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM'})" autocomplete="off" placeholder="归属月份" style="width: 150px;margin-right: 15px;font-weight: bold;font-size: 14px;" />
+                @*<span class="input-group-addon">日期</span>*@
+                <a class="btn btn-primary" style="margin-right: 15px;" id="yxj-query"><i class="fa fa-search">统计</i></a>
+                <a class="btn btn-warning" style="margin-right: 15px;"><i class="fa fa-save">保存</i></a>
+                <a class="btn btn-default" style="margin-right: 15px;"><i class="fa fa-print">打印</i></a>
+            </div>
+            <div style="margin-top: 3px;margin-bottom: 2px;margin-left: 10px;overflow-y: auto;font-weight: bold;" id="yxjContent">
+                <h5>透析次数</h5>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">HD</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_HDTimes" id="H_HDTimes" class="form-control required" />
+                            <span class="input-group-addon">次</span>
+                        </td>
+                        <th class="formTitle">透析器</th>
+                        <td class="formValue">
+                            <select id="H_HDDialyzerType" name="H_HDDialyzerType" class="form-control required"></select>
+                        </td>
+
+                        <th class="formTitle">HF</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_HFTimes" id="H_HFTimes" class="form-control required" />
+                            <span class="input-group-addon">次</span>
+                        </td>
+                        <th class="formTitle">透析器</th>
+                        <td class="formValue">
+                            <select id="H_HFDialyzerType" name="H_HFDialyzerType" class="form-control required"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">HDF</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_HDFTimes" id="H_HDFTimes" class="form-control required" />
+                            <span class="input-group-addon">次</span>
+                        </td>
+                        <th class="formTitle">透析器</th>
+                        <td class="formValue">
+                            <select id="H_HDFDialyzerType" name="H_HDFDialyzerType" class="form-control required"></select>
+                        </td>
+
+                        <th class="formTitle">HDHP</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_HDHPTimes" id="H_HDHPTimes" class="form-control required" />
+                            <span class="input-group-addon">次</span>
+                        </td>
+                        <th class="formTitle">透析器</th>
+                        <td class="formValue">
+                            <select id="H_HDHPDialyzerType" name="H_HDHPDialyzerType" class="form-control required"></select>
+                        </td>
+                    </tr>
+                </table>
+                <h5>汇总信息</h5>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">干体重</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_IdeaWeight" id="H_IdeaWeight" class="form-control required" />
+                            <span class="input-group-addon">Kg</span>
+                        </td>
+                        <th class="formTitle">每日尿量</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_UrineVolume" id="H_UrineVolume" class="form-control required" />
+                            <span class="input-group-addon">ml/d</span>
+                        </td>
+                        <th class="formTitle">血管通路</th>
+                        <td class="formValue">
+                            <select id="H_VascularAccess" name="H_VascularAccess" type="text" class="form-control">
+                                <option value="自体内瘘">自体内瘘</option>
+                                <option value="移植内瘘">移植内瘘</option>
+                                <option value="深静脉置管">深静脉置管</option>
+                                <option value="带隧道带涤纶套导管">带隧道带涤纶套导管</option>
+                                <option value="无隧道无涤纶套导管">无隧道无涤纶套导管</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </td>
+                        <th class="formTitle">部位(名称)</th>
+                        <td class="formValue">
+                            <select id="H_AccessName" name="H_AccessName" type="text" class="form-control ">
+                                <option value="左上肢(A/V)">左上肢(A/V)</option>
+                                <option value="右上肢(A/V)">右上肢(A/V)</option>
+                                <option value="颈内静脉">颈内静脉</option>
+                                <option value="股静脉">股静脉</option>
+                                <option value="锁骨下静脉">锁骨下静脉</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">抗凝剂</th>
+                        <td class="formValue">
+                            <select id="H_HeparinType" name="H_HeparinType" class="form-control"></select>
+                        </td>
+                        <th class="formTitle">剂量</th>
+                        <td class="formValue input-group" style="max-width: 160px;">
+                            <input id="H_HeparinAmount" name="H_HeparinAmount" type="number" class="form-control" />
+                            <span id="H_HeparinUnit" class="input-group-addon"></span>
+                        </td>
+                        <th class="formTitle">最大血流速</th>
+                        <td class="formValue input-group">
+                            <input id="H_BloodSpeed" name="H_BloodSpeed" type="number" class="form-control" />
+                            <span class="input-group-addon">ml/min</span>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">透析液</th>
+                        <td class="formValue input-group" style="max-width: 280px;">
+                            <span class="input-group-addon">Ca&nbsp;&nbsp;&nbsp;</span>
+                            <input id="H_TXYCa" name="H_TXYCa" class="form-control" type="number" />
+                            <span class="input-group-addon">mmol/L</span>
+                        </td>
+                        <th class="formTitle"></th>
+                        <td class="formValue input-group" style="max-width: 280px;">
+                            <span class="input-group-addon">K&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                            <input id="H_TXYK" name="H_TXYK" class="form-control" type="number" />
+                            <span class="input-group-addon">mmol/L</span>
+                        </td>
+                        <th class="formTitle"></th>
+                        <td class="formValue  input-group" style="max-width: 280px;">
+                            <span class="input-group-addon">HCO<sub>3</sub><sup>-</sup></span>
+                            <input id="H_TXYHco3" name="H_TXYHco3" class="form-control" type="number" />
+                            <span class="input-group-addon">mmol/L</span>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">每次透析</th>
+                        <td class="formValue input-group" style="max-width: 180px;">
+                            <input id="H_EstimateHours" name="H_EstimateHours" type="number" class="form-control" />
+                            <span class="input-group-addon">小时</span>
+                        </td>
+                        <th class="formTitle">每周透析</th>
+                        <td class="formValue input-group" style="max-width: 180px;">
+                            <input id="H_WeekTimes" name="H_WeekTimes" type="number" class="form-control" />
+                            <span class="input-group-addon">次</span>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+                <h5>急性合并症及处理措施</h5>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                        </th>
+                        <td class="formValue" colspan="3" style="margin-left: 20px;">
+                            <textarea id="H_Complication" name="H_Complication" class="form-control" style="height: 60px; width: 99%;" placeholder="请输入并发症描述信息及处理措施"></textarea>
+                        </td>
+                    </tr>
+                </table>
+                <h5>化验结果</h5>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">血Rt&nbsp;&nbsp;Hb</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_Hb" id="H_Hb" class="form-control required" />
+                        </td>
+                        <th class="formTitle">RBC</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_RBC" id="H_RBC" class="form-control required" />
+                        </td>
+                        <th class="formTitle">HCT</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_HCT" id="H_HCT" class="form-control required" />
+                        </td>
+                        <th class="formTitle">WBC</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_WBC" id="H_WBC" class="form-control required" />
+                        </td>
+                        <th class="formTitle">PLT</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_PLT" id="H_PLT" class="form-control required" />
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">透前 Scr</th>
+                        <td class="formValue">
+                            <input type="number" name="H_Scr" id="H_Scr" class="form-control required" />
+                        </td>
+                        <th class="formTitle">Urea</th>
+                        <td class="formValue">
+                            <input type="number" name="H_Urea" id="H_Urea" class="form-control required" />
+                        </td>
+                        <th class="formTitle">UA</th>
+                        <td class="formValue">
+                            <input type="number" name="H_UA" id="H_UA" class="form-control required" />
+                        </td>
+                        <th class="formTitle">K</th>
+                        <td class="formValue">
+                            <input type="number" name="H_K" id="H_K" class="form-control required" />
+                        </td>
+                        <th class="formTitle">Na</th>
+                        <td class="formValue">
+                            <input type="number" name="H_Na" id="H_Na" class="form-control required" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">Cl</th>
+                        <td class="formValue">
+                            <input type="number" name="H_Cl" id="H_Cl" class="form-control required" />
+                        </td>
+                        <th class="formTitle">HCO3</th>
+                        <td class="formValue">
+                            <input type="number" name="H_HCO3" id="H_HCO3" class="form-control required" />
+                        </td>
+                        <th class="formTitle">Ca</th>
+                        <td class="formValue">
+                            <input type="number" name="H_Ca" id="H_Ca" class="form-control required" />
+                        </td>
+                        <th class="formTitle">P</th>
+                        <td class="formValue">
+                            <input type="number" name="H_P" id="H_P" class="form-control required" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">透后 Scr</th>
+                        <td class="formValue">
+                            <input type="number" name="H_Scr1" id="H_Scr1" class="form-control required" />
+                        </td>
+                        <th class="formTitle">Urea</th>
+                        <td class="formValue">
+                            <input type="number" name="H_Urea1" id="H_Urea1" class="form-control required" />
+                        </td>
+                        <th class="formTitle">UA</th>
+                        <td class="formValue">
+                            <input type="number" name="H_UA1" id="H_UA1" class="form-control required" />
+                        </td>
+                        <th class="formTitle">K</th>
+                        <td class="formValue">
+                            <input type="number" name="H_K1" id="H_K1" class="form-control required" />
+                        </td>
+                        <th class="formTitle">Na</th>
+                        <td class="formValue">
+                            <input type="number" name="H_Na1" id="H_Na1" class="form-control required" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">Cl</th>
+                        <td class="formValue">
+                            <input type="number" name="H_Cl1" id="H_Cl1" class="form-control required" />
+                        </td>
+                        <th class="formTitle">HCO3</th>
+                        <td class="formValue">
+                            <input type="number" name="H_HCO31" id="H_HCO31" class="form-control required" />
+                        </td>
+                        <th class="formTitle">Ca</th>
+                        <td class="formValue">
+                            <input type="number" name="H_Ca1" id="H_Ca1" class="form-control required" />
+                        </td>
+                        <th class="formTitle">P</th>
+                        <td class="formValue">
+                            <input type="number" name="H_P1" id="H_P1" class="form-control required" />
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">透析指标 URR</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_URR" id="H_URR" class="form-control required" />
+                        </td>
+                        <th class="formTitle">spKtV</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_spKtV" id="H_spKtV" class="form-control required" />
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">其他  FER</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_FER" id="H_FER" class="form-control required" />
+                        </td>
+                        <th class="formTitle">TS</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_TS" id="H_TS" class="form-control required" />
+                        </td>
+                        <th class="formTitle">iPTH</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_iPTH" id="H_iPTH" class="form-control required" />
+                        </td>
+                        <th class="formTitle">CRP</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_CRP" id="H_CRP" class="form-control required" />
+                        </td>
+
+                        <th class="formTitle">ALT</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_ALT" id="H_ALT" class="form-control required" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">AST</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_AST" id="H_AST" class="form-control required" />
+                        </td>
+                        <th class="formTitle">TP</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_TP" id="H_TP" class="form-control required" />
+                        </td>
+                        <th class="formTitle">ALB</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_ALB" id="H_ALB" class="form-control required" />
+                        </td>
+                        <th class="formTitle">Glu</th>
+                        <td class="formValue input-group">
+                            <input type="number" name="H_Glu" id="H_Glu" class="form-control required" />
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">传筛</th>
+                        @*<td class="formValue">
+                                <div class="ckbox">
+                                    <input id="H_HBsAg" name="H_HBsAg" type="checkbox">
+                                    <label for="H_HBsAg">HBsAg</label>
+                                </div>
+                            </td>*@
+                        <td class="formValue">
+                            <div class="ckbox">
+                                <input id="H_HCV" name="H_HCV" type="checkbox">
+                                <label for="H_HCV">HCV</label>
+                            </div>
+                        </td>
+                        <td class="formValue">
+                            <div class="ckbox">
+                                <input id="H_HIV" name="H_HIV" type="checkbox">
+                                <label for="H_HIV">HIV</label>
+                            </div>
+                        </td>
+                        <td class="formValue">
+                            <div class="ckbox">
+                                <input id="H_RPR" name="H_RPR" type="checkbox">
+                                <label for="H_RPR">RPR</label>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">乙肝</th>
+                        <td class="formValue">
+                            <div class="ckbox">
+                                <input id="H_HBsAg" name="H_HBsAg" type="checkbox">
+                                <label for="H_HBsAg">HBsAg</label>
+                            </div>
+                        </td>
+                        <td class="formValue">
+                            <div class="ckbox">
+                                <input id="H_HBsAb" name="H_HBsAb" type="checkbox">
+                                <label for="H_HBsAb">HBsAb</label>
+                            </div>
+                        </td>
+                        <td class="formValue">
+                            <div class="ckbox">
+                                <input id="H_HBeAg" name="H_HBeAg" type="checkbox">
+                                <label for="H_HBeAg">HBeAg</label>
+                            </div>
+                        </td>
+                        <td class="formValue">
+                            <div class="ckbox">
+                                <input id="H_HBeAb" name="H_HBeAb" type="checkbox">
+                                <label for="H_HBeAb">HBsAb</label>
+                            </div>
+                        </td>
+                        <td class="formValue">
+                            <div class="ckbox">
+                                <input id="H_HBcAb" name="H_HBcAb" type="checkbox">
+                                <label for="H_HBcAb">HBcAb</label>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <h5>检查报告</h5>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            胸片
+                        </th>
+                        <td class="formValue" colspan="3" style="margin-left: 20px;">
+                            <textarea id="H_ExamXP" name="H_ExamXP" class="form-control" style="height: 50px; width: 99%;" placeholder=""></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            心电图
+                        </th>
+                        <td class="formValue" colspan="3" style="margin-left: 20px;">
+                            <textarea id="H_ExamXDT" name="H_ExamXDT" class="form-control" style="height: 50px; width: 99%;" placeholder=""></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            彩超
+                        </th>
+                        <td class="formValue" colspan="3" style="margin-left: 20px;">
+                            <textarea id="H_ExamCC" name="H_ExamCC" class="form-control" style="height: 50px; width: 99%;" placeholder=""></textarea>
+                        </td>
+                    </tr>
+                </table>
+                <h5>用药记录</h5>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                        </th>
+                        <td class="formValue" colspan="3" style="margin-left: 20px;">
+                            <textarea id="H_DrugSummary" name="H_DrugSummary" class="form-control" style="height: 80px; width: 99%;" placeholder=""></textarea>
+                        </td>
+                    </tr>
+                </table>
+                <h5>本月透析总评价以及存在的问题</h5>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                        </th>
+                        <td class="formValue" colspan="3" style="margin-left: 20px;">
+                            <textarea id="H_Content" name="H_Content" class="form-control" style="height: 60px; width: 99%;" placeholder=""></textarea>
+                        </td>
+                    </tr>
+                </table>
+                <h5>下月透析注意事项</h5>
+                <table class="form">
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                        </th>
+                        <td class="formValue" colspan="3" style="margin-left: 20px;">
+                            <textarea id="H_Suggest" name="H_Suggest" class="form-control" style="height: 60px; width: 99%;" placeholder=""></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+

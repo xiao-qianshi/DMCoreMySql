@@ -1,0 +1,189 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    var f_id = null;
+    var visitDate = null;
+    var dialysisNo = null;
+    $(function () {
+        initControl();
+        $.ajax({
+            url: "/PatientManage/PatVisit/GetSubmitOrderJson",
+            data: { keyValue: keyValue, startDate: $("#startDate").val(), endDate: $("#endDate").val() },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                //$("#form1").formSerialize(data);
+                //$("#form1").find('.form-control,select,input').attr('readonly', 'readonly');
+                //$("#form1").find('div.ckbox label').attr('for', '');
+                refreshTable(data);
+            }
+        });
+    });
+    function initControl() {
+        var arr = keyValue.split("^");
+        keyValue = arr[0];
+        visitDate = arr[1];
+        dialysisNo = arr[2];
+        $("#startDate").val(visitDate + " 00:00:00");
+        $("#endDate").val(visitDate + " 23:59:59");
+    }
+
+    function refreshTable(data) {
+        var $table = $("#tablebody");
+        $table.html();
+        var json = eval(data);
+        var htmlstr = "";
+        $.each(json, function (idx, obj) {
+            htmlstr = htmlstr + "<tr>"
+            htmlstr = htmlstr + "<td class=\"formValue\" style=\"padding-top: 1px;\"><div class=\"ckbox\"><input id=\"check" + idx + "\" name=\"check"
+                + idx + "\" type=\"checkbox\"  value=\"" + obj.F_Id + "\"><label for=\"check" + idx + "\"></label></div></td>";
+            //htmlstr   <td>服务</td>
+            htmlstr = htmlstr + "<td>" + obj.F_OrderType + "</td>";
+            htmlstr = htmlstr + "<td>" + obj.F_IsTemporary + "</td>";
+            htmlstr = htmlstr + "<td>" + obj.F_OrderText + "</td>";
+            htmlstr = htmlstr + "<td>" + obj.F_OrderSpec + "</td>";
+            htmlstr = htmlstr + "<td>" + obj.F_OrderAmount + "</td>";
+            htmlstr = htmlstr + "<td>" + obj.F_OrderFrequency  + "</td>";
+            htmlstr = htmlstr + "<td>" + obj.F_NurseOperatorTime + "</td>";
+            htmlstr = htmlstr + "<td>" + (obj.F_Nurse == null ? "" : obj.F_Nurse ) + "</td>";
+            //htmlstr = htmlstr + "<td>" + (obj.F_NurseOperatorTime == null ? "" : obj.F_NurseOperatorTime) + "</td>"; 
+            htmlstr = htmlstr + "<td class=\"formValue\">" +
+                "<input id=\"scheduleDate" + idx + "\" type=\"text\" class=\"form-control input - wdatepicker\" onfocus=\"WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', minDate: '%y-%M-%d 00:00:00' })\" />"
+                + "</td>";
+            //<td class="formValue">
+            //    <input id="scheduleDate" name="scheduleDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss',minDate: '%y-%M-%d 00:00:00'})" />
+            //</td>   
+
+            htmlstr = htmlstr + "</tr>";
+ 
+        });
+        $table.html(htmlstr);
+    }
+
+    function btn_query() {
+        $.ajax({
+            url: "/PatientManage/PatVisit/GetSubmitOrderJson",
+            data: { keyValue: keyValue, startDate: $("#startDate").val(), endDate: $("#endDate").val() },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                refreshTable(data);
+            }
+        });
+    }
+
+
+    function submitForm() {
+        //if (!$('#form1').formValid()) {
+        //    return false;
+        //}
+        var arr = [];
+        
+        $("input:checkbox:checked").each(function () {
+            var j = {};
+            j.id = $(this).val();
+            //var parent = $(this).siblings();
+            var thisid = $(this).attr('id');
+            j.date = $("#" + thisid.replace("check", "scheduleDate")).val();
+            arr.push(j);
+        });
+        var keyValue = JSON.stringify(arr);
+
+        $.submitForm({
+            url: "/PatientManage/Orders/ExecOrder?keyValue=" + keyValue,
+            param: $("#form1").formSerialize(),
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        });
+
+    }
+
+
+    function submitData() {
+        var arr = [];
+        $("input:checkbox:checked").each(function () {
+            var j = {};
+            j.id = $(this).val();
+            var thisid = $(this).attr('id');
+            j.date = $("#" + thisid.replace("check", "scheduleDate")).val();
+            arr.push(j);
+        });
+        var keyValue = JSON.stringify(arr);
+
+        $.submitForm({
+            url: "/PatientManage/Orders/ExecOrder?keyValue=" + keyValue,
+            param: $("#form1").formSerialize(),
+            success: function () {
+                $.currentWindow().reQueryData();
+            }
+        });
+
+    }
+
+    function btn_select() {
+        $(":checkbox").each(function () {
+            $(this).prop("checked", true);
+        });
+    }
+    function btn_cancel() {
+        $(":checkbox").each(function () {
+            $(this).prop("checked", false);
+        });
+    }
+
+
+</script>
+
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">起始日期</th>
+                <td class="formValue">
+                    <input id="startDate" name="startDate" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" autocomplete="off"/>
+                </td>
+                <th class="formTitle">截至日期</th>
+                <td class="formValue">
+                    <input id="endDate" name="endDate" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" autocomplete="off"/>
+                </td>
+                <td class="formValue">
+                    <div class="btn-group">
+                        <a id="btn_query" class="btn btn-primary dropdown-text" onclick="btn_query()"><i class="fa fa-plus"></i>查询</a>
+                    </div>
+              
+                    <div class="btn-group">
+                        <a id="btn_select" class="btn btn-primary dropdown-text" onclick="btn_select()"><i class="fa fa-plus"></i>全选</a>
+                    </div>
+                    <div class="btn-group">
+                        <a id="btn_cancel" class="btn btn-primary dropdown-text" onclick="btn_cancel()"><i class="fa fa-plus"></i>反选</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div class="price-table">
+            <table>
+                <thead>
+                    <tr>
+                        <td style="width: 3%;">&nbsp;</td>
+                        <td style="width: 3.5%;">类别</td>
+                        <td style="width: 3.5%;">类型</td>
+                        <td style="width: 25%;">名称</td>
+                        <td style="width: 8%;">规格</td>
+                        <td style="width: 9%;">剂量</td>
+                        <td style="width: 8%;">频次</td>
+                        <td style="width: 13%;">上次执行时间</td>
+                        <td style="width: 6%;">执行者</td>
+                        <td>执行时间</td>
+                    </tr>
+                </thead>
+                <tbody id="tablebody">
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>

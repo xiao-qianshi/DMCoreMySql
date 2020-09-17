@@ -1,0 +1,430 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+
+<script src="~/Content/js/datepicker/WdatePicker.js"></script>
+<script src="~/Content/js/validate/jquery.validate.min.js"></script>
+
+
+<script>
+    var selectId = null;
+    var listAll = [];
+    var visitDate = "";
+    var visitNo = "0";
+    $(function () {   
+        visitDate = new Date().Format('yyyy-MM-dd');
+        $("#F_VisitDate").val(visitDate);
+        gridList();
+        $("#time_horizon a.btn-default").click(function () {
+            $("#time_horizon a.btn-default").removeClass("active");
+            $(this).addClass("active");
+            visitNo = $(this).attr("data-value");
+            $("#gridList").jqGrid('setGridParam', {
+                postData: {
+                    keyword: JSON.stringify({
+                        visitDate: visitDate,
+                        visitNo: visitNo
+                    })
+                }
+            }).trigger('reloadGrid');
+            resetForm();
+        });
+
+        $("#F_Step_1,#F_Step_2,#F_Step_3,#F_Step_4,#F_Step_5").click(function (e) {
+            //console.log(e);
+            if (e.currentTarget.checked) {
+                var $target = $("#" + e.currentTarget.id).parent().parent();
+                $target.removeClass("alert-success");
+                $target.addClass("alert-danger");
+                $target.parent().siblings().attr("style", "display:block;");
+            } else {
+                var $target = $("#" + e.currentTarget.id).parent().parent();
+                $target.removeClass("alert-danger");
+                $target.addClass("alert-success");
+                $target.parent().siblings().attr("style", "display:none;");
+            }     
+        });
+    })
+    function gridList() {
+        var $gridList = $("#gridList");
+        $gridList.dataGrid({
+            url: "/PatientManage/ProcessFlow/GetGridJson",
+            height: $(window).height() - 135,
+            colModel: [
+                { label: '主键', name: 'F_Id', hidden: true },
+                { label: 'PID', name: 'F_Pid', hidden: true },
+                { label: 'VID', name: 'F_Vid', hidden: true },
+                { label: '姓名', name: 'F_PName', width: 60, align: 'left' },
+                { label: '性别', name: 'F_PGender', width: 40, align: 'left' },
+                { label: 'Kt/V', name: 'F_Result', width: 50, align: 'center' },
+                {
+                    label: "状态", name: "F_Result", width: 40, align: "center",
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (cellvalue >= 1.2) {
+                            return '<span class=\"label label-success\">正常</span>';
+                        } else if (cellvalue < 1.2) {
+                            return '<span class=\"label label-danger\">未达标</span>';
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                { label: '透析时间', name: 'F_TotalHours', width: 70, align: 'left' },
+                { label: '透前尿素氮', name: 'F_PreUrea', width: 70, align: 'left' },
+                { label: '透后尿素氮', name: 'F_PostUrea', width: 70, align: 'left' },
+                { label: '透前体重', name: 'F_PreWeight', width: 70, align: 'left' },
+                { label: '透前体重', name: 'F_PostWeight', width: 70, align: 'left' },
+                { label: '脱水量', name: 'F_Content', hidden: true }
+            ],
+            postData: {
+                keyword: JSON.stringify({
+                    visitDate: visitDate,
+                    visitNo: visitNo
+                })
+            },
+            pager: "#gridPager",
+            sortname: 'F_PName asc',
+            viewrecords: true,
+            onCellSelect: function (rowid, iCol, cellcontent, e) { //单击选择行
+                //console.log(rowid, iCol, cellcontent, e)
+                selectId = $gridList.jqGrid('getRowData', rowid).F_Id;
+                $.ajax({
+                    url: "/PatientManage/ProcessFlow/GetFormJson",
+                    data: { keyValue: selectId },
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        $("#formContent").formSerialize(data);
+                        //if data.#F_Step_1, #F_Step_2, #F_Step_3, #F_Step_4, #F_Step_5
+                        if (data.F_Step_1) {
+                            var $target = $("#F_Step_1").parent().parent();
+                            $target.removeClass("alert-success");
+                            $target.addClass("alert-danger");
+                            $target.parent().siblings().attr("style", "display:block;");
+                        } else {
+                            var $target = $("#F_Step_1").parent().parent();
+                            $target.removeClass("alert-danger");
+                            $target.addClass("alert-success");
+                            $target.parent().siblings().attr("style", "display:none;");
+                        }
+                        if (data.F_Step_2) {
+                            var $target = $("#F_Step_2").parent().parent();
+                            $target.removeClass("alert-success");
+                            $target.addClass("alert-danger");
+                            $target.parent().siblings().attr("style", "display:block;");
+                        } else {
+                            var $target = $("#F_Step_2").parent().parent();
+                            $target.removeClass("alert-danger");
+                            $target.addClass("alert-success");
+                            $target.parent().siblings().attr("style", "display:none;");
+                        }
+                        if (data.F_Step_3) {
+                            var $target = $("#F_Step_3").parent().parent();
+                            $target.removeClass("alert-success");
+                            $target.addClass("alert-danger");
+                            $target.parent().siblings().attr("style", "display:block;");
+                        } else {
+                            var $target = $("#F_Step_3").parent().parent();
+                            $target.removeClass("alert-danger");
+                            $target.addClass("alert-success");
+                            $target.parent().siblings().attr("style", "display:none;");
+                        }
+                        if (data.F_Step_4) {
+                            var $target = $("#F_Step_4").parent().parent();
+                            $target.removeClass("alert-success");
+                            $target.addClass("alert-danger");
+                            $target.parent().siblings().attr("style", "display:block;");
+                        } else {
+                            var $target = $("#F_Step_4").parent().parent();
+                            $target.removeClass("alert-danger");
+                            $target.addClass("alert-success");
+                            $target.parent().siblings().attr("style", "display:none;");
+                        }
+                        if (data.F_Step_5) {
+                            var $target = $("#F_Step_5").parent().parent();
+                            $target.removeClass("alert-success");
+                            $target.addClass("alert-danger");
+                            $target.parent().siblings().attr("style", "display:block;");
+                        } else {
+                            var $target = $("#F_Step_5").parent().parent();
+                            $target.removeClass("alert-danger");
+                            $target.addClass("alert-success");
+                            $target.parent().siblings().attr("style", "display:none;");
+                        }
+                        
+                    }
+                });
+
+            }
+        });
+        $("#NF-query").on('click', function () {
+            $("#gridList").jqGrid('setGridParam', {
+                postData: {
+                    keyword: JSON.stringify({
+                        visitDate: visitDate,
+                        visitNo: visitNo
+                    })
+                }
+            }).trigger('reloadGrid');
+            resetForm();
+        });
+
+        $("#NF-save").on('click', function () {
+            if (!!selectId) {
+                $.submitForm({
+                    url: "/PatientManage/ProcessFlow/SubmitForm?keyValue=" + selectId,
+                    param: $("#formContent").formSerialize(),
+                    success: function () {
+                        $("#gridList").jqGrid('setGridParam', {
+                            postData: {
+                                keyword: JSON.stringify({
+                                    visitDate: visitDate,
+                                    visitNo: visitNo
+                                })
+                            }
+                        }).trigger('reloadGrid');
+                        resetForm();
+                    }
+                });
+            }       
+        });
+    }
+
+    function btn_edit() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.modalOpen({
+                id: "Form",
+                title: "修改",
+                url: "/PatientManage/ProcessFlow/Form?keyValue=" + keyValue,
+                width: "700px",
+                height: "400px",
+                callBack: function (iframeId) {
+                    top.frames[iframeId].submitForm();
+                }
+            });
+        }
+    }
+
+    function btn_delete() {
+        var keyValue = $("#gridList").jqGridRowValue().F_Id;
+        if (!!keyValue) {
+            $.deleteForm({
+                url: "/PatientManage/ProcessFlow/DeleteForm",
+                param: { keyValue: keyValue },
+                success: function () {
+                    $.currentWindow().$("#gridList").trigger("reloadGrid");
+                    resetForm();
+                }
+            })
+        }
+    }
+
+    Date.prototype.Format = function (fmt) { //author: meizz
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+    function pickerChange() {
+        visitDate = $("#F_VisitDate").val();
+        $("#gridList").jqGrid('setGridParam', {
+            postData: {
+                keyword: JSON.stringify({
+                    visitDate: visitDate,
+                    visitNo: visitNo
+                })
+            }
+        }).trigger('reloadGrid');
+        resetForm();
+    }
+
+    function resetForm() {
+        selectId = "";
+        var $form = $("#formContent");
+        $form.find("div .alert").removeClass("alert-danger").addClass("alert-success");
+        $form.find("input[type='checkbox']").prop('checked', false);
+        $form.find("div .card-body,.card-footer").attr("style", "display:none;");
+    }
+</script>
+
+<div class="rows" style="margin-bottom: 1%; overflow: hidden;">
+    <div style="float: left; width: 50%;">
+        <div class="topPanel">
+            <div class="toolbar">
+                <div class="btn-group">
+                    <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+                </div>
+                <div class="btn-group">
+                    <a id="NF-query" authorize="yes" class="btn btn-primary dropdown-text"><i class="fa fa-search"></i>查询</a>
+                </div>
+                <div class="operate">
+                    <ul class="nav nav-pills">
+                        <li class="first">已选中<span>1</span>项</li>
+                        <li><a id="NF-edit" authorize="yes" onclick="btn_edit()"><i class="fa fa-pencil-square-o"></i>修改</a></li>
+                        <li><a id="NF-delete" authorize="yes" onclick="btn_delete()"><i class="fa fa-trash-o"></i>删除</a></li>
+                    </ul>
+                    <a href="javascript:;" class="close"></a>
+                </div>
+                <script>$('.toolbar').authorizeButton()</script>
+            </div>
+            <div class="search">
+                <table>
+                    <tr>
+                        <td style="width: 100px;">
+                            <div class="input-group">
+                                <input id="F_VisitDate" name="F_VisitDate" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd',onpicked:pickerChange})" autocomplete="off"/>
+                            </div>
+                        </td>
+                        <td style="padding-left: 30px;">
+                            <div id="time_horizon" class="btn-group">
+                                <a class="btn btn-default active" data-value="0">全部</a>
+                                <a class="btn btn-default" data-value="1">第一班</a>
+                                <a class="btn btn-default" data-value="2">第二班</a>
+                                <a class="btn btn-default" data-value="3">第三班</a>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="gridPanel">
+            <table id="gridList"></table>
+            <div id="gridPager"></div>
+        </div>
+    </div>
+    <div style="float: right; width: 49%">
+        <div style="width: 95%">
+            <form id="formContent">
+                <div class="card" id="Step_1">
+                    <div class="card-title">
+                        <div class="alert alert-success" style="text-align: left; margin-bottom: 10px; font-size: 15px;">
+                            <i class="fa fa-warning alert-dismissible" style="position: relative; top: 1px; font-size: 20px; padding-right: 15px;"></i>
+                            透析时间未达到4小时？
+                            <div class="ckbox" style="float: right;width: 40px;">
+                                <input id="F_Step_1" name="F_Step_1" type="checkbox"><label for="F_Step_1">是</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="display:none">
+                        <div style="margin-left: 20px">
+                            <div class="ckbox">
+                                <input id="F_Step_1_Reason1" name="F_Step_1_Reason1" type="checkbox"><label for="F_Step_1_Reason1">患者要求提前回血</label>
+                            </div>
+                            <div class="ckbox" style="margin-left: 30px">
+                                <input id="F_Step_1_Reason2" name="F_Step_1_Reason2" type="checkbox"><label for="F_Step_1_Reason2">出现并发症(低血压、肌肉痉挛、心肌缺血、心律失常等)</label>
+                            </div>
+                            <div class="ckbox" style="margin-left: 30px">
+                                <input id="F_Step_1_Reason3" name="F_Step_1_Reason3" type="checkbox"><label for="F_Step_1_Reason3">其他原因</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer" style="display:none">
+                        <div style="margin-left: 20px;margin-top: 30px;width: 85%">
+                            <textarea id="F_Step_1_Measures" name="F_Step_1_Measures" class="form-control" style="height: 40px;" placeholder="处理措施 eg.加强宣教,尽量帮助患者解决出行问题;处理相关并发症流程"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" id="Step_2" style="margin-top: 10px">
+                    <div class="card-title">
+                        <div class="alert alert-success" style="text-align: left; margin-bottom: 10px; font-size: 15px;">
+                            <i class="fa fa-warning alert-dismissible" style="position: relative; top: 1px; font-size: 20px; padding-right: 15px;"></i>
+                            血管通路是否存在问题？
+                            <div class="ckbox" style="float: right;width: 40px;">
+                                <input id="F_Step_2" name="F_Step_2" type="checkbox"><label for="F_Step_2">是</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="display:none">
+                        <div style="margin-left: 20px">
+                            <div class="ckbox">
+                                <input id="F_Step_2_Reason1" name="F_Step_2_Reason1" type="checkbox"><label for="F_Step_2_Reason1">流量不足，导管问题</label>
+                            </div>
+                            <div class="ckbox" style="margin-left: 30px">
+                                <input id="F_Step_2_Reason2" name="F_Step_2_Reason2" type="checkbox"><label for="F_Step_2_Reason2">动脉压低</label>
+                            </div>
+                            <div class="ckbox" style="margin-left: 30px">
+                                <input id="F_Step_2_Reason3" name="F_Step_2_Reason3" type="checkbox"><label for="F_Step_2_Reason3">流量不足，内瘘问题</label>
+                            </div>
+                            <div class="ckbox" style="margin-left: 30px">
+                                <input id="F_Step_2_Reason4" name="F_Step_2_Reason4" type="checkbox"><label for="F_Step_2_Reason4">其他原因</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer" style="display:none">
+                        <div style="margin-left: 20px;margin-top: 30px;width: 85%">
+                            <textarea id="F_Step_2_Measures" name="F_Step_2_Measures" class="form-control" style="height: 40px;" placeholder="处理措施 eg.导管内血栓形成、位置不佳、纤维蛋白鞘形成，尿激酶封管、超声看导管尖位置、换管等；穿刺技术问题、再循环？更换穿刺护士、改变穿刺位置；—Transonic 看血流速及变化、动脉压、静脉压，如有狭窄，联系血管通路学组处理；"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" id="Step_3" style="margin-top: 10px">
+                    <div class="card-title">
+                        <div class="alert alert-success" style="text-align: left; margin-bottom: 10px; font-size: 15px;">
+                            <i class="fa fa-warning alert-dismissible" style="position: relative; top: 1px; font-size: 20px; padding-right: 15px;"></i>
+                            抗凝剂剂量使用不合理？
+                            <div class="ckbox" style="float: right;width: 40px;">
+                                <input id="F_Step_3" name="F_Step_3" type="checkbox"><label for="F_Step_3">是</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer" style="display:none">
+                        <div style="margin-left: 20px;width: 85%">
+                            <textarea id="F_Step_3_Measures" name="F_Step_3_Measures" class="form-control" style="height: 40px;" placeholder="处理措施 eg.回顾透析记录单近2-3次治疗均为2和2级以上凝血，增加抗凝剂剂量"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" id="Step_4" style="margin-top: 10px">
+                    <div class="card-title">
+                        <div class="alert alert-success" style="text-align: left; margin-bottom: 10px; font-size: 15px;">
+                            <i class="fa fa-warning alert-dismissible" style="position: relative; top: 1px; font-size: 20px; padding-right: 15px;"></i>
+                            透析器型号或规格使用不合理？
+                            <div class="ckbox" style="float: right;width: 40px;">
+                                <input id="F_Step_4" name="F_Step_4" type="checkbox"><label for="F_Step_4">是</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer" style="display:none">
+                        <div style="margin-left: 20px;width: 85%">
+                            <textarea id="F_Step_4_Measures" name="F_Step_4_Measures" class="form-control" style="height: 40px;" placeholder="处理措施 eg. 70kg 以上者，考虑换用更大面积透析器（如 1.4m2 换到 1.8/1.9 m2）"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" id="Step_5" style="margin-top: 10px">
+                    <div class="card-title">
+                        <div class="alert alert-success" style="text-align: left; margin-bottom: 10px; font-size: 15px;">
+                            <i class="fa fa-warning alert-dismissible" style="position: relative; top: 1px; font-size: 20px; padding-right: 15px;"></i>
+                            透析液流速是否达标？
+                            <div class="ckbox" style="float: right;width: 40px;">
+                                <input id="F_Step_5" name="F_Step_5" type="checkbox"><label for="F_Step_5">是</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer" style="display:none">
+                        <div style="margin-left: 20px;width: 85%">
+                            <textarea id="F_Step_5_Measures" name="F_Step_5_Measures" class="form-control" style="height: 40px;" placeholder="理论上透析液流速应为 500ml/min，患者的血流速是否可以持续在 300ml/min 以上？处理措施 eg. 增加透析液速度（血流速与透析液流速比 1：2）；延长透析时间。"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="btn-group" style="margin-top: 15px;">
+                <a id="NF-save" authorize="yes" class="btn btn-primary dropdown-text"><i class="fa fa-save"></i>保存</a>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,182 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+<link media="print" href="~/Content/js/jqprint/common.css" rel="stylesheet" />
+<script>
+    var keyValue = $.request("keyValue");
+    var currentPID = '';
+    $(function () {
+        var year = new Date().getFullYear();
+        var month = new Date().getMonth() + 1;
+        var day = new Date().getDate();
+        var today = year + '-' + month + '-' + day;
+        $("#endDate").val(today);
+        $("#startDate").val(today);
+        initControl();
+        $("#btn_query").trigger("click");
+    });
+    function initControl() {
+        $.ajax({
+            url: "/PatientManage/Patient/GetSelectJson",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                var tags = [];
+                //var first = {};
+                //first.id = "";
+                //first.text = "";
+                //tags.push(first);
+                $.each(data, function (index, item) {
+                    var obj = {};
+                    obj.id = item.id;
+                    obj.text = item.name + "(No." + item.recordNo + ")" + item.py;
+                    tags.push(obj);
+                }
+                );
+
+                $("#pid").bindSelect({
+                    search: true,
+                    data: tags,
+                    change: function (e) {
+                        currentPID = e.id;
+                        //$("#gridList").jqGrid('setGridParam', {
+                        //    postData: { keyword: currentPID + "^" + $("#txt_keyword").val() },
+                        //}).trigger('reloadGrid');
+                    }
+                });
+            }
+        });
+        $("#selectall").on("click", function () {
+            $(":checkbox").each(function () {
+                $(this).prop("checked", true);
+            });
+        })
+        $("#selectcancel").on("click", function () {
+            $(":checkbox").each(function () {
+                $(this).prop("checked", false);
+            });
+        })
+        $("#btn_query").on("click", function () {
+            //var date = $("#visitDate").val();
+            var j = {};
+            var startDate = $("#startDate").val();
+            var endDate = $("#endDate").val();
+            var patientId = $("#pid").val();
+            j.startDate = startDate;
+            j.endDate = endDate;
+            j.patientId = patientId;
+  
+            if (!!startDate && !!endDate && !!pid) {
+                $.ajax({
+                    url: "/PatientManage/PatVisit/GetPrintRecordIDsJson",
+                    data: {
+                        keyword: JSON.stringify(j)
+                    },
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        refreshTable(data);
+                    }
+                });
+            }
+        });
+        $("#btn_print").on("click", function () {
+            var arr = [];
+            $("input:checkbox:checked").not(".bc").each(function () {
+                var j = {};
+                j.F_Id = $(this).val();
+                arr.push(j);
+            });
+            var keyValue = JSON.stringify(arr);
+            if (!!keyValue) {
+                if (arr.length > 0) {
+                    $.ajax({
+                        type: 'post',
+                        url: "/PatientManage/PatVisit/GetReportImageBatch",
+                        data: JSON.stringify({ keyValue: keyValue }),
+                        success: function (result) {
+                            $("#prepareprint").html(result);
+                            $("#prepareprint").attr("style", "display:block;"); //显示div
+                            $("#prepareprint").jqprint();
+                            $("#prepareprint").attr("style", "display:none;"); //隐藏div
+                        }
+                    });
+                }   
+            }  
+        });
+
+        $("#btn_close").on("click", function () {
+            $.modalClose();
+        });
+    }
+    function refreshTable(data) {
+        var $table = $("#table");
+        $table.html();
+        var json = eval(data);
+        var htmlstr = "";
+        $.each(json, function (idx, obj) {
+            if (idx % 5 == 0) {
+                if (idx == 0) {
+                    htmlstr = htmlstr + "<tr>";
+                }
+                else {
+                    htmlstr = htmlstr + "</tr><tr>";
+                }
+            }
+            htmlstr = htmlstr + "<td class=\"formValue\" style=\"padding-top: 1px;\"><div class=\"ckbox\"><input id=\"check" + idx + "\" name=\"check" + idx + "\" type=\"checkbox\"  value=\"" + obj.F_Id + "\"><label for=\"check" + idx + "\">" + obj.F_VisitDate + " " + obj.F_DialysisType + "</label></div></td>";
+        });
+        htmlstr = htmlstr + "</tr>";
+        $table.html(htmlstr);
+    }
+
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">起始日期</th>
+                <td class="formValue">
+                    <input id="startDate" name="startDate" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off"/>
+                </td>
+                <th class="formTitle">截至日期</th>
+                <td class="formValue">
+                    <input id="endDate" name="endDate" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd'})" autocomplete="off"/>
+                </td>
+                <th class="formTitle">患者</th>
+                <td class="formValue">
+                    <select id="pid" name="pid" class="form-control" type="text"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="formValue">
+                    <div class="btn-group">
+                        <a id="btn_query" class="btn btn-primary"><i class="fa fa-search"></i>查询</a>
+                    </div>
+                </td>
+                <td class="formValue">
+                    <div class="btn-group">
+                        <a id="selectall" class="btn btn-primary"><i class="fa fa-plus"></i>全选</a>
+                        <span>&nbsp;&nbsp;&nbsp;</span>
+                        <a id="selectcancel" class="btn btn-primary"><i class="fa fa-plus"></i>反选</a>
+                    </div>
+                </td>
+                <td class="formValue">
+                    <div class="btn-group">
+                        <a id="btn_print" class="btn btn-primary"><i class="fa fa-print"></i>打印</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="margin-top: 20px; margin-left: 30px; margin-right: 30px;">
+        <table class="form" id="table"></table>
+    </div>
+
+    <div id="prepareprint" style="visibility:hidden;display:none">
+    </div>
+
+    <div id="zldprint" style="visibility:hidden;display:none">
+    </div>
+</form>

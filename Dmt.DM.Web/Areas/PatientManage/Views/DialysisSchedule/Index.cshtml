@@ -1,0 +1,954 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+<link media="print" href="~/Content/js/jqprint/schedule.css" rel="stylesheet" />
+
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+
+<script type="text/javascript">
+    var weekStart; //本周周一的时间
+    var availableTags = [];
+    var patientList = "";
+    var g_lastrow = null;
+    var g_lastcol = null;
+    var g_lastname = null;
+    var defaultDialysisType = "HD";
+    $(function () {
+        initControl();
+        getPatientList();
+        var year = new Date().getFullYear();
+        var month = new Date().getMonth() + 1;
+        var day = new Date().getDate();
+        if (new Date().getDay() == 0) {  //周天的情况；
+            weekStart = (new Date(year + '/' + month + '/' + day)).getTime() - ((new Date().getDay()) + 6) * 86400000;
+        } else {
+            weekStart = (new Date(year + '/' + month + '/' + day)).getTime() - ((new Date().getDay()) - 1) * 86400000;
+        }
+        gridList();
+        changeGroupHeaders();
+    })
+    function gridList() {
+        var $gridList = $("#gridList");
+        var colwidth = 70;//($(window).width() - 300) / 21;
+        if (colwidth < 40) colwidth = 40;
+        $gridList.dataGrid({
+            //url: "/PatientManage/DialysisSchedule/GetGridJson?keyword" + new Date(weekStart).Format("yyyy-MM-dd"),
+            url: "/PatientManage/DialysisSchedule/GetGridJson",
+            height: $(window).height() - 160,
+            colModel: [
+                { label: '床号ID', name: 'F_BId', hidden: true, frozen: true },
+                { label: '床分组', name: 'F_GroupName', hidden: true, frozen: true },
+                { label: '主键', name: 'F_Id', hidden: true, frozen: true },
+                { label: '组别', name: 'F_GroupName', width: 30, align: 'left', frozen: true },
+                { label: '床号', name: 'F_DialysisBedNo', width: 30, align: 'left', frozen: true },
+                {
+                    label: "1", name: 'F_Monday1', width: colwidth, align: 'center'  //"<span class=\"badge badge-info\">20</span>"
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                    //edittype: 'custom',
+                    //editoptions: { custom_element: customElement, custom_value: customValue }
+                    //editoptions: { value: patientList, AddSelectEditComplete: addSelect2Class }
+                },
+                {
+                    label: '2', name: 'F_Monday2', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '3', name: 'F_Monday3', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '1', name: 'F_Tuesday1', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '2', name: 'F_Tuesday2', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '3', name: 'F_Tuesday3', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '1', name: 'F_Wednesday1', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '2', name: 'F_Wednesday2', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '3', name: 'F_Wednesday3', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '1', name: 'F_Thursday1', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '2', name: 'F_Thursday2', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '3', name: 'F_Thursday3', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '1', name: 'F_Friday1', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '2', name: 'F_Friday2', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '3', name: 'F_Friday3', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '1', name: 'F_Saturday1', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '2', name: 'F_Saturday2', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '3', name: 'F_Saturday3', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '1', name: 'F_Sunday1', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '2', name: 'F_Sunday2', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                {
+                    label: '3', name: 'F_Sunday3', width: colwidth, align: 'center'
+                    , editable: true
+                    , editrules: { required: false, edithidden: true },
+                    edittype: 'select',
+                    editoptions: { value: patientList }
+                    ,
+                    formatter: function (value, options, rowData) {
+                        return changeCellColor(value, options, rowData);
+                    }
+                },
+                { name: 'F_DialysisType1', hidden: true },
+                { name: 'F_DialysisType2', hidden: true },
+                { name: 'F_DialysisType3', hidden: true },
+                { name: 'F_DialysisType4', hidden: true },
+                { name: 'F_DialysisType5', hidden: true },
+
+                { name: 'F_DialysisType6', hidden: true },
+                { name: 'F_DialysisType7', hidden: true },
+                { name: 'F_DialysisType8', hidden: true },
+                { name: 'F_DialysisType9', hidden: true },
+                { name: 'F_DialysisType10', hidden: true },
+
+                { name: 'F_DialysisType11', hidden: true },
+                { name: 'F_DialysisType12', hidden: true },
+                { name: 'F_DialysisType13', hidden: true },
+                { name: 'F_DialysisType14', hidden: true },
+                { name: 'F_DialysisType15', hidden: true },
+
+                { name: 'F_DialysisType16', hidden: true },
+                { name: 'F_DialysisType17', hidden: true },
+                { name: 'F_DialysisType18', hidden: true },
+                { name: 'F_DialysisType19', hidden: true },
+                { name: 'F_DialysisType20', hidden: true },
+
+                { name: 'F_DialysisType21', hidden: true }
+            ],
+            pager: "#gridPager",
+            sortname: 'F_GroupName asc,F_DialysisBedNo desc',
+            viewrecords: true,
+            // shrinkToFit: true,
+            autoScroll: false,//当autoScroll和shrinkToFit均为false时，会出现行滚动条
+            shrinkToFit: false,//是否列宽度自适应。true=适应 false=不适应
+            cellEdit: false,
+            cellsubmit: 'clientArray',//'remote',
+            cellurl: '/PatientManage/DialysisSchedule/SaveCellData',
+            //jqGridAddEditComplete: function (elem) {
+            //    console.log(elem);
+            //},
+            ondblClickRow: function (rowid, iRow, iCol, e) {
+                //console.log(rowid, iRow, iCol, e);
+                if (iRow > 0) {
+                    if (iCol > 0) {
+                        var name = $gridList.getCell(iRow, iCol);
+                        if (!!name) {
+                            if (name.length > 40) return false;
+                            var bid = $gridList.getCell(iRow, 1);
+                            //var bedNo = $gridList.getCell(iRow, 2);
+                            var round = Math.floor((iCol - 5) % 3);
+                            var visitDate = round == 0 ? new Date(Math.floor((iCol - 1 - 5) / 3) * 86400000 + weekStart).Format("yyyy-MM-dd")
+                                : new Date(Math.floor((iCol - 5) / 3) * 86400000 + weekStart).Format("yyyy-MM-dd");
+                            var visitNo = round == 0 ? 3 : round;
+                            var keyValue = {};
+                            keyValue.bid = bid;
+                            keyValue.visitNo = visitNo;
+                            keyValue.visitDate = visitDate;
+                            $.modalOpen({
+                                id: "Form",
+                                title: "修改排班",
+                                url: "/PatientManage/DialysisSchedule/Form?keyValue=" + encodeURI(JSON.stringify(keyValue)),
+                                width: "950px",
+                                height: "750px",
+                                callBack: function (iframeId) {
+                                    top.frames[iframeId].submitForm();
+                                }
+                            });
+                        }
+                    }
+                }
+            },
+            beforeEditCell: function (rowid, cellname, v, iRow, iCol) {
+                g_lastrow = iRow;
+                g_lastcol = iCol;
+                g_lastname = v;
+            },
+            afterSaveCell: function (id, name, val, iRow, iCol) {
+                if (val == -1) {
+                    $.ajax({
+                        url: "/PatientManage/DialysisSchedule/SaveCellData",
+                        data: {
+                            monday: new Date(weekStart).Format("yyyy-MM-dd"),
+                            pid: null,
+                            dialysisNo: 0,
+                            pname: null,
+                            colname: name,
+                            value: val,
+                            iRow: iRow,
+                            iCol: iCol,
+                            group: $gridList.getCell(iRow, 1),
+                            bedNo: $gridList.getCell(iRow, 2),
+                            bid: $gridList.getCell(iRow, 'F_BId')
+                        },
+                        dataType: "json",
+                        async: false
+                        //type: 'post'
+                    });
+                } else {
+                    $.ajax({
+                        url: "/PatientManage/DialysisSchedule/SaveCellData",
+                        data: {
+                            monday: new Date(weekStart).Format("yyyy-MM-dd"),
+                            pid: availableTags[val].item.id,
+                            dialysisNo: availableTags[val].item.recordNo,
+                            pname: availableTags[val].item.name,
+                            colname: name,
+                            value: val,
+                            iRow: iRow,
+                            iCol: iCol,
+                            group: $gridList.getCell(iRow, 1),
+                            bedNo: $gridList.getCell(iRow, 2),
+                            bid: $gridList.getCell(iRow, 'F_BId')
+                        },
+                        dataType: "json",
+                        async: false,
+                        //type: 'post',
+                        success: function (data) {
+
+                            if (data.state == "error") {
+                                $.modalMsg(data.message, "warning");
+                                if (!!g_lastname) {
+                                    $gridList.setCell(iRow, iCol, g_lastname);
+                                }
+                                else {
+                                    $gridList.setCell(iRow, iCol, null);
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        //$gridList.jqGrid('setFrozenColumns');//设置冻结列生效
+
+        function addSelect2Class(elemid) {
+            $(elemid).bindSelect({
+                search: true
+            });
+        }
+
+        function changeCellColor(value, options, rowData) {
+            //添加颜色
+            if (!!value) {
+                //判断是否是数字  
+                if (!isNaN(value)) {
+                    if (value < 0) {
+                        return '';
+                    } else {
+                        value = availableTags[value].item.name
+                    }
+                }
+
+                var dtype = rowData['F_DialysisType' + (options.pos - 5)];
+                if (!!dtype) {
+                    if (dtype == defaultDialysisType) {
+                        return value;
+                    } else if (dtype == 'HDF') {
+                        //return '<b style="color:#87ceeb">' + value + '</b>';
+                        //return value + 'HDF';//<sup>-</sup>
+                        return value + '<sup>HDF</sup>';
+                    } else if (dtype == 'HD+HP') {
+                        //return '<b style="color:#89ebbd">' + value + '</b>';
+                        //return value + 'HD+HP';
+                        return value + '<sup>HD+HP</sup>';
+                    } else if (dtype == 'HD') {
+                        //return '<b style="color:#8d89eb">' + value + '</b>';
+                        //return value + 'HFHD';
+                        return value + '<sup>HD</sup>';
+                    } else if (dtype == 'HFHD') {
+                        //return '<b style="color:#8d89eb">' + value + '</b>';
+                        //return value + 'HFHD';
+                        return value + '<sup>HFHD</sup>';
+                    } else if (dtype == 'HF') {
+                        //return '<b style="color:#eba589">' + value + '</b>';
+                        //return value + 'HF';
+                        return value + '<sup>HF</sup>';
+                    } else {
+                        return value;
+                    }
+                } else {
+                    return value;
+                }
+            } else {
+                return '';
+            }
+        }
+
+        function customElement(vl, options) {
+            var el = $("<select></select>");
+            var first = $("<option value='" + -1 + "'>" + "" + "</option>");
+            el.append(first);
+            $.each(availableTags, function (index, content) {
+                //selectdata.push({ id: content.item.name, text: content.item.name });
+                var optvalue = content.index;
+                var optdisplay = content.item.name;
+                var optel = $("<option value='" + optvalue + "'>" + optdisplay + "</option>");
+                el.append(optel);
+            })
+            //el.select2({ search: true });
+
+            //var selectdata = [{}];
+            //$.each(availableTags, function (index, content) {
+            //    selectdata.push({ id: content.item.name, text: content.item.name });
+            //})
+            //el.bindSelect({
+            //    data: selectdata
+            //});
+            el.val(vl);
+            return el;
+        }
+
+        function customValue(elem, operation, value) {
+            if (operation === 'get') {
+                //var $select = $(elem).find("select");
+                //return $select.val();
+                //return $(elem).val();
+                var vl = $(elem).val();
+                vl = $(elem).find("option:selected").val();
+                return vl;
+
+            } else if (operation === 'set') {
+                var $select = $(elem).find("select");
+                $select.val(value);
+                //$(elem).val(value);
+            }
+        }
+        //function myAutocomplete(elem, url) {
+        //    setTimeout(function () {
+        //        $(elem).autocomplete({
+        //            source: url,
+        //            minLength: 2,
+        //            select: function (event, ui) {
+        //                $(elem).val(ui.item.value);
+        //                $(elem).trigger('change');
+        //            }
+        //        });
+        //    }, 50);
+        //}
+
+        function autocomplete_element(value, options) {
+            var $ac = $('<input type="text" />');
+            $ac.val(value);
+            $ac.autocomplete({
+                source: availableTags
+            });
+            return $ac;
+        }
+    }
+
+    function initControl() {
+        //$.ajax({
+        //    url: "/SystemManage/ItemsData/GetDefaultDialysisTypeJson",
+        //    dataType: "json",
+        //    async: false,
+        //    success: function (xxx) {
+        //        defaultDialysisType = xxx;
+        //    }
+        //});
+
+
+        $.ajax({
+            url: "/SystemManage/ItemsData/GetDefaultDialysisTypeJson",
+            //dataType: "json",
+            async: false,
+            success: function (data) {
+                //console.log(data);
+                defaultDialysisType = data;
+            }
+        });
+
+        $.ajax({
+            url: "/SystemManage/ItemsData/GetSelectJson?enCode=BedGroup",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                var $ul = $("#time_horizon");
+                $ul.append('<a class="btn btn-default active" data-value="">全部</a>');
+                $.each(data, function (i, val) {
+                    $ul.append('<a class="btn btn-default" data-value="' + val.id + '">' + val.text + '</a>');
+                })
+            }
+        });
+
+        $("#time_horizon a.btn-default").click(function () {
+            $("#time_horizon a.btn-default").removeClass("active");
+            $(this).addClass("active");
+            $('#btn_search').trigger("click");
+        });
+
+        $("#btn_search").click(function () {
+            //var timeType = $("#time_horizon a.active").attr('data-value');
+            var queryJson = {
+                keyword: $("#txt_keyword").val(),
+                timeType: $("#time_horizon a.active").attr('data-value'),
+                startDate: new Date(weekStart).Format("yyyy-MM-dd")
+            }
+            $("#gridList").jqGrid('setGridParam', {
+                postData: { keyword: queryJson.keyword, groupName: queryJson.timeType, startDate: queryJson.startDate }
+            }).trigger('reloadGrid');
+        });
+
+        //$("#btn_search").click(function () {
+        //    $gridList.jqGrid('setGridParam', {
+        //        postData: {
+        //            keyword: new Date(weekStart).Format("yyyy-MM-dd") + "^" + $("#txt_keyword").val()
+        //        },
+        //    }).trigger('reloadGrid');
+        //});
+    }
+    function customElem(value, options) {
+        var el = $("<select></select>");
+        //el.type = "text";
+        //el.value = value;
+        $.each(availableTags, function (index, content) {
+            //selectdata.push({ id: content.item.name, text: content.item.name });
+            var optvalue = content.item.name;
+            var optdisplay = content.item.name;
+            var optel = $("<option value='" + optvalue + "'>" + optdisplay + "</option>");
+            el.append(optel);
+        })
+        el.select2({ search: true });
+        //el.val(value);
+        return el;
+    }
+    //获取值
+    function customValue(elem) {
+        return $(elem).val();
+    }
+    function changeGroupHeaders() {
+        var $gridList = $("#gridList");
+        $gridList.jqGrid('destroyGroupHeader', null);
+        $gridList.jqGrid('setGroupHeaders', {
+            useColSpanStyle: true, // 没有表头的列是否与表头列位置的空单元格合并
+            groupHeaders: [
+                {
+                    startColumnName: "F_GroupName",
+                    numberOfColumns: 2,
+                    titleText: "分组"
+                },
+                {
+                    startColumnName: "F_Monday1",
+                    numberOfColumns: 3,
+                    titleText: "周一" + new Date(weekStart).Format("yyyy-MM-dd")
+                },
+                {
+                    startColumnName: "F_Tuesday1",
+                    numberOfColumns: 3,
+                    titleText: "周二" + new Date(weekStart + 1 * 86400000).Format("yyyy-MM-dd")
+                },
+                {
+                    startColumnName: "F_Wednesday1",
+                    numberOfColumns: 3,
+                    titleText: "周三" + new Date(weekStart + 2 * 86400000).Format("yyyy-MM-dd")
+                },
+                {
+                    startColumnName: "F_Thursday1",
+                    numberOfColumns: 3,
+                    titleText: "周四" + new Date(weekStart + 3 * 86400000).Format("yyyy-MM-dd")
+                },
+                {
+                    startColumnName: "F_Friday1",
+                    numberOfColumns: 3,
+                    titleText: "周五" + new Date(weekStart + 4 * 86400000).Format("yyyy-MM-dd")
+                },
+                {
+                    startColumnName: "F_Saturday1",
+                    numberOfColumns: 3,
+                    titleText: "周六" + new Date(weekStart + 5 * 86400000).Format("yyyy-MM-dd")
+                },
+                {
+                    startColumnName: "F_Sunday1",
+                    numberOfColumns: 3,
+                    titleText: "周日" + new Date(weekStart + 6 * 86400000).Format("yyyy-MM-dd")
+                }
+            ]
+        });
+    }
+
+    function getPatientList() {
+        $.ajax({
+            url: "/PatientManage/Patient/GetSelectJson",
+            dataType: "json",
+            async: false,
+            type: 'get',
+            success: function (data) {
+                //console.log(data);
+                patientList = patientList + '-1:';
+                $.each(data, function (index, item) {
+                    availableTags.push({ index: index, item: item });
+                    patientList = patientList + ';' + index + ':' + item.name;
+                });
+
+            }
+        })
+
+        return patientList;
+    }
+
+    function btn_celledit() {
+        var $celleditbtn = $("#NF-CellEdit");
+        if ($celleditbtn[0].innerText == '开始编辑') {
+            $("#gridList").jqGrid('setGridParam', { cellEdit: true }).trigger("reloadGrid");
+            $celleditbtn[0].innerText = '停止编辑';
+        } else {
+            $celleditbtn[0].innerText = '开始编辑';
+            if (!!g_lastrow && !!g_lastcol) {
+                $("#gridList").jqGrid("saveCell", g_lastrow, g_lastcol);
+            }
+            $("#gridList").jqGrid('setGridParam', { cellEdit: false }).trigger("reloadGrid");
+
+
+        }
+    }
+
+    function btn_edit() {
+        var keyValue = $("#gridList").jqGridRowValue().F_BId;
+        $.modalOpen({
+            id: "Form",
+            title: "修改排班",
+            url: "/PatientManage/DialysisSchedule/Form",
+            width: "950px",
+            height: "750px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+
+    function btn_createzld() {
+        $.modalOpen({
+            id: "FormZLD",
+            title: "生成治疗单",
+            url: "/PatientManage/DialysisSchedule/FormZLD?keyValue=" + new Date().Format("yyyy/MM/dd"),
+            width: "800px",
+            height: "600px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+
+    function btn_current() {
+        var $gridList = $("#gridList");
+        var year = new Date().getFullYear();
+        var month = new Date().getMonth() + 1;
+        var day = new Date().getDate();
+        if (new Date().getDay() == 0) {  //周天的情况；
+            weekStart = (new Date(year + '/' + month + '/' + day)).getTime() - ((new Date().getDay()) + 6) * 86400000;
+        } else {
+            weekStart = (new Date(year + '/' + month + '/' + day)).getTime() - ((new Date().getDay()) - 1) * 86400000;
+        }
+        changeGroupHeaders();
+        //$gridList.jqGrid('setGridParam', {
+        //    postData: { keyword: new Date(weekStart).Format("yyyy-MM-dd") },
+        //}).trigger('reloadGrid');
+        $("#btn_search").trigger('click');
+
+
+    }
+    function btn_previous() {
+        var $gridList = $("#gridList");
+        weekStart = weekStart - 7 * 86400000;//上周周一的时间
+        changeGroupHeaders();
+        //$gridList.jqGrid('setGridParam', {
+        //    postData: { keyword: new Date(weekStart).Format("yyyy-MM-dd") },
+        //}).trigger('reloadGrid');
+        $("#btn_search").trigger('click');
+
+    }
+    function btn_next() {
+        var $gridList = $("#gridList");
+        weekStart = weekStart + 7 * 86400000;//上周周一的时间
+        changeGroupHeaders();
+        //$gridList.jqGrid('setGridParam', {
+        //    postData: { keyword: new Date(weekStart).Format("yyyy-MM-dd") },
+        //}).trigger('reloadGrid');
+        $("#btn_search").trigger('click');
+    }
+
+    function btn_print() {
+        $.post("/PatientManage/DialysisSchedule/GetScheduleImage", JSON.stringify({ keyValue: new Date(weekStart).Format("yyyy-MM-dd") }), function (result) {
+            //$("#images").attr("src", "data:image/jpeg;base64," + result);
+            //$("#images").attr("src", "~/Content/img/123.jpg");
+            $("#print").html(result);
+            $("#print").attr("style", "display:block;");//显示div
+            $("#print").jqprint(
+                {
+                    //debug: true,//如果是true则可以显示iframe查看效果，默认是false
+                    //importCSS: true,//true表示引进原来的页面的css，默认是true。
+                    //printContainer: true,//表示如果原来选择的对象必须被纳入打印，默认是true。
+                    //operaSupport: true///表示如果插件也必须支持歌opera浏览器，默认是true。
+                }
+            );
+            $("#print").attr("style", "display:none;");//隐藏div
+        })
+    }
+    function btn_clear() {
+        var keyValue = $("#gridList").jqGridRowValue().F_BId;
+        if (!!keyValue) {
+            $.modalConfirm("注：确定要【删除】该项排班吗？", function (r) {
+                if (r) {
+                    $.submitForm({
+                        url: "/PatientManage/DialysisSchedule/Clear",
+                        param: { bid: keyValue, monday: new Date(weekStart).Format("yyyy-MM-dd") },
+                        success: function() {
+                            $.currentWindow().$("#gridList").trigger("reloadGrid");
+                        }
+                    });
+                }
+            });
+        }
+        
+    }
+    
+    //btn_savetocurrent
+    //保存至下周
+    function btn_savetonext() {
+        //var keyValue = $("#gridList").jqGridRowValue().F_BId;
+        var datestart = new Date(weekStart).Format("yyyy-MM-dd");
+        var dateend = new Date(weekStart + 86400000 * 6).Format("yyyy-MM-dd");
+        $.modalConfirm("注：确定要复制(" + datestart + " ~ " + dateend + ")排班数据至下周吗？", function (r) {
+            if (r) {
+                $.submitForm({
+                    url: "/PatientManage/DialysisSchedule/SaveToNextWeek",
+                    param: { keyValue: new Date(weekStart).Format("yyyy-MM-dd") },
+                    success: function() {
+                        //$.currentWindow().$("#gridList").trigger("reloadGrid");
+                        $("#btn_current").trigger('click');
+                    }
+                });
+            }
+        });
+    }
+
+    //保存至指定周次
+    function btn_savecustom() {
+        var msg = {
+            datestart: new Date(weekStart).Format("yyyy-MM-dd"),
+            dateend: new Date(weekStart + 86400000 * 6).Format("yyyy-MM-dd")
+        };
+        $.modalOpen({
+            id: "ChooseDateForm",
+            title: "选择日期",
+            url: "/PatientManage/DialysisSchedule/ChooseDateForm?keyValue=" + encodeURI(JSON.stringify(msg)),
+            width: "500px",
+            height: "420px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+    //导出Excel
+    function btn_export() {
+        var keyValue = new Date(weekStart).Format("yyyy-MM-dd");
+        $.download("/PatientManage/DialysisSchedule/Download", "keyValue=" + keyValue, 'post');
+        //$.post("/PatientManage/DialysisSchedule/Download", { keyValue: keyValue });
+        //$.ajax({
+        //    type: 'post',
+        //    url: "/PatientManage/DialysisSchedule/Download",
+        //    data: JSON.stringify({ keyValue: keyValue })
+        //    //success: success,
+        //    //dataType: dataType
+        //});
+    }
+
+    function btn_import() {
+        $.modalOpen({
+            id: "Import",
+            title: "导入排班数据",
+            url: "/PatientManage/DialysisSchedule/Import",
+            width: "700px",
+            height: "600px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].submitForm();
+            }
+        });
+    }
+    // 对Date的扩展，将 Date 转化为指定格式的String
+    // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+    // 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+    Date.prototype.Format = function (fmt) { //author: meizz
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+</script>
+
+<div class="topPanel">
+    <div class="toolbar">
+        <div class="btn-group">
+            <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+        </div>
+        <div class="btn-group">
+            <a id="NF-CellEdit" class="btn btn-primary dropdown-text" onclick="btn_celledit()"><i class="fa fa-edit"></i>开始编辑</a>
+        </div>
+        <div class="btn-group">
+            <a id="NF-Current" authorize="yes" class="btn btn-primary dropdown-text" onclick="btn_current()"><i class="fa fa-plus"></i>本周</a>
+        </div>
+        <div class="btn-group">
+            <a id="NF-Previous" authorize="yes" class="btn btn-primary dropdown-text" onclick="btn_previous()"><i class="fa fa-arrow-left"></i>上周</a>
+        </div>
+        <div class="btn-group">
+            <a id="NF-Next" authorize="yes" class="btn btn-primary dropdown-text" onclick="btn_next()"><i class="fa fa-arrow-right"></i>下周</a>
+        </div>
+        <div class="btn-group">
+            <a id="NF-Savetonext" authorize="yes" class="btn btn-primary dropdown-text" onclick="btn_savetonext()"><i class="fa fa-save"></i>保存至下周</a>
+            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+            <ul class="dropdown-menu pull-right">
+                <li><a id="NF-SaveCustom" authorize="yes" onclick="btn_savecustom()"><i class="fa fa-copy"></i>保存至指定周次</a></li>
+            </ul>
+        </div>
+        @*<div class="btn-group">
+            <a id="NF-Print" authorize="yes" class="btn btn-primary dropdown-text" onclick="btn_print()"><i class="fa fa-print"></i>打印</a>
+        </div>*@
+        <div class="btn-group">
+            <a id="NF-CreateZLD" authorize="yes" class="btn btn-default dropdown-text" onclick="btn_createzld()"><i class="fa fa-file-text-o"></i>生成治疗单</a>
+            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+            <ul class="dropdown-menu pull-right">
+                <li><a id="NF-Print" authorize="yes" class="btn btn-default" onclick="btn_print()"><i class="fa fa-print"></i>打印</a></li>
+                <li class="divider"></li>
+                <li><a id="NF-Export" authorize="yes" class="btn btn-default" onclick="btn_export()"><i class="fa fa-download"></i>导出Excel</a></li>
+                <li><a id="NF-Import" authorize="yes" class="btn btn-default" onclick="btn_import()"><i class="fa fa-upload"></i>导入Excel</a></li>
+            </ul>
+        </div>
+        <div class="operate">
+            <ul class="nav nav-pills">
+                <li class="first">已选中<span>1</span>项</li>
+                <li><a id="NF-Edit" authorize="yes" onclick="btn_edit()"><i class="fa fa-pencil-square-o"></i>修改</a></li>
+                <li><a id="NF-Clear" authorize="yes" onclick="btn_clear()"><i class="fa fa-trash-o"></i>清空</a></li>
+               @* <li><a id="NF-Details" authorize="yes" onclick="btn_details()"><i class="fa fa-search-plus"></i>查看</a></li>*@
+                @*<li><a id="NF-Copy" authorize="yes" onclick="btn_copy()"><i class="fa fa-copy"></i>复制上周排班</a></li>
+                <li><a id="NF-BatchCopy" authorize="yes" onclick="btn_batchcopy()"><i class="fa fa-copy"></i>全部复制</a></li>*@
+            </ul>
+            <a href="javascript:;" class="close"></a>
+        </div>
+        <script>$('.toolbar').authorizeButton()</script>
+    </div>
+    <div class="search">
+        <table>
+            <tr>
+                <td>
+                    <div class="input-group">
+                        <input id="txt_keyword" type="text" class="form-control" placeholder="姓名" style="width: 70px;">
+                        <span class="input-group-btn">
+                            <button id="btn_search" type="button" class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </td>
+                <td style="padding-left: 10px;">
+                    <div id="time_horizon" class="btn-group">
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridList"></table>
+    <div id="gridPager"></div>
+</div>
+<div id="print" style="visibility:hidden;display:none">
+    @*<img id="images" />*@
+</div>
+

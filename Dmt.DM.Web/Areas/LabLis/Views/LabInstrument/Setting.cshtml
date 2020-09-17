@@ -1,0 +1,146 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    var communicateMode = '';
+    $(function () {
+        initControl();
+        $.ajax({
+            url: "/LabLis/LabInstrument/GetFormJson",
+            data: { keyValue: keyValue },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                communicateMode = data.F_CommunicateMode;
+                var configs = JSON.parse(data.F_CommunicateConfig);
+                $("#form1").formSerialize(configs);
+            }
+        });
+    });
+    function initControl() {
+        $("#PortName").bindSelect();
+        $("#BaudRate").bindSelect();
+        $("#Parity").bindSelect();
+        $("#StopBits").bindSelect();
+        $("#SocketType").bindSelect();
+    }
+
+    function submitForm() {
+        var param = {};
+        if (communicateMode == 'Com') {
+            //if (!$('#table1').formValid()) {
+            //    return false;
+            //}
+            param = $('#table1').formSerialize();
+        } else if (communicateMode == 'Socket') {
+            //if (!$('#table2').formValid()) {
+            //    return false;
+            //}
+            param = $('#table2').formSerialize();
+        }
+        
+        $.submitForm({
+            url: "/LabLis/LabInstrument/SetCommunicate",
+            param: {
+                keyValue: keyValue,
+                settings: JSON.stringify(param)
+            },
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <h4>串口通信设置参数</h4>
+        <table class="form" id="table1">
+            <tr>
+                <th class="formTitle">串口名称</th>
+                <td class="formValue">
+                    <select id="PortName" name="PortName" type="text" class="form-control required" placeholder="串口名称">
+                        <option value="">请选择端口</option>
+                        <option value="COM1">COM1</option>
+                        <option value="COM2">COM2</option>
+                        <option value="COM3">COM3</option>
+                        <option value="COM4">COM4</option>
+                        <option value="COM5">COM5</option>
+                    </select>
+                </td>
+                <th class="formTitle">波特率</th>
+                <td class="formValue">
+                    <select id="BaudRate" name="BaudRate" type="text" class="form-control required" placeholder="波特率">
+                        <option value="300">300</option>
+                        <option value="1200">1200</option>
+                        <option value="4800">4800</option>
+                        <option value="9600" selected>9600</option>
+                        <option value="19200">19200</option>
+                        <option value="38400">38400</option>
+                        <option value="115200">115200</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle">奇偶校验</th>
+                <td class="formValue">
+                    <select id="Parity" name="Parity" type="text" class="form-control required" placeholder="奇偶校验">
+                        <option value="0">None</option>
+                        <option value="1">Odd</option>
+                        <option value="2">Even</option>
+                        <option value="3">Mark</option>
+                        <option value="4">Space</option>
+                    </select>
+                </td>
+                <th class="formTitle">数据位</th>
+                <td class="formValue">
+                    <input id="DataBits" name="DataBits" type="number" class="form-control required" value="8" autocomplete="off" />
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle">停止位</th>
+                <td class="formValue">
+                    <select id="StopBits" name="StopBits" type="text" class="form-control required">
+                        <option value="0">None</option>
+                        <option value="1">One</option>
+                        <option value="1.5">OnePointFive</option>
+                        <option value="2">Two</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <h4>Socket通信设置参数</h4>
+        <table class="form" id="table2">
+            <tr>
+                <th class="formTitle">类型</th>
+                <td class="formValue">
+                    <select id="SocketType" name="SocketType" type="text" class="form-control required" placeholder="类型">
+                        <option value="Client">客户端</option>
+                        <option value="Serve">服务端</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle">本地IP</th>
+                <td class="formValue">
+                    <input id="LocalIp" name="LocalIp" placeholder="IP地址,eg:192.168.1.1" type="text" class="form-control required" />
+                </td>
+                <th class="formTitle">本地端口</th>
+                <td class="formValue">
+                    <input id="LocalPort" name="LocalPort" placeholder="端口号" type="number" class="form-control required" />
+                </td>
+            </tr>
+            <tr>
+                <th class="formTitle">远程IP</th>
+                <td class="formValue">
+                    <input id="RemoteIp" name="RemoteIp" placeholder="IP地址,eg:192.168.1.1" type="text" class="form-control required" />
+                </td>
+                <th class="formTitle">远程端口</th>
+                <td class="formValue">
+                    <input id="RemotePort" name="RemotePort" placeholder="端口号" type="number" class="form-control required" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>

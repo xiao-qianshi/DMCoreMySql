@@ -1,0 +1,467 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\PatientManage\Views\FileIndex\**" />
+    <Compile Remove="Areas\PatientManage\Views\IdeaWeight\**" />
+    <Compile Remove="DataReport\JS2020-09\**" />
+    <Compile Remove="DataReport\JS\**" />
+    <Content Remove="Areas\PatientManage\Views\FileIndex\**" />
+    <Content Remove="Areas\PatientManage\Views\IdeaWeight\**" />
+    <Content Remove="DataReport\JS2020-09\**" />
+    <Content Remove="DataReport\JS\**" />
+    <EmbeddedResource Remove="Areas\PatientManage\Views\FileIndex\**" />
+    <EmbeddedResource Remove="Areas\PatientManage\Views\IdeaWeight\**" />
+    <EmbeddedResource Remove="DataReport\JS2020-09\**" />
+    <EmbeddedResource Remove="DataReport\JS\**" />
+    <None Remove="Areas\PatientManage\Views\FileIndex\**" />
+    <None Remove="Areas\PatientManage\Views\IdeaWeight\**" />
+    <None Remove="DataReport\JS2020-09\**" />
+    <None Remove="DataReport\JS\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="log4net.config" />
+    <Content Remove="wwwroot\Content\js\ajax-setup.min.js" />
+    <Content Remove="wwwroot\Content\js\framework-clientdata.min.js" />
+    <Content Remove="wwwroot\Content\js\framework-ui.min.js" />
+    <Content Remove="wwwroot\Content\js\index.min.js" />
+    <Content Remove="wwwroot\view-js\home\default.min.js" />
+    <Content Remove="wwwroot\view-js\datastatistics\jsreport\Index.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\Content\js\ajax-setup.min.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\Content\js\framework-clientdata.min.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\Content\js\framework-ui.min.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\Content\js\index.min.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\view-js\home\default.min.js" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="2.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="Areas\PatientManage\Views\BillingModel\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\BillingModel\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\BillingModel\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\Billing\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\Billing\Filter.cshtml" />
+    <None Include="Areas\PatientManage\Views\Billing\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\Billing\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\ConclusionTemplate\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\ConclusionTemplate\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\ConclusionTemplate\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\DialysisMachine\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\DialysisMachine\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\DialysisMachine\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\DialysisSchedule\ChooseDateForm.cshtml" />
+    <None Include="Areas\PatientManage\Views\DialysisSchedule\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\DialysisSchedule\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\DialysisSchedule\FormBatch.cshtml" />
+    <None Include="Areas\PatientManage\Views\DialysisSchedule\FormZLD.cshtml" />
+    <None Include="Areas\PatientManage\Views\DialysisSchedule\Import.cshtml" />
+    <None Include="Areas\PatientManage\Views\DialysisSchedule\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\DoseGuide\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\DoseGuide\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\Drugs\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\Drugs\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\Drugs\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\Infection\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\Infection\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\Infection\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\Material\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\Material\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\Material\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\MedicalRecord\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\MedicalRecord\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\MedicalRecord\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\MedicalRecord\Print.cshtml" />
+    <None Include="Areas\PatientManage\Views\Nurse\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\Nurse\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\Nurse\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\NutritionDietary\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\NutritionDietary\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\Orders\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\Orders\Details1.cshtml" />
+    <None Include="Areas\PatientManage\Views\Orders\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\Orders\Form1.cshtml" />
+    <None Include="Areas\PatientManage\Views\Orders\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\PatVisit\CheckFilter.cshtml" />
+    <None Include="Areas\PatientManage\Views\PatVisit\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\PatVisit\Filter.cshtml" />
+    <None Include="Areas\PatientManage\Views\PatVisit\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\PatVisit\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\PatVisit\New.cshtml" />
+    <None Include="Areas\PatientManage\Views\PatVisit\ObDetails.cshtml" />
+    <None Include="Areas\PatientManage\Views\PatVisit\Prepare.cshtml" />
+    <None Include="Areas\PatientManage\Views\PatVisit\PrintBatch.cshtml" />
+    <None Include="Areas\PatientManage\Views\PatVisit\Summery.cshtml" />
+    <None Include="Areas\PatientManage\Views\Prepare\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\ProcessFlow\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\ProcessFlow\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\ProcessFlow\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\Puncture\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\Puncture\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\Puncture\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\Puncture\Upload.cshtml" />
+    <None Include="Areas\PatientManage\Views\QualityItem\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\QualityItem\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\QualityItem\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\QualityResult\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\QualityResult\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\QualityResult\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\Setting\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\Setting\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\Setting\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\StockCheck\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\StockCheck\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\StorageManage\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\StorageManage\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\StorageManage\Form1.cshtml" />
+    <None Include="Areas\PatientManage\Views\StorageManage\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\Treatment\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\Treatment\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\Treatment\Index.cshtml" />
+    <None Include="Areas\PatientManage\Views\VascularAccess\Details.cshtml" />
+    <None Include="Areas\PatientManage\Views\VascularAccess\Form.cshtml" />
+    <None Include="Areas\PatientManage\Views\VascularAccess\Index.cshtml" />
+    <None Include="wwwroot\Content\css\bootstrap-combined.min.css" />
+    <None Include="wwwroot\Content\css\framework-about.css" />
+    <None Include="wwwroot\Content\css\framework-font.css" />
+    <None Include="wwwroot\Content\css\framework-login.css" />
+    <None Include="wwwroot\Content\css\framework-theme.css" />
+    <None Include="wwwroot\Content\css\framework-ui.css" />
+    <None Include="wwwroot\Content\css\timeline\timeline.css" />
+    <None Include="wwwroot\Content\css\timeline\timeline.min.css" />
+    <None Include="wwwroot\Content\fonts\fontawesome-webfont.eot" />
+    <None Include="wwwroot\Content\fonts\fontawesome-webfont.svg" />
+    <None Include="wwwroot\Content\fonts\fontawesome-webfont.ttf" />
+    <None Include="wwwroot\Content\fonts\fontawesome-webfont.woff" />
+    <None Include="wwwroot\Content\fonts\fontawesome-webfont.woff2" />
+    <None Include="wwwroot\Content\fonts\FontAwesome.otf" />
+    <None Include="wwwroot\Content\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="wwwroot\Content\fonts\glyphicons-halflings-regular.svg" />
+    <None Include="wwwroot\Content\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="wwwroot\Content\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="wwwroot\Content\fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="wwwroot\Content\fonts\glyphicons-halflings-regulard41d.eot" />
+    <None Include="wwwroot\Content\fonts\weathericons-regular-webfont.eot" />
+    <None Include="wwwroot\Content\fonts\weathericons-regular-webfont.svg" />
+    <None Include="wwwroot\Content\fonts\weathericons-regular-webfont.ttf" />
+    <None Include="wwwroot\Content\fonts\weathericons-regular-webfont.woff" />
+    <None Include="wwwroot\Content\fonts\weathericons-regular-webfontd41d.eot" />
+    <None Include="wwwroot\Content\img\123.jpg" />
+    <None Include="wwwroot\Content\img\ajax-loader.gif" />
+    <None Include="wwwroot\Content\img\alipay.jpg" />
+    <None Include="wwwroot\Content\img\alipayimg.png" />
+    <None Include="wwwroot\Content\img\button_pm_close.png" />
+    <None Include="wwwroot\Content\img\cy-reward-title-bg.jpg" />
+    <None Include="wwwroot\Content\img\loading.gif" />
+    <None Include="wwwroot\Content\img\logo_black.png" />
+    <None Include="wwwroot\Content\img\logo_white.png" />
+    <None Include="wwwroot\Content\img\radio1.jpg" />
+    <None Include="wwwroot\Content\img\radio2.jpg" />
+    <None Include="wwwroot\Content\img\samples\scarlet-159.png" />
+    <None Include="wwwroot\Content\img\signet.gif" />
+    <None Include="wwwroot\Content\img\wechat.jpg" />
+    <None Include="wwwroot\Content\img\weipayimg.png" />
+    <None Include="wwwroot\Content\img\weixin_nfine.png" />
+    <None Include="wwwroot\Content\js\ajax-setup.min.js" />
+    <None Include="wwwroot\Content\js\bootstrap\bootstrap.js" />
+    <None Include="wwwroot\Content\js\bootstrap\bootstrap.min.css" />
+    <None Include="wwwroot\Content\js\charts\Chart.js" />
+    <None Include="wwwroot\Content\js\charts\Chart.min.js" />
+    <None Include="wwwroot\Content\js\cookie\jquery.cookie.js" />
+    <None Include="wwwroot\Content\js\datepicker\calendar.js" />
+    <None Include="wwwroot\Content\js\datepicker\DatePicker.js" />
+    <None Include="wwwroot\Content\js\datepicker\lang\en.js" />
+    <None Include="wwwroot\Content\js\datepicker\lang\zh-cn.js" />
+    <None Include="wwwroot\Content\js\datepicker\lang\zh-tw.js" />
+    <None Include="wwwroot\Content\js\datepicker\skin\datePicker.gif" />
+    <None Include="wwwroot\Content\js\datepicker\skin\datePicker.png" />
+    <None Include="wwwroot\Content\js\datepicker\skin\datepicker_icon.png" />
+    <None Include="wwwroot\Content\js\datepicker\skin\default\datepicker-dev.css" />
+    <None Include="wwwroot\Content\js\datepicker\skin\default\datepicker.css" />
+    <None Include="wwwroot\Content\js\datepicker\skin\default\img.gif" />
+    <None Include="wwwroot\Content\js\datepicker\skin\default\img.png" />
+    <None Include="wwwroot\Content\js\datepicker\skin\WdatePicker.css" />
+    <None Include="wwwroot\Content\js\datepicker\skin\whyGreen\bg.jpg" />
+    <None Include="wwwroot\Content\js\datepicker\skin\whyGreen\datepicker.css" />
+    <None Include="wwwroot\Content\js\datepicker\skin\whyGreen\img.gif" />
+    <None Include="wwwroot\Content\js\datepicker\WdatePicker.js" />
+    <None Include="wwwroot\Content\js\datepicker\开发包\lang\en.js" />
+    <None Include="wwwroot\Content\js\datepicker\开发包\lang\zh-cn.js" />
+    <None Include="wwwroot\Content\js\datepicker\开发包\lang\zh-tw.js" />
+    <None Include="wwwroot\Content\js\datepicker\开发包\readme.txt" />
+    <None Include="wwwroot\Content\js\datepicker\开发包\skin\datePicker.gif" />
+    <None Include="wwwroot\Content\js\datepicker\开发包\skin\datePicker.png" />
+    <None Include="wwwroot\Content\js\datepicker\开发包\skin\default\datepicker.css" />
+    <None Include="wwwroot\Content\js\datepicker\开发包\skin\default\img.gif" />
+    <None Include="wwwroot\Content\js\datepicker\开发包\skin\WdatePicker.css" />
+    <None Include="wwwroot\Content\js\datepicker\开发包\skin\whyGreen\bg.jpg" />
+    <None Include="wwwroot\Content\js\datepicker\开发包\skin\whyGreen\datepicker.css" />
+    <None Include="wwwroot\Content\js\datepicker\开发包\skin\whyGreen\img.gif" />
+    <None Include="wwwroot\Content\js\dialog\dialog.css" />
+    <None Include="wwwroot\Content\js\dialog\dialog.js" />
+    <None Include="wwwroot\Content\js\dialog\img\icon-ext.png" />
+    <None Include="wwwroot\Content\js\dialog\img\icon.png" />
+    <None Include="wwwroot\Content\js\dialog\img\loading-0.gif" />
+    <None Include="wwwroot\Content\js\dialog\img\loading-1.gif" />
+    <None Include="wwwroot\Content\js\dialog\img\loading-2.gif" />
+    <None Include="wwwroot\Content\js\dialog\img\loading-3.gif" />
+    <None Include="wwwroot\Content\js\echarts\echarts-all.js" />
+    <None Include="wwwroot\Content\js\echarts\echarts.js" />
+    <None Include="wwwroot\Content\js\echarts\echarts.min.js" />
+    <None Include="wwwroot\Content\js\echarts\infographic.js" />
+    <None Include="wwwroot\Content\js\fileinput\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\Content\js\fileinput\bootstrap.min.css" />
+    <None Include="wwwroot\Content\js\fileinput\fileinput.min.css" />
+    <None Include="wwwroot\Content\js\fileinput\fileinput.min.js" />
+    <None Include="wwwroot\Content\js\fileinput\fontawesome.css" />
+    <None Include="wwwroot\Content\js\fileinput\jQuery3.3.1.js" />
+    <None Include="wwwroot\Content\js\fileinput\sortable.min.js" />
+    <None Include="wwwroot\Content\js\fileinput\theme.min.css" />
+    <None Include="wwwroot\Content\js\fileinput\theme.min.js" />
+    <None Include="wwwroot\Content\js\fileinput\zh.js" />
+    <None Include="wwwroot\Content\js\framework-clientdata.js" />
+    <None Include="wwwroot\Content\js\framework-clientdata.min.js" />
+    <None Include="wwwroot\Content\js\framework-ui.js" />
+    <None Include="wwwroot\Content\js\framework-ui.min.js" />
+    <None Include="wwwroot\Content\js\highcharts\adapters\mootools-adapter.js" />
+    <None Include="wwwroot\Content\js\highcharts\adapters\mootools-adapter.src.js" />
+    <None Include="wwwroot\Content\js\highcharts\adapters\prototype-adapter.js" />
+    <None Include="wwwroot\Content\js\highcharts\adapters\prototype-adapter.src.js" />
+    <None Include="wwwroot\Content\js\highcharts\adapters\standalone-framework.js" />
+    <None Include="wwwroot\Content\js\highcharts\adapters\standalone-framework.src.js" />
+    <None Include="wwwroot\Content\js\highcharts\highcharts - 复制.js" />
+    <None Include="wwwroot\Content\js\highcharts\highcharts-all.js" />
+    <None Include="wwwroot\Content\js\highcharts\highcharts-more.js" />
+    <None Include="wwwroot\Content\js\highcharts\highcharts-more.src.js" />
+    <None Include="wwwroot\Content\js\highcharts\highcharts.js" />
+    <None Include="wwwroot\Content\js\highcharts\highcharts.src.js" />
+    <None Include="wwwroot\Content\js\highcharts\modules\canvas-tools.js" />
+    <None Include="wwwroot\Content\js\highcharts\modules\canvas-tools.src.js" />
+    <None Include="wwwroot\Content\js\highcharts\modules\data.js" />
+    <None Include="wwwroot\Content\js\highcharts\modules\data.src.js" />
+    <None Include="wwwroot\Content\js\highcharts\modules\drilldown.js" />
+    <None Include="wwwroot\Content\js\highcharts\modules\drilldown.src.js" />
+    <None Include="wwwroot\Content\js\highcharts\modules\exporting.js" />
+    <None Include="wwwroot\Content\js\highcharts\modules\exporting.src.js" />
+    <None Include="wwwroot\Content\js\highcharts\modules\funnel.js" />
+    <None Include="wwwroot\Content\js\highcharts\modules\funnel.src.js" />
+    <None Include="wwwroot\Content\js\highcharts\modules\no-data-to-display.js" />
+    <None Include="wwwroot\Content\js\highcharts\modules\no-data-to-display.src.js" />
+    <None Include="wwwroot\Content\js\highcharts\themes\dark-blue.js" />
+    <None Include="wwwroot\Content\js\highcharts\themes\dark-green.js" />
+    <None Include="wwwroot\Content\js\highcharts\themes\gray.js" />
+    <None Include="wwwroot\Content\js\highcharts\themes\grid.js" />
+    <None Include="wwwroot\Content\js\highcharts\themes\skies.js" />
+    <None Include="wwwroot\Content\js\img\loading-sm.gif" />
+    <None Include="wwwroot\Content\js\img\loading.gif" />
+    <None Include="wwwroot\Content\js\index.js" />
+    <None Include="wwwroot\Content\js\index.min.js" />
+    <None Include="wwwroot\Content\js\indextab.js" />
+    <None Include="wwwroot\Content\js\jqgrid\grid.locale-cn.js" />
+    <None Include="wwwroot\Content\js\jqgrid\jqgrid.css" />
+    <None Include="wwwroot\Content\js\jqgrid\jqgrid.min.js" />
+    <None Include="wwwroot\Content\js\jqprint\barcode.css" />
+    <None Include="wwwroot\Content\js\jqprint\common-l.css" />
+    <None Include="wwwroot\Content\js\jqprint\common.css" />
+    <None Include="wwwroot\Content\js\jqprint\dialysisrecord.css" />
+    <None Include="wwwroot\Content\js\jqprint\Evaluation.css" />
+    <None Include="wwwroot\Content\js\jqprint\jquery.jqprint-0.3.js" />
+    <None Include="wwwroot\Content\js\jqprint\jquery.jqprint.css" />
+    <None Include="wwwroot\Content\js\jqprint\medicalfile.css" />
+    <None Include="wwwroot\Content\js\jqprint\qrcode.css" />
+    <None Include="wwwroot\Content\js\jqprint\schedule.css" />
+    <None Include="wwwroot\Content\js\jquery-ui\images\calendar.gif" />
+    <None Include="wwwroot\Content\js\jquery-ui\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <None Include="wwwroot\Content\js\jquery-ui\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <None Include="wwwroot\Content\js\jquery-ui\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <None Include="wwwroot\Content\js\jquery-ui\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <None Include="wwwroot\Content\js\jquery-ui\images\ui-bg_glass_75_dadada_1x400.png" />
+    <None Include="wwwroot\Content\js\jquery-ui\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <None Include="wwwroot\Content\js\jquery-ui\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <None Include="wwwroot\Content\js\jquery-ui\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <None Include="wwwroot\Content\js\jquery-ui\images\ui-icons_222222_256x240.png" />
+    <None Include="wwwroot\Content\js\jquery-ui\images\ui-icons_2e83ff_256x240.png" />
+    <None Include="wwwroot\Content\js\jquery-ui\images\ui-icons_454545_256x240.png" />
+    <None Include="wwwroot\Content\js\jquery-ui\images\ui-icons_888888_256x240.png" />
+    <None Include="wwwroot\Content\js\jquery-ui\images\ui-icons_cd0a0a_256x240.png" />
+    <None Include="wwwroot\Content\js\jquery-ui\jquery-ui.min.css" />
+    <None Include="wwwroot\Content\js\jquery-ui\jquery-ui.min.js" />
+    <None Include="wwwroot\Content\js\jquery\jquery.min.js" />
+    <None Include="wwwroot\Content\js\JsBarcode\JsBarcode.all.min.js" />
+    <None Include="wwwroot\Content\js\JsBarcode\JsBarcode.code128.min.js" />
+    <None Include="wwwroot\Content\js\layout\jquery.layout.js" />
+    <None Include="wwwroot\Content\js\loading\pace.min.js" />
+    <None Include="wwwroot\Content\js\md5\jquery.md5.js" />
+    <None Include="wwwroot\Content\js\qrcode\jquery.qrcode.js" />
+    <None Include="wwwroot\Content\js\qrcode\qrcode.js" />
+    <None Include="wwwroot\Content\js\select2\select2.min.css" />
+    <None Include="wwwroot\Content\js\select2\select2.min.js" />
+    <None Include="wwwroot\Content\js\simditor\css\editor.scss" />
+    <None Include="wwwroot\Content\js\simditor\css\fonticon.scss" />
+    <None Include="wwwroot\Content\js\simditor\css\simditor.css" />
+    <None Include="wwwroot\Content\js\simditor\css\simditor.scss" />
+    <None Include="wwwroot\Content\js\simditor\js\hotkeys.js" />
+    <None Include="wwwroot\Content\js\simditor\js\hotkeys.min.js" />
+    <None Include="wwwroot\Content\js\simditor\js\module.js" />
+    <None Include="wwwroot\Content\js\simditor\js\module.min.js" />
+    <None Include="wwwroot\Content\js\simditor\js\simditor.js" />
+    <None Include="wwwroot\Content\js\simditor\js\simditor.min.js" />
+    <None Include="wwwroot\Content\js\simditor\js\uploader.js" />
+    <None Include="wwwroot\Content\js\simditor\js\uploader.min.js" />
+    <None Include="wwwroot\Content\js\sweetalert\sweetalert.min.js" />
+    <None Include="wwwroot\Content\js\validate\jquery.validate.min.js" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\add.png" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\addStep.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\addStep_dsbl.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\btn-arrow.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\Btn.Close.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\Btn.Refresh.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\cal.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\checkbox_0.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\checkbox_0.png" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\checkbox_1.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\checkbox_1.png" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\checkbox_2.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\checkbox_2.png" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\circle_animation.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\delete.png" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\delItem.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\delItem_dsbl.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\edit.png" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\folder_close.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\ico1.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\ico2.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\ico3.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\ico4-1-1.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\ico4-1.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\ico4-2.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\ico4-3.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\ico4-4.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\ico4.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\ico5.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\ico6-1.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\ico6-2.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\ico6.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\indicator.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\information.png" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\Item.Add.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\Item.Delete.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\Item.Edit.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\Item.Input.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\Item.Save.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\Item.Search.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\none.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\note.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\rowdelete.png" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\s.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\table_refresh.png" />
+    <None Include="wwwroot\Content\js\wdtree\images\icons\view.png" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\arrows.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\cbs.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\drop-yes.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\elbow-end-minus-nl.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\elbow-end-minus.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\elbow-end-plus-nl.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\elbow-end-plus.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\elbow-end.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\elbow-line.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\elbow-minus-nl.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\elbow-minus.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\elbow-plus-nl.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\elbow-plus.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\elbow.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\folder-open.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\folder.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\leaf.gif" />
+    <None Include="wwwroot\Content\js\wdtree\images\tree\loading.gif" />
+    <None Include="wwwroot\Content\js\wdtree\tree.css" />
+    <None Include="wwwroot\Content\js\wdtree\tree.js" />
+    <None Include="wwwroot\Content\js\wizard\wizard.css" />
+    <None Include="wwwroot\Content\js\wizard\wizard.js" />
+    <None Include="wwwroot\Content\js\zsign\jquery.zsign.css" />
+    <None Include="wwwroot\Content\js\zsign\jquery.zsign.js" />
+    <None Include="wwwroot\Content\js\zsign\signet.gif" />
+    <None Include="wwwroot\view-js\home\default.min.js" />
+    <None Include="wwwroot\view-js\datastatistics\jsreport\Index.js" />
+    <None Include="wwwroot\view-js\lablis\DaLabReport\Index.js" />
+    <None Include="wwwroot\view-js\lablis\LabRequest\Index.js" />
+    <None Include="wwwroot\view-js\lablis\LabRequest\Sample.js" />
+    <None Include="wwwroot\view-js\lablis\LabTest\Index.js" />
+    <None Include="wwwroot\view-js\patient\Index.js" />
+    <None Include="wwwroot\view-js\patient\Summery.js" />
+    <None Include="wwwroot\view-js\patvisit\Index.js" />
+    <None Include="wwwroot\view-js\patvisit\Summery.js" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\Dmt.DM.Application\Dmt.DM.Application.csproj" />
+    <ProjectReference Include="..\Dmt.DM.Code\Dmt.DM.Code.csproj" />
+    <ProjectReference Include="..\Dmt.DM.Data\Dmt.DM.Data.csproj" />
+    <ProjectReference Include="..\Dmt.DM.IoCConfig\Dmt.DM.IoCConfig.csproj" />
+    <ProjectReference Include="..\Dmt.DM.Mapper\Dmt.DM.Mapper.csproj" />
+    <ProjectReference Include="..\Dmt.DM.Repository\Dmt.DM.EntityFrameWork.csproj" />
+    <ProjectReference Include="..\Dmt.DM.UOW\Dmt.DM.UOW.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Areas\DataStatistics\Data\" />
+    <Folder Include="Areas\DataStatistics\Models\" />
+    <Folder Include="Areas\DataStatistics\Views\" />
+    <Folder Include="Areas\LabLis\Views\" />
+    <Folder Include="Areas\MachineManage\Views\" />
+    <Folder Include="Areas\PatientManage\Data\" />
+    <Folder Include="Areas\PatientManage\Models\" />
+    <Folder Include="upload\download\" />
+    <Folder Include="upload\Puncture\" />
+    <Folder Include="upload\VascularAccess\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Update="upload\datareport\患者信息导入模板.xls">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="upload\datareport\排班表模板.xls">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="upload\datareport\数据上报模板1.xls">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="upload\datareport\血液透析用制水设备运行参数记录表.xls">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="upload\datareport\采样单模板.xls">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

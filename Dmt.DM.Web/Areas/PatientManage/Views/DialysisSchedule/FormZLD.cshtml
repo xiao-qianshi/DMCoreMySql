@@ -1,0 +1,130 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/PatientManage/DialysisSchedule/GetScheduleJson",
+                data: { visitDate: keyValue, visitNo: 1 },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    refreshTable(data);
+                }
+            });
+        }
+    });
+
+    function refreshTable(data) {
+        var $table = $("#table");
+        $table.html();
+        var json = eval(data);
+        var htmlstr = "";
+        $.each(json, function (idx, obj) {
+            if (idx % 5 == 0) {
+                if (idx == 0) {
+                    htmlstr = htmlstr + "<tr>";
+                }
+                else {
+                    htmlstr = htmlstr + "</tr><tr>";
+                }
+            }
+            htmlstr = htmlstr + "<td class=\"formValue\" style=\"padding-top: 1px;\"><div class=\"ckbox\"><input id=\"check" + idx + "\" name=\"check" + idx + "\" type=\"checkbox\"  value=\"" + obj.F_Id + "\"><label for=\"check" + idx + "\">" + obj.F_Name + "[" + obj.F_GroupName + obj.F_DialysisBedNo + "] " + obj.F_DialysisType + "</label></div></td>";
+        });
+        htmlstr = htmlstr + "</tr>";
+        $table.html(htmlstr);
+    }
+
+    function initControl() {
+        $("#scheduleDate").val(keyValue);
+        $("#visitNo").bindSelect();                 
+    }
+
+    function submitForm() {
+        var arr = [];
+        $("input:checkbox:checked").each(function () {
+            var j = {};
+            j.F_Id = $(this).val();
+            arr.push(j);
+        });
+        var keyValue = JSON.stringify(arr);
+        if (!!keyValue) {
+            $.submitForm({
+                url: "/PatientManage/DialysisSchedule/SubmitFormCreatePatVisit",
+                //param: $("#form1").formSerialize(),
+                param:
+                {
+                    keyValue: keyValue
+                },
+                success: function () {
+                    $.currentWindow().$("#gridList").trigger("reloadGrid");
+                }
+            })
+        }
+    }
+    function btn_select() {
+        $(":checkbox").each(function () {
+            $(this).prop("checked", true);
+        });
+    }
+    function btn_cancel() {
+        $(":checkbox").each(function () {
+            $(this).prop("checked", false);
+        });
+    }
+    function btn_query() {
+        $.ajax({
+            url: "/PatientManage/DialysisSchedule/GetScheduleJson",
+            data: { visitDate: $("#scheduleDate").val(), visitNo: $("#visitNo").val() },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                refreshTable(data);
+            }
+        });
+    }
+
+</script>
+
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">日期</th>
+                <td class="formValue">
+                    <input id="scheduleDate" name="scheduleDate" type="text" class="form-control input-wdatepicker required" onfocus="WdatePicker({minDate:'%y-%M-%d'})" autocomplete="off"/>
+                </td>
+                <th class="formTitle">班次</th>
+                <td class="formValue">
+                    <select id="visitNo" name="visitNo" class="form-control">
+                        <option value="1">第一班</option>
+                        <option value="2">第二班</option>
+                        <option value="3">第三班</option>
+                    </select>
+                </td>
+                <td class="formValue">
+                    <div class="btn-group">
+                        <a id="btn_query" class="btn btn-primary dropdown-text" onclick="btn_query()"><i class="fa fa-plus"></i>查询</a>
+                    </div>
+                </td>
+                <td class="formValue">
+                    <div class="btn-group">
+                        <a id="btn_select" class="btn btn-primary dropdown-text" onclick="btn_select()"><i class="fa fa-plus"></i>全选</a>
+                    </div>
+                    <div class="btn-group">
+                        <a id="btn_cancel" class="btn btn-primary dropdown-text" onclick="btn_cancel()"><i class="fa fa-plus"></i>反选</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="margin-top: 10px; margin-left: 20px; margin-right: 20px;">
+        <table class="form" id="table">
+        </table>
+    </div>
+</form>

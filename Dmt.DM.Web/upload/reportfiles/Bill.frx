@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="05/01/2019 02:41:45" ReportInfo.Modified="05/04/2019 22:47:25" ReportInfo.CreatorVersion="2017.1.16.0">
+  <Dictionary>
+    <BusinessObjectDataSource Name="FeeCategories" ReferenceName="FeeCategories" DataType="null" Enabled="true">
+      <Column Name="HospialName" DataType="System.String"/>
+      <Column Name="HospialLogo" DataType="System.Byte[]" BindableControl="Picture"/>
+      <Column Name="Name" DataType="System.String"/>
+      <Column Name="DialysisNo" DataType="System.String"/>
+      <Column Name="StartDate" DataType="System.String"/>
+      <Column Name="EndDate" DataType="System.String"/>
+      <Column Name="RecordNo" DataType="System.String"/>
+      <Column Name="PatientNo" DataType="System.String"/>
+      <Column Name="Gender" DataType="System.String"/>
+      <Column Name="AgeString" DataType="System.String"/>
+      <Column Name="BirthDay" DataType="System.String"/>
+      <Column Name="InsuranceNo" DataType="System.String"/>
+      <Column Name="IdNo" DataType="System.String"/>
+      <Column Name="Costs" DataType="System.String"/>
+      <BusinessObjectDataSource Name="BillSummaries" DataType="null" Enabled="true">
+        <Column Name="FeeType" DataType="System.String"/>
+        <Column Name="Costs" DataType="System.String"/>
+        <BusinessObjectDataSource Name="BillDetails" DataType="null" Enabled="true">
+          <Column Name="ItemCode" DataType="System.String"/>
+          <Column Name="ItemName" DataType="System.String"/>
+          <Column Name="ItemSpec" DataType="System.String"/>
+          <Column Name="Amount" DataType="System.String"/>
+          <Column Name="Unit" DataType="System.String"/>
+          <Column Name="Price" DataType="System.String"/>
+          <Column Name="Charges" DataType="System.String"/>
+          <Column Name="Costs" DataType="System.String"/>
+        </BusinessObjectDataSource>
+      </BusinessObjectDataSource>
+    </BusinessObjectDataSource>
+  </Dictionary>
+  <ReportPage Name="Page1" RawPaperSize="9" LeftMargin="0" TopMargin="0" RightMargin="0" BottomMargin="0" FirstPageSource="15" OtherPagesSource="15">
+    <ReportTitleBand Name="ReportTitle1" Width="793.8" Height="18.9"/>
+    <PageHeaderBand Name="PageHeader1" Top="22.02" Width="793.8" Height="75.6">
+      <TextObject Name="Text1" Left="9.45" Top="9.45" Width="765.45" Height="56.7" Text="[FeeCategories.HospialName]&#13;&#10;费用明细清单" HorzAlign="Center" VertAlign="Bottom" Font="宋体, 16pt, style=Bold"/>
+      <PictureObject Name="Picture1" Width="132.3" Height="75.6" DataColumn="FeeCategories.HospialLogo"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="100.75" Width="793.8" Height="47.25" DataSource="FeeCategories">
+      <TextObject Name="Text3" Left="9.45" Top="3" Width="132.3" Height="18.9" Text="姓名：[FeeCategories.Name]" VertAlign="Center"/>
+      <TextObject Name="Text4" Left="173.25" Top="3" Width="132.3" Height="18.9" Text="透析号：[FeeCategories.DialysisNo]" VertAlign="Center"/>
+      <TextObject Name="Text5" Left="500.85" Top="3" Width="264.6" Height="18.9" Text="日期：[FeeCategories.StartDate]-[FeeCategories.EndDate]" VertAlign="Center"/>
+      <TextObject Name="Text6" Left="337.05" Top="3" Width="132.3" Height="18.9" Text="出生日期：[FeeCategories.BirthDay]" VertAlign="Center"/>
+      <TextObject Name="Text7" Left="9.45" Top="28.35" Width="132.3" Height="18.9" Text="病历号：[FeeCategories.RecordNo]" VertAlign="Center"/>
+      <TextObject Name="Text8" Left="173.25" Top="28.35" Width="132.3" Height="18.9" Text="HIS就诊号：[FeeCategories.PatientNo]" VertAlign="Center"/>
+      <TextObject Name="Text9" Left="337.05" Top="28.35" Width="132.3" Height="18.9" Text="社保号：[FeeCategories.InsuranceNo]" VertAlign="Center"/>
+      <TextObject Name="Text10" Left="500.85" Top="28.35" Width="264.6" Height="18.9" Text="费用合计：[FeeCategories.Costs] 元" VertAlign="Center"/>
+      <DataBand Name="Data2" Top="151.12" Width="793.8" Height="66.15" DataSource="BillSummaries">
+        <TextObject Name="Text20" Left="9.45" Top="47.25" Width="66.15" Height="18.9" Text="编码" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text21" Left="75.6" Top="47.25" Width="283.5" Height="18.9" Text="名称" VertAlign="Center"/>
+        <TextObject Name="Text22" Left="359.1" Top="47.25" Width="94.5" Height="18.9" Text="规格" VertAlign="Center"/>
+        <TextObject Name="Text23" Left="519.75" Top="47.25" Width="37.8" Height="18.9" Text="数量" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text24" Left="567" Top="47.25" Width="37.8" Height="18.9" Text="单价" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text25" Left="614.25" Top="47.25" Width="66.15" Height="18.9" Text="应收金额" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text26" Left="680.4" Top="47.25" Width="66.15" Height="18.9" Text="实收金额" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text27" Left="463.05" Top="47.25" Width="47.25" Height="18.9" Text="单位" HorzAlign="Center" VertAlign="Center"/>
+        <TextObject Name="Text29" Left="9.45" Top="9.45" Width="415.8" Height="37.8" Text="[FeeCategories.BillSummaries.FeeType]费合计：[FeeCategories.BillSummaries.Costs]元" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+        <LineObject Name="Line1" Top="6" Width="765.45"/>
+        <DataBand Name="Data3" Top="220.4" Width="793.8" Height="20.35" DataSource="BillDetails">
+          <TextObject Name="Text13" Left="9.45" Top="1.45" Width="66.15" Height="18.9" Text="[FeeCategories.BillSummaries.BillDetails.ItemCode]" VertAlign="Center"/>
+          <TextObject Name="Text14" Left="75.6" Top="1.45" Width="283.5" Height="18.9" Text="[FeeCategories.BillSummaries.BillDetails.ItemName]" VertAlign="Center"/>
+          <TextObject Name="Text15" Left="359.1" Top="1.45" Width="94.5" Height="18.9" Text="[FeeCategories.BillSummaries.BillDetails.ItemSpec]" VertAlign="Center"/>
+          <TextObject Name="Text16" Left="519.75" Top="1.45" Width="37.8" Height="18.9" Text="[FeeCategories.BillSummaries.BillDetails.Amount]" HorzAlign="Center" VertAlign="Center"/>
+          <TextObject Name="Text17" Left="567" Top="1.45" Width="37.8" Height="18.9" Text="[FeeCategories.BillSummaries.BillDetails.Price]" HorzAlign="Center" VertAlign="Center"/>
+          <TextObject Name="Text18" Left="614.25" Top="1.45" Width="66.15" Height="18.9" Text="[FeeCategories.BillSummaries.BillDetails.Charges]" HorzAlign="Center" VertAlign="Center"/>
+          <TextObject Name="Text19" Left="680.4" Top="1.45" Width="66.15" Height="18.9" Text="[FeeCategories.BillSummaries.BillDetails.Costs]" HorzAlign="Center" VertAlign="Center"/>
+          <TextObject Name="Text28" Left="463.05" Top="1.45" Width="47.25" Height="18.9" Text="[FeeCategories.BillSummaries.BillDetails.Unit]" HorzAlign="Center" VertAlign="Center"/>
+        </DataBand>
+      </DataBand>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="243.88" Width="793.8" Height="18.9">
+      <TextObject Name="Text2" Left="56.7" Width="689.85" Height="18.9" Text="第[Page#]页/共[TotalPages#]页" HorzAlign="Center" VertAlign="Center"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

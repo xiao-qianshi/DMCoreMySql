@@ -1,0 +1,82 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyValue");
+    $(function () {
+        initControl();
+        $.ajax({
+            url: "/PatientManage/Material/GetFormJson",
+            data: { keyValue: keyValue },
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                $("#form1").formSerialize(data);
+                $("#form1").find('.form-control,select,input').attr('readonly', 'readonly');
+                $("#form1").find('div.ckbox label').attr('for', '');
+            }
+        });
+    });
+    function initControl() {
+        //$("#F_GroupName").bindSelect()
+        //$("#F_DefaultType").bindSelect()
+        //$("#F_EnabledMark").bindSelect()  
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#basic" role="tab" data-toggle="tab">基本信息</a></li>
+            <li role="presentation"><a href="#extend" role="tab" data-toggle="tab">扩展信息</a></li>
+        </ul>
+        <div class="tab-content" style="padding-top: 5px; margin-right: 10px; ">
+            <div role="tabpanel" class="tab-pane active" id="basic">
+                <table class="form">
+                    <tr>
+                        <th class="formTitle">耗材代码</th>
+                        <td class="formValue">
+                            <input id="F_MaterialCode" name="F_MaterialCode" type="text" class="form-control required" placeholder="请输入耗材代码" />
+                        </td>
+                        <th class="formTitle">耗材名称</th>
+                        <td class="formValue">
+                            <input id="F_MaterialName" name="F_MaterialName" type="text" class="form-control required" placeholder="请输入耗材名称" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle">耗材规格</th>
+                        <td class="formValue">
+                            <input id="F_MaterialSpec" name="F_MaterialSpec" type="text" class="form-control required" placeholder="请输入耗材规格" />
+                        </td>
+                        <th class="formTitle">耗材单位</th>
+                        <td class="formValue">
+                            <input id="F_MaterialUnit" name="F_MaterialUnit" type="text" class="form-control required" placeholder="请输入耗材单位" />
+                        </td>
+                    </tr>
+                   
+                    <tr>
+                        <th class="formTitle">耗材单价</th>
+                        <td class="formValue">
+                            <input id="F_Charges" name="F_Charges" type="text" class="form-control" />
+                        </td>
+                        <th class="formTitle">拼音码</th>
+                        <td class="formValue">
+                            <input id="F_MaterialSpell" name="F_MaterialSpell" type="text" class="form-control required" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="formTitle" valign="top" style="padding-top: 5px;">
+                            耗材厂商
+                        </th>
+                        <td class="formValue" colspan="3">
+                            <textarea id="F_MaterialSupplier" name="F_MaterialSupplier" class="form-control" style="height: 60px; width :630px"></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="extend">
+
+            </div>
+        </div>
+    </div>
+</form>

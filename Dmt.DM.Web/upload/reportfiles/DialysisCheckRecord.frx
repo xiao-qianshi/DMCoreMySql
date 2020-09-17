@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="12/18/2018 21:43:29" ReportInfo.Modified="01/16/2020 19:30:05" ReportInfo.CreatorVersion="1.6.17.0">
+  <ScriptText>using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Drawing;
+using System.Data;
+using System.IO;
+using FastReport;
+using FastReport.Data;
+using FastReport.Dialog;
+using FastReport.Barcode;
+using FastReport.Table;
+using FastReport.Utils;
+
+namespace FastReport
+{
+  public class ReportScript
+  {
+
+    private void ReportTitle1_BeforeLayout(object sender, EventArgs e)
+    {
+//      //在模板的DataPrintBefore事件中写下如下代码
+//      string imgStr = (string)Report.GetColumnValue(&quot;Hospital.Logo&quot;);
+//      MessageBox.Show(imgStr);
+//      byte[] imgData=Convert.FromBase64String(imgStr);
+//      MemoryStream ms = new MemoryStream(imgData);
+//      Image img = System.Drawing.Image.FromStream(ms);   
+//      //PictureObject pic=Report.FindObject('Picture1') as PictureObject;
+//      Picture1.Image=img;
+//        Picture1.Image=ReadImage(((Byte[])Report.GetColumnValue(&quot;Hospital.Logo&quot;)));
+      
+    }
+    
+    public Image ReadImage(byte[] bytes)
+    {
+      MemoryStream ms=new MemoryStream(bytes,0,bytes.Length);
+      Image image = System.Drawing.Image.FromStream(ms);
+      return image;  
+    }  
+  }
+}
+</ScriptText>
+  <Dictionary>
+    <BusinessObjectDataSource Name="DialysisCheckRecord" ReferenceName="DialysisCheckRecord" DataType="System.Int32" Enabled="true">
+      <Column Name="VisitDate" DataType="System.String"/>
+      <Column Name="VisitNo" DataType="System.String"/>
+      <Column Name="GroupName" DataType="System.String"/>
+      <BusinessObjectDataSource Name="Items" DataType="System.Int32" Enabled="true">
+        <Column Name="Name" DataType="System.String"/>
+        <Column Name="BedNo" DataType="System.String"/>
+        <Column Name="HeparinType" DataType="System.String"/>
+        <Column Name="HeparinAmount" DataType="System.String"/>
+        <Column Name="HeparinUnit" DataType="System.String"/>
+        <Column Name="HeparinAddAmount" DataType="System.String"/>
+        <Column Name="DialysisType" DataType="System.String"/>
+        <Column Name="DialyzerType1" DataType="System.String"/>
+        <Column Name="DialyzerType2" DataType="System.String"/>
+      </BusinessObjectDataSource>
+    </BusinessObjectDataSource>
+  </Dictionary>
+  <ReportPage Name="Page1" RawPaperSize="9" LeftMargin="5" FirstPageSource="15" OtherPagesSource="15">
+    <PageHeaderBand Name="PageHeader1" Width="737.1" Height="56.7">
+      <TextObject Name="Text14" Left="28.35" Top="9.45" Width="652.05" Height="37.8" Text="透析安排核对" HorzAlign="Center" Font="宋体, 22pt"/>
+    </PageHeaderBand>
+    <DataBand Name="Data2" Top="60.7" Width="737.1" Height="37.8" DataSource="DialysisCheckRecord" KeepTogether="true">
+      <TextObject Name="Text1" Left="9.45" Top="9.45" Width="217.35" Height="18.9" Text="透析日期：[DialysisCheckRecord.VisitDate]" Font="宋体, 14pt, style=Bold"/>
+      <TextObject Name="Text3" Left="236.25" Top="9.45" Width="94.5" Height="18.9" Text="第[DialysisCheckRecord.VisitNo]班" Font="宋体, 14pt, style=Bold"/>
+      <TextObject Name="Text5" Left="359.1" Top="9.45" Width="264.6" Height="18.9" Text="分组：[DialysisCheckRecord.GroupName]" Font="宋体, 14pt, style=Bold"/>
+      <ChildBand Name="Child1" Top="102.5" Width="737.1" Height="9.45"/>
+      <DataBand Name="Data1" Top="115.95" Width="245.7" Height="179.55" DataSource="Items" Columns.Count="3">
+        <ShapeObject Name="Shape1" Left="2" Top="5" Width="226.8" Height="160.65" Shape="RoundRectangle"/>
+        <TextObject Name="Text2" Left="6.45" Top="14.45" Width="85.05" Height="18.9" Text="[DialysisCheckRecord.Items.Name]" Font="宋体, 12pt"/>
+        <TextObject Name="Text4" Left="91.5" Top="14.45" Width="66.15" Height="18.9" Text="[DialysisCheckRecord.Items.BedNo]床" Font="宋体, 12pt"/>
+        <TextObject Name="Text6" Left="6.45" Top="42.8" Width="217.35" Height="18.9" Text="抗凝剂：[DialysisCheckRecord.Items.HeparinType]" Font="宋体, 12pt"/>
+        <TextObject Name="Text7" Left="157.65" Top="14.45" Width="66.15" Height="18.9" Text="[DialysisCheckRecord.Items.DialysisType]" Font="宋体, 12pt"/>
+        <TextObject Name="Text8" Left="15.9" Top="61.7" Width="198.45" Height="37.8" Text="剂量：[DialysisCheckRecord.Items.HeparinAmount][DialysisCheckRecord.Items.HeparinUnit]，&#13;&#10;追加量[DialysisCheckRecord.Items.HeparinAddAmount]" Font="宋体, 9pt"/>
+        <TextObject Name="Text12" Left="6.45" Top="107.95" Width="217.35" Height="18.9" Text="透析器：[DialysisCheckRecord.Items.DialyzerType1]" Font="宋体, 12pt"/>
+        <TextObject Name="Text13" Left="6.45" Top="130.85" Width="217.35" Height="18.9" Text="[DialysisCheckRecord.Items.DialyzerType2]" HorzAlign="Center" Font="宋体, 12pt"/>
+      </DataBand>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="299.5" Width="737.1" Height="18.9">
+      <TextObject Name="Text15" Left="37.8" Width="633.15" Height="18.9" Text="[Page#]-[TotalPages#]" HorzAlign="Center" VertAlign="Center" Font="宋体, 9pt, style=Bold"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

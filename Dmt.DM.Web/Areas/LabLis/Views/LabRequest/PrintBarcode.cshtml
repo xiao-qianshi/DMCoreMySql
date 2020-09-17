@@ -1,0 +1,112 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script src="~/Content/js/JsBarcode/JsBarcode.code128.min.js"></script>
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+<link media="print" href="~/Content/js/jqprint/barcode.css" rel="stylesheet" />
+<script>
+    //var keyValue = decodeURI($.request("keyword"));
+    var keyValue = $.request("keyword");
+    $(function () {
+        if (!!keyValue) {
+            $.ajax({
+                url: '/LabLis/LabRequest/GetBarcodeInfo',
+                data: {
+                    ids: keyValue
+                },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if ($.isArray(data)) {
+                        var options = {
+                            format: "CODE128",
+                            displayValue: true,
+                            fontSize: 20,
+                            height: 45,
+                            fontOptions: "bold",
+                            width: 2,
+                            marginTop: 5
+                        };
+                        var target = $("#previewContent");
+                        $.each(data, function (i, v) {
+                            var itemDesc = [];
+                            $.each(v.rows, function (index,value) {
+                                itemDesc.push(value.shortName);
+                            });
+                            target.append('\
+                                <div class="col-sm-3" style="height: 155px;">\
+                                    <div class="thumbnail" style="margin-bottom: 1px;width: 220px;">\
+                                        <svg id="svg'+ v.id + '" />\
+                                        <div class="caption" style="margin-top: -2px;padding: 1px;">\
+                                            <p style="margin: 0 0 1px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">\
+                                                '+ v.name + '' + (v.beInfected ? '<sup>+</sup>' : '') + '&nbsp;&nbsp;' + v.gender + '&nbsp;' + v.ageStr + '&nbsp;' + v.sampleType + '\
+                                            </p>\
+                                            <p style="margin: 0 0 1px;overflow: hidden;text-overflow: ellipsis;display:-webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp:2;font-size: 9px;font-weight: bold;word-break: break-all;">\
+                                                '+ itemDesc.join(',') +'\
+                                            </p>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                ');
+                            $("#svg" + v.id).JsBarcode(v.barcode, options);
+                        });
+                    }    
+                }
+            })
+        }
+    });
+
+    function initControl() {
+    }
+    function submitForm() {
+        var $target = $("#printContent");
+        $target.empty();
+        $target.html('');
+        var result = '';
+        var rows = $('div.thumbnail');
+        var length = rows.length;
+        if (length == 0) {
+            return false;
+        }
+        $.each($('div.thumbnail'), function (i, v) {
+            result = result + v.outerHTML;
+            if (i + 1 < length) {
+                result = result + '<div style=\"page-break-after:always;\"></div>';
+            }     
+        });     
+        $target.html(result);
+        $target.attr("style", "display:block;");//显示div
+        $target.jqprint();
+        $target.attr("style", "display:none;");//隐藏div
+    }
+</script>
+<style type="text/css">
+    [class*="col-"] {
+        padding: 0px;
+    }
+</style>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 3px;">
+        <div class="row" id="previewContent">
+            @*<div class="col-sm-3">
+                <div class="thumbnail" style="margin-bottom: 1px;width: 197px;">
+                    <img />
+                    <div class="caption" style="margin-top: -7px;padding: 1px;">
+                        <p style="margin: 0 0 1px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
+                            刘晓林<sup>+</sup>&nbsp;&nbsp;男&nbsp;35岁&nbsp;抗凝全血
+                        </p>
+                        <p style="margin: 0 0 1px;overflow: hidden;text-overflow: ellipsis;display:-webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp:2;font-size: 9px;font-weight: bold;">
+                            血常规,肝功血，肾功，乙肝五项,血常规,肝功血，肾功，乙肝五项,血常规,肝功血，肾功，乙肝五项
+                        </p>
+                    </div>
+                </div>
+            </div>*@
+        </div>
+    </div>
+</form>
+
+<div id="printContent" style="visibility:hidden;display:none">
+</div>
+
+

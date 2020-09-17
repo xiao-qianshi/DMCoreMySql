@@ -1,0 +1,276 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var parms = $.request("keyValue");
+    if (!parms) {
+        parms = $.request("keyword");
+    }
+    var obj = $.parseJSON(decodeURI(parms));//$.request("keyValue");
+    var keyValue = obj.keyValue;
+    $(function () {
+        initControl();
+        if (!!keyValue) {
+            $.ajax({
+                url: "/PatientManage/BillingModel/GetFormJson",
+                data: { keyValue: keyValue },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    $("#form1").formSerialize(data);
+                }
+            });
+        } else {
+            $("#form1").find('#F_DialysisType').val(obj.dialysisType);
+            $("#form1").find('#F_VascularAccess').val(obj.vascularAccess);
+        }
+        
+    });
+    function initControl() {
+        $("#form1").find('#F_DialysisType,#F_VascularAccess,#F_ItemSpec,#F_ItemUnit,#F_Charges,#F_Supplier').attr('readonly', 'readonly');
+       //F_ItemClass
+        //<option value="诊疗">诊疗</option>
+        //    <option value="耗材">耗材</option>
+        //    <option value="药品">药品</option>
+        $("#F_ItemId").bindSelect();
+        $("#F_ItemClass").bindSelect({
+            data: [
+                {
+                    id: "诊疗",
+                    text:"诊疗"
+                },
+                {
+                    id: "耗材",
+                    text: "耗材"
+                },
+                {
+                    id: "药品",
+                    text: "药品"
+                }
+            ],
+            change: function (e) {
+                $("#F_ItemId").select2("val", ""); 
+                $("#F_ItemId").empty();
+                if (e.id == "诊疗") {
+                    $.ajax({
+                        url: "/PatientManage/Treatment/GetSelectJson",
+                        dataType: "json",
+                        async: false,
+                        success: function (data) {
+                            var tags = [];
+                            var first = {};
+                            first.id = "";
+                            first.text = "";
+                            tags.push(first);
+                            $.each(data, function (index, item) {
+                                var obj = {};
+                                obj.id = item.id;
+                                obj.text = item.text;
+                                tags.push(obj);
+                            }
+                            );
+                            $("#F_ItemId").bindSelect({
+                                id: 'id',
+                                text: 'text',
+                                data: tags,
+                                change: function (item) {
+                                    $.ajax({
+                                        url: "/PatientManage/Treatment/GetFormJson",
+                                        data: { keyValue: item.id },
+                                        dataType: "json",
+                                        async: false,
+                                        success: function (data) {
+                                            $("#F_Amount").val(1);
+                                            $("#F_ItemCode").val(data.F_TreatmentCode);
+                                            $("#F_ItemName").val(data.F_TreatmentName);
+                                            $("#F_ItemSpec").val(data.F_TreatmentSpec);
+                                            $("#F_ItemUnit").val(data.F_TreatmentUnit);
+                                            $("#F_Charges").val(data.F_Charges);
+                                            $("#F_Supplier").val("");
+                                        }
+                                    });
+                                }
+
+                            });
+
+                        }
+                    });
+                } else if (e.id == "耗材") {
+                    $.ajax({
+                        url: "/PatientManage/Material/GetSelectJson",
+                        dataType: "json",
+                        async: false,
+                        success: function (data) {
+                            var tags = [];
+                            var first = {};
+                            first.id = "";
+                            first.text = "";
+                            tags.push(first);
+                            $.each(data, function (index, item) {
+                                var obj = {};
+                                obj.id = item.id;
+                                obj.text = item.text;
+                                tags.push(obj);
+                            }
+                            );
+
+                            $("#F_ItemId").bindSelect({
+                                data: tags,
+                                change: function (item) {
+                                    $.ajax({
+                                        url: "/PatientManage/Material/GetFormJson",
+                                        data: { keyValue: item.id },
+                                        dataType: "json",
+                                        async: false,
+                                        success: function (data) {
+                                            $("#F_Amount").val(1);
+                                            $("#F_ItemCode").val(data.F_MaterialCode);
+                                            $("#F_ItemName").val(data.F_MaterialName);
+                                            $("#F_ItemSpec").val(data.F_MaterialSpec);
+                                            $("#F_ItemUnit").val(data.F_MaterialUnit);
+                                            $("#F_Charges").val(data.F_Charges);
+                                            $("#F_Supplier").val(data.F_MaterialSupplier);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                } else if (e.id == "药品") {
+                    $.ajax({
+                        url: "/PatientManage/Drugs/GetSelectJson",
+                        dataType: "json",
+                        async: false,
+                        success: function (data) {
+                            var tags = [];
+                            var first = {};
+                            first.id = "";
+                            first.text = "";
+                            tags.push(first);
+                            $.each(data, function (index, item) {
+                                var obj = {};
+                                obj.id = item.id;
+                                obj.text = item.text;
+                                tags.push(obj);
+                            }
+                            );
+                            $("#F_ItemId").bindSelect({
+                                id: 'id',
+                                text: 'text',
+                                data: tags,
+                                change: function (item) {
+                                    $.ajax({
+                                        url: "/PatientManage/Drugs/GetFormJson",
+                                        data: { keyValue: item.id },
+                                        dataType: "json",
+                                        async: false,
+                                        success: function (data) {
+                                            $("#F_Amount").val(1);
+                                            $("#F_ItemCode").val(data.F_DrugCode);
+                                            $("#F_ItemName").val(data.F_DrugName);
+                                            $("#F_ItemSpec").val(data.F_DrugSpec);
+                                            $("#F_ItemUnit").val(data.F_DrugUnit);
+                                            $("#F_Charges").val(data.F_Charges);
+                                            $("#F_Supplier").val(data.F_DrugSupplier);
+                                        }
+                                    });
+                                }
+
+                            });
+
+                        }
+                    });
+                } 
+
+            }
+        });
+
+        $("#F_ItemClass").trigger("change");
+    }
+    function submitForm() {
+        if (!$('#form1').formValid()) {
+            return false;
+        }
+        $.submitForm({
+            url: "/PatientManage/BillingModel/SubmitForm",
+            param: {
+                entity: $("#form1").formSerialize(),
+                keyValue: keyValue
+            },
+            success: function () {
+                $.currentWindow().$("#gridList").trigger("reloadGrid");
+            }
+        })
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+        <table class="form">
+            <tr>
+                <th class="formTitle">透析模式</th>
+                <td class="formValue">
+                    <input id="F_DialysisType" name="F_DialysisType" type="text" class="form-control" />
+                </td>
+                <th class="formTitle">血管通路</th>
+                <td class="formValue">
+                    <input id="F_VascularAccess" name="F_VascularAccess" type="text" class="form-control" />
+                </td>
+            </tr>
+        </table>
+        <table class="form">
+            <tr>
+                <th class="formTitle">项目类型</th>
+                <td class="formValue">
+                    <select id="F_ItemClass" name="F_ItemClass" type="text" class="form-control required">
+                        
+                    </select>
+                </td>
+                <th class="formTitle">项目名称</th>
+                <td class="formValue">
+                    <select id="F_ItemId" name="F_ItemId" type="text" class="form-control required"></select>
+                </td>
+                <th class="formTitle">数量</th>
+                <td class="formValue">
+                    <input id="F_Amount" name="F_Amount" type="text" class="form-control required" />
+                </td>
+            </tr>
+        </table>
+        <table class="form" style="display:none">
+            <tr>
+                <td class="formValue">
+                    <input id="F_ItemCode" name="F_ItemCode" type="text" class="form-control" />
+                </td>
+                <td class="formValue">
+                    <input id="F_ItemName" name="F_ItemName" type="text" class="form-control" />
+                </td>
+            </tr>
+        </table>
+        <table class="form">
+            <tr>
+                <th class="formTitle">规格</th>
+                <td class="formValue">
+                    <input id="F_ItemSpec" name="F_ItemSpec" type="text" class="form-control" />
+                </td>
+                <th class="formTitle">单位</th>
+                <td class="formValue">
+                    <input id="F_ItemUnit" name="F_ItemUnit" type="text" class="form-control" />
+                </td>
+                <th class="formTitle">单价</th>
+                <td class="formValue">
+                    <input id="F_Charges" name="F_Charges" type="text" class="form-control" />
+                </td>
+            </tr>
+        </table>
+        <table class="form">
+            <tr>
+                <th class="formTitle" valign="top" style="padding-top: 5px;">
+                    厂商
+                </th>
+                <td class="formValue" colspan="3">
+                    <textarea id="F_Supplier" name="F_Supplier" class="form-control" style="height: 60px;"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>

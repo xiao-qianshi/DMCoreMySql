@@ -1,0 +1,171 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<script src="~/Content/js/JsBarcode/JsBarcode.code128.min.js"></script>
+<script src="~/Content/js/jqprint/jquery.jqprint-0.3.js"></script>
+<link media="print" href="~/Content/js/jqprint/common.css" rel="stylesheet" />
+<link href="~/Content/js/select2/select2.min.css" rel="stylesheet" />
+<script src="~/Content/js/select2/select2.min.js"></script>
+<script src="~/Content/js/datepicker/WdatePicker.js"></script>
+<script src="~/Content/js/validate/jquery.validate.min.js"></script>
+
+<environment include="Development">
+    <script src="~/view-js/lablis/LabRequest/Sample.js" asp-append-version="true"></script>
+</environment>
+<environment exclude="Development">
+    <script src="~/view-js/lablis/LabRequest/Sample.min.js" asp-append-version="true"></script>
+</environment>
+
+<style type="text/css">
+    .ui-jqgrid tr.jqgrow td {
+        text-overflow: ellipsis;
+    }
+    /* 布局纵向 */
+    .a4-endwise {
+        width: 1150px;
+        height: 1627px;
+        border: 1px #000 solid;
+    }
+    /* 布局横向 */
+    .a4-broadwise {
+        width: 1627px;
+        height: 1149px;
+        border: 1px #fff solid;
+    }
+
+    [class*="col-"] {
+        padding: 0px;
+    }
+
+    #gridList_cb {
+        text-align: left;
+        width: 30px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    .ui-jqgrid .ui-jqgrid-view input[type="text"] {
+        width: 96%;
+        border-top-width: 0px;
+        border-bottom-width: 0px;
+        padding-bottom: 0px;
+        padding-top: 0px;
+        height: 30px;
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+
+    .ui-jqgrid .ui-jqgrid-view input[type="checkbox"] {
+        margin-top: 6px;
+        width: 18px;
+        height: 18px;
+        margin-bottom: 6px;
+    }
+</style>
+
+<div class="rows" style="margin-bottom: 1%; overflow: hidden;">
+    <div style="float: left; width: 99%;">
+        <div class="topPanel">
+            <div class="toolbar">
+                <div class="btn-group">
+                    @*<a id="NF-add" class="btn btn-primary"><i class="fa fa-plus"></i>重置</a>*@
+                    <a class="btn btn-primary" onclick="$.reload()"><span class="glyphicon glyphicon-refresh"></span></a>
+                </div>
+                <div class="btn-group">
+                    <a id="NF-print" class="btn btn-primary"><i class="fa fa-print"></i>打印执行单</a>
+                </div>
+                <div class="operate">
+                    <ul class="nav nav-pills">
+                        <li class="first">已选中<span>1</span>项</li>
+                        @*<li class="split"></li>*@
+                        <li><a id="NF-merge" authorize="yes"><i></i>合并</a></li>
+                        <li><a id="NF-spit" authorize="yes"><i></i>拆分</a></li>
+                        <li class="split"></li>
+                        <li><a id="NF-createbarcode" authorize="yes"><i></i>生成条码</a></li>
+                        <li><a id="NF-printbarcode" authorize="yes"><i class="fa fa-barcode"></i>打印条码</a></li>
+                        <li><a id="NF-matchbarcode" authorize="yes"><i></i>匹配条码</a></li>
+                        <li class="split"></li>
+                        <li><a id="NF-printcyd" authorize="yes"><i class="fa fa-print"></i>打印采样单</a></li>
+                        <li><a id="NF-sampling" authorize="yes"><i class="fa fa-pencil"></i>采样确认</a></li>
+                        <li><a id="NF-download" authorize="yes"><i class="fa fa-cloud-download"></i>下载</a></li>
+                        <li><a id="NF-upload" authorize="yes"><i class="fa fa-cloud-upload"></i>上传(金域)</a></li>
+                        <li class="split"></li>
+                        @*<li><a id="NF-back" authorize="yes"><i></i>退回</a></li>*@
+                        <li><a id="NF-delete" authorize="yes"><i class="fa fa-trash-o"></i>删除</a></li>
+                    </ul>
+                    <a href="javascript:;" class="close"></a>
+                </div>
+                <script>$('.toolbar').authorizeButton()</script>
+            </div>
+            <div class="search">
+                <table>
+                    <tr>
+                        <td>
+                            <div id="txt_condition" class="btn-group">
+                                <a class="btn btn-default dropdown-text" data-toggle="dropdown" style="width: 50px;">样本状态</a>
+                                <a class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a data-value="">全部</a></li>
+                                    <li><a data-value="1">新申请</a></li>
+                                    <li><a data-value="2">已提交</a></li>
+                                    <li><a data-value="3">已采样</a></li>
+                                    <li><a data-value="4">正在检验</a></li>
+                                    <li><a data-value="5">已审核</a></li>
+                                    <li><a data-value="6">已打印</a></li>
+                                </ul>
+                            </div>
+                        </td>
+
+                        <td style="padding-left: 2px;">
+                            @*<div class="input-group">
+                                    <input id="requestDate" autocomplete="off" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd', onpicked: requestDateChanged})" placeholder="申请日期" style="width: 100px;">
+                                    <span class="input-group-btn">
+                                        <button id="btn_search" type="button" class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                                    </span>
+                                </div>*@
+                            <div class="input-group">
+                                <input id="requestDate" autocomplete="off" type="text" class="form-control input-wdatepicker" onfocus="WdatePicker({dateFmt: 'yyyy-MM-dd', onpicked: requestDateChanged})" placeholder="申请日期" style="width: 100px;">
+                                <input id="txt_keyword" type="text" class="form-control" placeholder="透析号/病历号/姓名" style="width: 120px;">
+                                <span class="input-group-btn">
+                                    <button id="btn_search" type="button" class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="gridPanel">
+            <table id="gridList"></table>
+            <div id="gridPager"></div>
+        </div>
+    </div>
+</div>
+<div id="printContent" style="visibility:hidden;display:none">
+    <div class="a4-endwise">
+        @*<div class="thumbnail" style="float: left;margin-bottom: 1px;width: 33%;">
+                <svg id="6110f1a6-da5a-4a29-b470-ca10503d19c7" />
+                <div class="caption" style="margin-top: -2px;padding: 1px;">
+                    <p style="margin: 0 0 1px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
+                        曹德健<sup>+</sup>&nbsp;&nbsp;男&nbsp;31岁&nbsp;
+                    </p>
+                    <p style="margin: 0 0 1px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
+                        抗凝全血&nbsp;&nbsp;&nbsp;红头管
+                    </p>
+                    <p style="height: 60px;margin: 0 0 1px;overflow: hidden;text-overflow: ellipsis;display:-webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp:4;font-size: 9px;font-weight: bold;word-break: break-all;">
+                        血常规
+                    </p>
+                    <p style="margin: 0 0 1px;">
+                        <string>开单:</string>&nbsp;张医生 06-05 15:34
+                    </p>
+                    <p style="margin: 0 0 1px;">
+                        <string>采样:</string>&nbsp;
+                    </p>
+                </div>
+            </div>*@
+    </div>
+</div>
+
+

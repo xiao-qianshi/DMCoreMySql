@@ -1,0 +1,116 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    var keyValue = $.request("keyword");
+    var existsCodes = keyValue.split(',');
+    var instrumentId = existsCodes[0];
+    existsCodes.splice(0, 1);
+    var itemOptions = [];
+    var selectedItems = [];
+    $(function () {
+        initControl();
+        if (!!instrumentId) {
+            $.ajax({
+                url: "/LabLis/LabInstrument/GetItemJson",
+                data: {
+                    keyValue: instrumentId
+                },
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data instanceof Array) {
+                        itemOptions = data;
+                        var filterRows = $.grep(itemOptions, function (el) {
+                            return $.inArray(el.F_Code, existsCodes) < 0;
+                        });
+                        refreshTable(filterRows);
+                    }       
+                }
+            });
+        }
+    });
+    function initControl() {
+        
+        $("#btn-selectall").on('click', function () {
+            $("#selectTable").find("input[type=checkbox]").prop('checked', true);
+        });
+        $("#btn-clearall").on('click', function () {
+            $("#selectTable").find("input[type=checkbox]").prop('checked', false);
+        });
+    }
+
+    function refreshTable(data) {
+        if (data instanceof Array) {
+            if (data.length === 0) {
+                return false;
+            }
+            var $table = $("#selectTable");
+            $table.html();
+            var htmlstr = "";
+            $.each(data, function (index, item) {
+                if (index % 3 == 0) {
+                    if (index == 0) {
+                        htmlstr = htmlstr + "<tr>";
+                    }
+                    else {
+                        htmlstr = htmlstr + "</tr><tr>";
+                    }
+                }
+                htmlstr = htmlstr + "<td class=\"formValue\" style=\"padding-top: 1px;\"><div class=\"ckbox\"><input id=\"check" + item.F_Id + "\" name=\"check" + item.F_Id + "\" type=\"checkbox\"  value=\"" + item.F_Id + "\"><label for=\"check" + item.F_Id + "\">" + item.F_Code + "</label></div></td>";                
+            });
+            htmlstr = htmlstr + "</tr>";
+            $table.html(htmlstr);
+            $table.find("input[type=checkbox]").on('click', function (e) {
+            });
+        }
+    }
+
+    function submitForm() {
+        selectedItems = [];
+        var arrtemp = [];
+        $.each($("#selectTable").find('input[type=checkbox]:checked'), function (i, v) {
+            arrtemp.push(v.defaultValue);
+        });
+        if (arrtemp.length === 0) {
+            $.modalMsg("请勾选项目!", 'warning');
+            return false;
+        } else {
+            $.each(itemOptions, function (index, value) {
+                if ($.inArray(value.F_Id, arrtemp) >= 0) {
+                    selectedItems.push(value);
+                }
+            });
+        }
+        $.currentWindow().appendItem(selectedItems);
+        $.modalClose();
+    }
+</script>
+<form id="form1">
+    <div style="margin-top: 5px; margin-left: 10px; margin-right: 10px;">
+        @*<table class="form">
+            <tr>
+            </tr>
+        </table>*@
+        <div>
+            <div style="float: left;margin-left: 50px;">
+                @*<div class="ckbox">
+                    <input type="checkbox" id="ck-yx" /><label for="ck-yx">是否阳性患者</label>
+                </div>*@
+                @*<div id="time_horizon" class="btn-group">
+                    <a class="btn btn-default active" data-value="1">全部</a>
+                    <a class="btn btn-default" data-value="2">阳性</a>
+                    <a class="btn btn-default" data-value="3">阴性</a>
+                </div>*@
+            </div>
+            <div style="float: right;">
+                <a class="btn btn-primary" id="btn-selectall">全选</a>
+                <a class="btn btn-primary" style="margin-right: 60px;" id="btn-clearall">反选</a>
+            </div>
+        </div>
+
+        <table id="selectTable" class="form" style="margin-top: 10px;">
+        </table>
+    </div>
+</form>
