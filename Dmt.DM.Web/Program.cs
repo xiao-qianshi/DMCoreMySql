@@ -21,7 +21,7 @@ namespace Dmt.DM.Web
             WebHost.CreateDefaultBuilder(args)
                 .ConfigureLogging(log =>
                 {
-                    //log.AddFilter("System", LogLevel.Warning);
+                    log.AddFilter("System", LogLevel.Warning);
                     log.AddFilter("Microsoft", LogLevel.Warning);
                     log.AddLog4Net("log4net.config", true);
                 })
