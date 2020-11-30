@@ -447,6 +447,18 @@
 
 
   <ItemGroup>
+    <None Update="DataReport\TextFile.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="GuideBook\TextFile.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="GuideInstruction\TextFile.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="GuideRegulation\TextFile.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="upload\datareport\患者信息导入模板.xls">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

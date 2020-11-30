@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System;
 using System.IO;
+using Dmt.DM.Web.Services;
 using Newtonsoft.Json.Serialization;
 
 namespace Dmt.DM.Web
@@ -36,12 +37,14 @@ namespace Dmt.DM.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+           
+
             services.AddCustomOptions(Configuration)
                 .AddUnitOfWork<HsDbContext>()
                 .AddCustomServices()
                 .AddCustomDbContext(Configuration)
                 .AddCustomJwtBearer(Configuration)
-                .AddCustomCors()
+                .AddCustomCors(Configuration)
                 .AddCustomAntiforgery()
                 .AddCustomApplication()
                 .AddCustomMapper();
@@ -54,10 +57,11 @@ namespace Dmt.DM.Web
             });
 
             services.AddSignalR(options =>
-                {
-                    // Faster pings for testing
-                    options.KeepAliveInterval = TimeSpan.FromSeconds(5);
-                });
+            {
+                // Faster pings for testing
+                options.KeepAliveInterval = TimeSpan.FromSeconds(5);
+                options.EnableDetailedErrors = true;
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2).AddJsonOptions(opt =>
             {
@@ -65,6 +69,8 @@ namespace Dmt.DM.Web
             });
             // 启用内存缓存
             services.AddMemoryCache();
+            //后台任务-定时执行
+            services.AddHostedService<TimedHostedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -128,8 +134,8 @@ namespace Dmt.DM.Web
 
             app.UseAuthentication();
 
+           
             app.UseCors("CorsPolicy");
-
 
             app.UseSignalR(routes =>
             {

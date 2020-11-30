@@ -25,6 +25,7 @@ namespace Dmt.DM.Web
                     log.AddFilter("Microsoft", LogLevel.Warning);
                     log.AddLog4Net("log4net.config", true);
                 })
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .UseIIS();
     }
 }

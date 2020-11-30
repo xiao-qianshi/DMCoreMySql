@@ -118,5 +118,12 @@ $(function () {
         init();
     }).catch(function (err) {
         return console.error(err.toString());
+        });
+    hubConnection.onclose(function () {
+        console.log("断线重连，signal connection.....");
+        setTimeout(function() {
+                hubConnection.start();
+            },
+            5000);
     });
 });

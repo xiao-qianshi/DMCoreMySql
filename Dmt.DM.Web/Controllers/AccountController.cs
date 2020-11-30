@@ -85,6 +85,38 @@ namespace Dmt.DM.Web.Controllers
         [AllowAnonymous]
         [IgnoreAntiforgeryToken]
         [HttpPost("[action]")]
+        public async Task<IActionResult> CheckLogin([FromBody]  LoginModel loginUser)
+        {
+            if (loginUser == null)
+            {
+                return BadRequest("user is not set.");
+            }
+            var user = await _usersService.FindUserAsync(loginUser.Username, loginUser.Password);
+            if (user?.F_IsActive != true)
+            {
+                return Content(new AjaxResult
+                {
+                    state = ResultType.error.ToString(),
+                    message = "登录失败！"
+                }.ToJson());
+            }
+
+            var result = await _tokenFactoryService.CreateJwtTokensAsync(user);
+            await _tokenStoreService.AddUserTokenAsync(user, result.RefreshTokenSerial, result.AccessToken, null);
+            await _uow.SaveChangesAsync();
+
+            _antiforgery.RegenerateAntiForgeryCookies(result.Claims);
+
+            return Ok(new
+            {
+                access_token = result.AccessToken,
+                refresh_token = result.RefreshToken
+            });
+        }
+
+        [AllowAnonymous]
+        [IgnoreAntiforgeryToken]
+        [HttpPost("[action]")]
         public async Task<IActionResult> RefreshToken([FromBody]Token model)
         {
             var refreshTokenValue = model.RefreshToken;
@@ -110,7 +142,7 @@ namespace Dmt.DM.Web.Controllers
 
         [AllowAnonymous]
         [HttpGet("[action]")]
-        public async Task<bool> Logout(string refreshToken)
+        public async Task<IActionResult> Logout(string refreshToken)
         {
             var claimsIdentity = this.User.Identity as ClaimsIdentity;
             var userIdValue = claimsIdentity.FindFirst(ClaimTypes.UserData)?.Value;
@@ -122,20 +154,23 @@ namespace Dmt.DM.Web.Controllers
 
             _antiforgery.DeleteAntiForgeryCookies();
 
-            return true;
+            return Ok(true);
         }
 
         [HttpGet("[action]"), HttpPost("[action]")]
-        public bool IsAuthenticated()
+        public IActionResult IsAuthenticated()
         {
-            return User.Identity.IsAuthenticated;
+            return Ok(User.Identity.IsAuthenticated);
         }
 
         [HttpGet("[action]"), HttpPost("[action]")]
-        public IActionResult GetUserInfo()
+        public async Task<IActionResult> GetUserInfo()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
-            return Json(new { Username = claimsIdentity.Name });
+            var data = await _usersService.FindUserAsync(
+                claimsIdentity?.FindFirst(t => t.Type == ClaimTypes.NameIdentifier)?.Value ?? "");
+            return Ok(data);
         }
     }
 }
+ 

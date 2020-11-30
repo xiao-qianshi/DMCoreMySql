@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dmt.DM.ExternalInterface.Lis;
@@ -29,18 +30,22 @@ namespace Dmt.DM.IoCConfig
             return services;
         }
 
-        public static IServiceCollection AddCustomCors(this IServiceCollection services)
+        public static IServiceCollection AddCustomCors(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
                     builder => builder
-                        //.WithOrigins("http://localhost:4200") //Note:  The URL must be specified without a trailing slash (/).
-                        .AllowAnyOrigin()
+                        .WithOrigins(configuration["App:CorsOrigins"]
+                            .Split(',')
+                            .Select(item => item.TrimEnd('/')).ToArray())
+                        //.AllowAnyOrigin()
+                        //.WithOrigins("*")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .SetIsOriginAllowed((host) => true)
-                        //.AllowCredentials())
+                        //.SetIsOriginAllowedToAllowWildcardSubdomains()
+                        .AllowCredentials()
                         )
                     ;
             });

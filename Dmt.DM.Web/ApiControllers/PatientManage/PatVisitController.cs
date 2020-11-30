@@ -12,6 +12,7 @@ using Dmt.DM.Domain.Entity.PatientManage;
 using Dmt.DM.Domain.Entity.ReportPrint;
 using Dmt.DM.Domain.Entity.ReportPrint.DialysisRecord;
 using Dmt.DM.Mapper.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dmt.DM.Web.ApiControllers.PatientManage
@@ -881,6 +882,98 @@ namespace Dmt.DM.Web.ApiControllers.PatientManage
                 data.Add(temp);
             }
             return Ok(data);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> GetTvShowList()
+        {
+            var visitRecords = _patVisitApp.GetList()
+                .Where(t => t.F_VisitDate == DateTime.Today && t.F_EnabledMark != false && t.F_DeleteMark != true);
+            var list = from v in visitRecords
+                join d in await _drugsApp.GetList() on v.F_HeparinType equals d.F_Id into temp
+                from dt in temp.DefaultIfEmpty()
+                join b in _dialysisMachineApp.GetQueryable() on new
+                    {GroupName = v.F_GroupName, BedNo = v.F_DialysisBedNo} equals new
+                    {GroupName = b.F_GroupName, BedNo = b.F_DialylisBedNo} into btemp
+                from bt in btemp.DefaultIfEmpty()
+                select new
+                {
+                    Id = v.F_Id,
+                    VisitDate = v.F_VisitDate,
+                    VisitNo = v.F_VisitNo,
+                    DialysisType = v.F_DialysisType,
+                    PId = v.F_Pid,
+                    Name = v.F_Name,
+                    StartTime = v.F_DialysisStartTime,
+                    EndTime = v.F_DialysisEndTime,
+                    Status = v.F_DialysisStartTime == null ? 1 : v.F_DialysisEndTime == null ? 2 : 3,
+                    GroupName = v.F_GroupName,
+                    BedNo = v.F_DialysisBedNo,
+                    ShowNo = bt == null ? 99 : bt.F_ShowOrder,
+                    VascularAccess = v.F_VascularAccess,
+                    AccessName = v.F_AccessName,
+                    EstimateHours = v.F_EstimateHours ?? 4,
+                    WeightYT = v.F_WeightYT,
+                    Heparin = new
+                    {
+                        Id = v.F_HeparinType,
+                        Name = dt == null ? "" : dt.F_DrugName,
+                        Amount = v.F_HeparinAmount,
+                        Unit = v.F_HeparinUnit
+                    }
+                };
+            var data = list.GroupJoin(_dialysisObservationApp.GetList().Where(o => o.F_DeleteMark != true),
+                        l => new {pid = l.PId, visitDate = l.VisitDate},
+                        o => new {pid = o.F_Pid, visitDate = o.F_VisitDate}, (l, o) => new
+                        {
+                            Record = l,
+                            Observation = o.Select(r => new
+                                {
+                                    Id = r.F_Id,
+                                    OperatorTime = r.F_NurseOperatorTime,
+                                    NurseName = r.F_NurseName,
+                                    Ssy = r.F_SSY,
+                                    Szy = r.F_SZY,
+                                    Hr = r.F_HR,
+                                    A = r.F_A,
+                                    Bf = r.F_BF,
+                                    Ufr = r.F_UFR,
+                                    V = r.F_V,
+                                    C = r.F_C,
+                                    T = r.F_T,
+                                    Ufv = r.F_UFV,
+                                    Tmp = r.F_TMP,
+                                    Gsl = r.F_GSL,
+                                    Memo = r.F_MEMO
+                                })
+                                .OrderByDescending(r => r.OperatorTime)
+                        })
+                    .OrderBy(n => n.Record.VisitNo).ThenBy(n => n.Record.GroupName).ThenBy(n => n.Record.ShowNo)
+                ;
+
+            return Ok(data
+            //    .ToList().GroupBy(t => t.Record.VisitNo, (key, rows) => new
+            //{
+            //    VisitNo = key,
+            //    Items = rows.Select(r => new
+            //    {
+            //        r.Record.Id,
+            //        r.Record.VisitDate,
+            //        r.Record.Name,
+            //        r.Record.StartTime,
+            //        r.Record.EndTime,
+            //        Status = r.Record.StartTime == null ? 1 : r.Record.EndTime == null ? 2 : 3,
+            //        r.Record.GroupName,
+            //        r.Record.BedNo,
+            //        r.Record.ShowNo,
+            //        r.Record.VascularAccess,
+            //        r.Record.AccessName,
+            //        EstimateHours = r.Record.EstimateHours ?? 4,
+            //        r.Record.Heparin,
+            //        Observation = r.Observation.OrderByDescending(o => o.OperatorTime)
+            //    }).OrderBy(i => i.GroupName).ThenBy(i => i.ShowNo)
+            //}).OrderBy(n => n.VisitNo)
+            );
         }
     }
 

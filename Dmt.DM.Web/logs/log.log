@@ -1,21 +1,11 @@
-2020-09-17 09:44:42,900  INFO Dmt.DM.Web.Controllers.HomeController.? [?] - MESSAGE: 测试
- 2020-09-17 09:44:43,236  INFO Dmt.DM.Web.Controllers.HomeController.? [?] - MESSAGE: 测试
- 2020-09-17 09:44:45,568  WARN Microsoft.EntityFrameworkCore.Query.? [?] - MESSAGE: The LINQ expression 'where {from <>f__AnonymousType137`19 t in __list_0 where ([t].F_Pid == [param].F_Id) select [t] => Any()}' could not be translated and will be evaluated locally.
- 2020-09-17 09:44:45,574  WARN Microsoft.EntityFrameworkCore.Query.? [?] - MESSAGE: The LINQ expression 'where ([t].F_Pid == [param].F_Id)' could not be translated and will be evaluated locally.
- 2020-09-17 09:44:45,580  WARN Microsoft.EntityFrameworkCore.Query.? [?] - MESSAGE: The LINQ expression 'Any()' could not be translated and will be evaluated locally.
- 2020-09-17 12:06:41,694 ERROR JwtBearerEvents.? [?] - MESSAGE: Authentication failed.
- 2020-09-17 12:06:41,708 ERROR JwtBearerEvents.? [?] - MESSAGE: OnChallenge error
- 2020-09-17 12:06:45,336  INFO Dmt.DM.Web.Controllers.HomeController.? [?] - MESSAGE: 测试
- 2020-09-17 12:06:45,483  INFO Dmt.DM.Web.Controllers.HomeController.? [?] - MESSAGE: 测试
- 2020-09-17 12:11:07,307  INFO Dmt.DM.Web.Controllers.HomeController.? [?] - MESSAGE: 测试
- 2020-09-17 12:11:07,414  INFO Dmt.DM.Web.Controllers.HomeController.? [?] - MESSAGE: 测试
- 2020-09-17 12:23:01,940  INFO Dmt.DM.Web.Controllers.HomeController.? [?] - MESSAGE: 测试
- 2020-09-17 12:23:02,083  INFO Dmt.DM.Web.Controllers.HomeController.? [?] - MESSAGE: 测试
- 2020-09-17 12:47:00,276  INFO Dmt.DM.Web.Controllers.HomeController.? [?] - MESSAGE: 测试
- 2020-09-17 12:47:00,443  INFO Dmt.DM.Web.Controllers.HomeController.? [?] - MESSAGE: 测试
- 2020-09-17 12:47:03,367  WARN Microsoft.EntityFrameworkCore.Query.? [?] - MESSAGE: The LINQ expression 'where {from <>f__AnonymousType137`19 t in __list_0 where ([t].F_Pid == [param].F_Id) select [t] => Any()}' could not be translated and will be evaluated locally.
- 2020-09-17 12:47:03,373  WARN Microsoft.EntityFrameworkCore.Query.? [?] - MESSAGE: The LINQ expression 'where ([t].F_Pid == [param].F_Id)' could not be translated and will be evaluated locally.
- 2020-09-17 12:47:03,378  WARN Microsoft.EntityFrameworkCore.Query.? [?] - MESSAGE: The LINQ expression 'Any()' could not be translated and will be evaluated locally.
- 2020-09-17 12:47:10,474  INFO Dmt.DM.Web.Controllers.HomeController.? [?] - MESSAGE: 测试
- 2020-09-17 12:47:10,621  INFO Dmt.DM.Web.Controllers.HomeController.? [?] - MESSAGE: 测试
+2020-11-08 08:57:23,785  WARN Microsoft.EntityFrameworkCore.Query.? [?] - MESSAGE: The LINQ expression 'where {from <>f__AnonymousType146`19 t in __list_0 where ([t].F_Pid == [param].F_Id) select [t] => Any()}' could not be translated and will be evaluated locally.
+ 2020-11-08 08:57:23,808  WARN Microsoft.EntityFrameworkCore.Query.? [?] - MESSAGE: The LINQ expression 'where ([t].F_Pid == [param].F_Id)' could not be translated and will be evaluated locally.
+ 2020-11-08 08:57:23,812  WARN Microsoft.EntityFrameworkCore.Query.? [?] - MESSAGE: The LINQ expression 'Any()' could not be translated and will be evaluated locally.
+ 2020-11-08 09:27:26,554 ERROR JwtBearerEvents.? [?] - MESSAGE: Authentication failed.
+ 2020-11-08 09:27:26,569 ERROR JwtBearerEvents.? [?] - MESSAGE: OnChallenge error
+ 2020-11-08 09:28:30,166  WARN Microsoft.EntityFrameworkCore.Query.? [?] - MESSAGE: The LINQ expression 'GroupBy([param].F_Pid, [param])' could not be translated and will be evaluated locally.
+ 2020-11-08 11:51:57,139 ERROR JwtBearerEvents.? [?] - MESSAGE: OnChallenge error
+ 2020-11-08 11:52:00,049 ERROR JwtBearerEvents.? [?] - MESSAGE: Authentication failed.
+ 2020-11-08 11:52:00,267 ERROR JwtBearerEvents.? [?] - MESSAGE: Authentication failed.
+ 2020-11-08 11:52:00,445 ERROR Microsoft.AspNetCore.SignalR.HubConnectionContext.? [?] - MESSAGE: Failed connection handshake.
  

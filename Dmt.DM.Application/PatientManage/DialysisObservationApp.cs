@@ -11,6 +11,7 @@ namespace Dmt.DM.Application.PatientManage
     public interface IDialysisObservationApp : IScopedAppService
     {
         Task<List<DialysisObservationEntity>> GetList(Pagination pagination, string pid, DateTime startDate, DateTime endDate);
+        IQueryable<DialysisObservationEntity> GetList();
         IQueryable<DialysisObservationEntity> GetList(string pid);
         IQueryable<DialysisObservationEntity> GetListByVisit(string visitId);
         Task<DialysisObservationEntity> GetForm(string keyValue);
@@ -45,6 +46,15 @@ namespace Dmt.DM.Application.PatientManage
             expression = expression.And(t => t.F_DeleteMark != true);
             return _service.FindListAsync(expression, pagination);
 
+        }
+
+        public IQueryable<DialysisObservationEntity> GetList()
+        {
+            var expression = ExtLinq.True<DialysisObservationEntity>();
+            //expression = expression.And(t => t.F_Pid == pid);
+            expression = expression.And(t => t.F_EnabledMark == true);
+            expression = expression.And(t => t.F_DeleteMark != true);
+            return _service.IQueryable(expression);
         }
 
         public IQueryable<DialysisObservationEntity> GetList(string pid)

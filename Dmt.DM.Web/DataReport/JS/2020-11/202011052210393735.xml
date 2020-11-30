@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<patientList>
+  <patient id="790fb7bb-bd45-423d-9a52-a2004f27639f">
+    <patientCaseNo caseNumber="15" />
+    <basicInfo>
+      <name>曹德健</name>
+      <sex>
+        <value>男</value>
+      </sex>
+      <birthDay>1989-04-18</birthDay>
+      <identityID>23010319890418701Ⅹ</identityID>
+      <address>哈市滨市南岗区果戈里大街20号4单元303室</address>
+      <currentAddress>哈市滨市南岗区果戈里大街20号4单元303室</currentAddress>
+      <tel>19969633089</tel>
+      <mobileTel>
+      </mobileTel>
+      <relative />
+      <relationship />
+      <relativeTel />
+      <relativeMobile />
+      <zipCode />
+      <inputDate>1604585439784</inputDate>
+      <markName />
+    </basicInfo>
+    <userSections>
+      <item id="U_FDD" name="首次诊治日期">
+        <value>
+        </value>
+      </item>
+      <item id="U_FD" name="首次透析日期">
+        <value>
+        </value>
+      </item>
+      <item id="U_DA" name="透析龄（月）">
+        <value>
+        </value>
+      </item>
+      <item id="U_marrige" name="婚姻状况">
+        <value>未婚</value>
+      </item>
+      <item id="U_career" name="职业">
+        <value />
+      </item>
+      <item id="U0003" name="病人联系人">
+        <value>
+        </value>
+      </item>
+      <item id="U0004" name="联系人与病人关系">
+        <value />
+      </item>
+      <item id="U_CT" name="费别">
+        <value>城镇职工医疗保险</value>
+      </item>
+      <item id="U0005" name="联系人电话">
+        <value />
+      </item>
+      <item id="UCID1" name="透析病案号">
+        <value>15</value>
+      </item>
+      <item id="U_address_city" name="所在城市">
+        <value />
+      </item>
+    </userSections>
+    <itemInfor>
+      <globalItem />
+      <commonItem>
+        <sections sectionID="62" actualExamineDate="2020-11-30" sectionName="心电图检查">
+          <item id="527" name="心电图检查诊断" type="13">正常</item>
+        </sections>
+        <sections sectionID="30040" actualExamineDate="2020-11-30" sectionName="透析器,滤器（质控）">
+          <item id="30427" name="类型" type="13">
+            <value>国产</value>
+          </item>
+          <item id="30428" name="通量" type="11">
+            <value>高通量</value>
+          </item>
+          <item id="30429" name="使用" type="11">
+            <value>一次性使用</value>
+          </item>
+          <item id="30430" name="透析膜" type="13">
+            <value>聚砜（PS）膜,聚酰胺膜,</value>
+          </item>
+          <item id="433" name="膜面积" type="11">
+            <value>1.2≤膜面积&amp;lt;1.4(㎡)</value>
+          </item>
+        </sections>
+        <sections sectionID="30045" actualExamineDate="2020-11-30" sectionName="合并其他透析模式（血透）">
+          <item id="30045_01" name="合并其他透析模式" type="11">
+            <value>无</value>
+          </item>
+        </sections>
+      </commonItem>
+    </itemInfor>
+  </patient>
+</patientList>
